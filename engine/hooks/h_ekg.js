@@ -110,7 +110,7 @@ TYPES.h_ekg = {
     let sx = 0, sy = 0; if (u >= F && u < F + 0.35) { const k = Math.exp(-(u - F) / 0.07) * 9; sx = Math.sin(u * 97) * k; sy = Math.cos(u * 83) * k; }
     const intro = lerp(1.12, 1, outExpo(seg(u, 0, 0.35)));
     g.save(); g.translate(540 + sx, 860 + sy); g.scale(push * intro, push * intro); g.rotate(-0.012 + 0.012 * cl(u / d)); g.translate(-540, -860);
-    g.drawImage(sc.st.mon, 0, 0);
+    g.drawImage(sc.st.mon, 20, 400, 1040, 940, 20, 400, 1040, 940);
     txt(g, "II", 134, 705, { w: 700, px: 26, fam: "I", c: "rgba(61,255,138,0.75)", al: "left" });
     txt(g, "x1  25 mm/s", 172, 705, { w: 500, px: 22, fam: "I", c: "rgba(61,255,138,0.45)", al: "left" });
     txt(g, "PLETH", 134, 1112, { w: 700, px: 22, fam: "I", c: "rgba(70,225,255,0.7)", al: "left", ls: 2 });
@@ -150,8 +150,10 @@ TYPES.h_ekg = {
           let x = head - s; if (x < EKG_X0) x += Wt; if (lastX !== null && x > lastX + 10) first = true;
           const y = cy - sig(u - s / EKG_V) * amp; if (first) { g.moveTo(x, y); first = false; } else g.lineTo(x, y); lastX = x;
         }
-        shadow(g, glow, 0, `rgba(${rgb},${0.9 * alpha})`); g.strokeStyle = `rgba(${rgb},${alpha})`; g.lineWidth = lw; g.stroke();
-        noShadow(g); g.strokeStyle = `rgba(235,255,240,${alpha * 0.85})`; g.lineWidth = lw * 0.38; g.stroke();
+        g.strokeStyle = `rgba(${rgb},${0.10 * alpha})`; g.lineWidth = glow * 0.9; g.stroke();
+        g.strokeStyle = `rgba(${rgb},${0.22 * alpha})`; g.lineWidth = glow * 0.45; g.stroke();
+        g.strokeStyle = `rgba(${rgb},${alpha})`; g.lineWidth = lw; g.stroke();
+        g.strokeStyle = `rgba(235,255,240,${alpha * 0.85})`; g.lineWidth = lw * 0.38; g.stroke();
       }
     };
     drawTrace((tau) => ekgSig(T, tau), EKG_CY, EKG_AMP, colRGB, 8, 34);
@@ -174,7 +176,7 @@ TYPES.h_ekg = {
         txt(g, tx, 0, 4, { w: 900, px, c: blink > 0.5 ? "#ffffff" : "#ff8f9a" }); g.restore();
       }
     }
-    g.drawImage(sc.st.glass, 0, 0);
+    g.drawImage(sc.st.glass, 96, 488, 888, 724, 96, 488, 888, 724);
     // Rote Lampe oben am Gehäuse
     const lampOn = flat ? blink : 0.15; rg = g.createRadialGradient(952, 466, 0, 952, 466, 70);
     rg.addColorStop(0, `rgba(255,50,60,${0.9 * lampOn})`); rg.addColorStop(1, "rgba(255,50,60,0)"); g.fillStyle = rg; g.fillRect(880, 400, 140, 140);

@@ -37,6 +37,13 @@
     g.globalCompositeOperation = "source-atop"; const sh = g.createLinearGradient(60, 60, 220, 220); sh.addColorStop(0, "rgba(0,0,0,0)"); sh.addColorStop(1, warm ? "rgba(90,30,40,0.35)" : "rgba(60,55,95,0.45)"); g.fillStyle = sh; g.fillRect(0, 0, s, s);
     return c;
   }
+  function softPuff() {
+    const s = 256, c = document.createElement("canvas"); c.width = s; c.height = s; const g = c.getContext("2d");
+    for (let i = 0; i < 14; i++) { const a = rnd(i * 3.9 + 1) * 6.28, r = Math.sqrt(rnd(i * 2.2)) * 55, x = s / 2 + Math.cos(a) * r, y = s / 2 + Math.sin(a) * r, rad = 50 + rnd(i * 5.1) * 30;
+      const q = g.createRadialGradient(x, y, 0, x, y, rad); q.addColorStop(0, "rgba(236,234,244,0.5)"); q.addColorStop(0.6, "rgba(200,198,215,0.25)"); q.addColorStop(1, "rgba(170,168,190,0)"); g.fillStyle = q; g.beginPath(); g.arc(x, y, rad, 0, 7); g.fill(); }
+    g.globalCompositeOperation = "source-atop"; const sh = g.createLinearGradient(40, 40, 230, 230); sh.addColorStop(0, "rgba(255,255,255,0.25)"); sh.addColorStop(1, "rgba(70,60,110,0.35)"); g.fillStyle = sh; g.fillRect(0, 0, s, s);
+    return c;
+  }
   function tower() {
     const c = document.createElement("canvas"); c.width = 360; c.height = 900; const g = c.getContext("2d"); // Welt x 720..1080, y 400..1300
     g.translate(-720, -400);
@@ -97,7 +104,7 @@
       const h = 40 + j * 32; const tb = tAt(h, d); if (u < tb) continue; const age = u - tb;
       const y = NOZ - h + 60 + age * 8, x = RX + (rnd(j * 2.3) - 0.5) * 26 + age * (12 + (rnd(j) - 0.5) * 50); const r = (52 + 40 * rnd(j * 3.1)) * (1 + age * 1.3) * (1 - j * 0.007);
       const a = cl(age * 6) * (0.62 - 0.2 * cl(age / 3));
-      g.globalAlpha = a; g.drawImage(sc.st.pc, x - r, y - r, 2 * r, 2 * r);
+      g.globalAlpha = Math.min(1, a * 1.3); g.drawImage(sc.st.ps, x - r * 1.2, y - r * 1.2, 2.4 * r, 2.4 * r);
       const wk = heat * Math.exp(-h / 380) * Math.exp(-age * 1.5); if (wk > 0.02) { g.globalAlpha = a * wk; g.drawImage(sc.st.pw, x - r, y - r, 2 * r, 2 * r); }
     }
     // Bodenwolken
@@ -146,7 +153,7 @@
 
   TYPES.h_rocket = {
     zone: "bottom", pal: "night", bgv: 0, coverT: 1.55,
-    prep(sc, p) { sc.st.sky = sky(); sc.st.pc = puff(false); sc.st.pw = puff(true); sc.st.tower = tower(); sc.st.rk = rocketSprite(p.label); sc.st.tmp = document.createElement("canvas"); sc.st.tmp.width = 480; sc.st.tmp.height = 820; },
+    prep(sc, p) { sc.st.sky = sky(); sc.st.pc = puff(false); sc.st.ps = softPuff(); sc.st.pw = puff(true); sc.st.tower = tower(); sc.st.rk = rocketSprite(p.label); sc.st.tmp = document.createElement("canvas"); sc.st.tmp.width = 480; sc.st.tmp.height = 820; },
     draw(g, u, d, p, sc) {
       const lift = rise(u, d); const ign = seg(u, TI, TI + 0.12); const tX = TL + exitDur(d);
       const heat = u < TI ? 0 : Math.min(1, ign * 1.2) * (1 - 0.65 * seg(u, tX - 0.2, tX + 0.8));
