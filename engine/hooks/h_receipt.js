@@ -165,8 +165,9 @@
       const st = lenAt(u, T, L); const len = st.len, moving = st.moving;
       const stamped = u >= T.tS; const torn = u >= T.tT;
       // Kamera
-      const zk = inOut(seg(u, 0, T.tP + 0.1)); const camY = lerp(1050, 896, zk);
-      let s = lerp(1.24, 0.95, zk) * (1 + 0.03 * cl((u - T.tP) / 2)); const punch = stamped ? Math.exp(-(u - T.tS) / 0.08) : 0; s *= 1 + 0.03 * punch;
+      const sE = Math.min(0.98, 740 / (L.len + 45)), cE = SLOT - 330 / sE; // Endbild: ganzer Bon zwischen y 450 und 1190
+      const zk = inOut(seg(u, 0, T.tP + 0.1)); const camY = lerp(1050, cE, zk);
+      let s = lerp(1.24, sE, zk) * (1 + 0.03 * cl((u - T.tP) / 2)); const punch = stamped ? Math.exp(-(u - T.tS) / 0.08) : 0; s *= 1 + 0.03 * punch;
       let shx = 0, shy = 0; if (punch > 0.03) { shx = Math.sin(u * 99) * 10 * punch; shy = Math.cos(u * 87) * 10 * punch; }
       if (moving) { shx += (rnd(Math.floor(u * 60)) - 0.5) * 1.6; }
       g.drawImage(sc.st.bg, 0, 0);

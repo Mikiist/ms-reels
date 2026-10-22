@@ -102,7 +102,7 @@
     // Rauchsäule (bleibt entlang der Bahn)
     for (let j = 0; j < 50; j++) {
       const h = 40 + j * 32; const tb = tAt(h, d); if (u < tb) continue; const age = u - tb;
-      const y = NOZ - h + 60 + age * 8, x = RX + (rnd(j * 2.3) - 0.5) * 26 + age * (12 + (rnd(j) - 0.5) * 50); const r = (52 + 40 * rnd(j * 3.1)) * (1 + age * 1.3) * (1 - j * 0.007);
+      const y = NOZ - h + 60 + age * 8, x = RX + (rnd(j * 2.3) - 0.5) * 26 + age * (12 + (rnd(j) - 0.5) * 50); const r = (52 + 40 * rnd(j * 3.1)) * (1 + Math.min(age, 1.1) * 1.2) * (1 - j * 0.007);
       const a = cl(age * 6) * (0.62 - 0.2 * cl(age / 3));
       g.globalAlpha = Math.min(1, a * 1.3); g.drawImage(sc.st.ps, x - r * 1.2, y - r * 1.2, 2.4 * r, 2.4 * r);
       const wk = heat * Math.exp(-h / 380) * Math.exp(-age * 1.5); if (wk > 0.02) { g.globalAlpha = a * wk; g.drawImage(sc.st.pw, x - r, y - r, 2 * r, 2 * r); }
