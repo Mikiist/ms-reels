@@ -151,7 +151,7 @@ function hookText(t) {
     sp.querySelectorAll("u").forEach((u) => { u.style.textDecoration = "none"; u.style.color = st.bg === "#ef4444" ? "#fde047" : st.bg === "#fde047" ? "#dc2626" : st.outline ? "#fde047" : "#dc2626"; });
     if (sp.offsetWidth > 960) sp.style.fontSize = Math.floor(74 * 960 / sp.offsetWidth) + "px"; }
   const end = SC[0].t1 + 0.1; if (t > end + 0.2) { box.style.visibility = "hidden"; return; }
-  box.style.visibility = "visible"; const k = seg(t, 0, 0.14); const ex = seg(t, end - 0.05, end + 0.15);
+  box.style.visibility = "visible"; const k = seg(t, -0.1, 0.12); const ex = seg(t, end - 0.05, end + 0.15);
   const wig = Math.sin(t * 9) * 1.2 * (1 - ex);
   box.style.transform = `translateY(${-ex * 120}px) scale(${lerp(1.35, 1, outBack(k, 2.2)) * (1 - 0.2 * ex)}) rotate(${wig - 1.5}deg)`; box.style.opacity = cl(k * 3) * (1 - ex);
 }
