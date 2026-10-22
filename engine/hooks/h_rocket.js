@@ -1,10 +1,10 @@
 // VOICE_DELAY: 0.6
-// h_rocket: Rakete auf der Startrampe. Countdown 3, 2, 1 in 0,8 s, Zündung mit Flammen und Rauchwolken,
+// h_rocket: Rakete auf der Startrampe. Ab Bild 0 zündet das Triebwerk (Blitz, Flammen, Rauchwolken),
 // Rumpeln, die Rakete hebt ab und schießt nach oben aus dem Bild. Funken, Kamera wackelt, Rauch bleibt stehen.
 // Parameter: label (Standard "START"), steht auf der Rakete.
 (() => {
   const RX = 540, NOZ = 1186; // Rakete: Mitte und Düsenende (Welt)
-  const TB = [0, 0.27, 0.54], TI = 0.8, TL = 1.06; // Piepen, Zündung, Abheben
+  const TI = -0.1, TL = 0.4; // Zündung (kurz vor Bild 0, damit Flamme und Rauch schon da sind), Abheben
   const exitDur = (d) => Math.max(0.6, Math.min(1.3, d - 0.42 - TL));
   const rise = (u, d) => (u <= TL ? 0 : 1650 * Math.pow(cl((u - TL) / exitDur(d)), 2.3));
   const tAt = (h, d) => TL + exitDur(d) * Math.pow(Math.min(1, h / 1650), 1 / 2.3); // Zeitpunkt, zu dem die Rakete h Pixel hoch ist
@@ -96,7 +96,7 @@
   }
 
   // ---------- Partikel ----------
-  function groundPuffs() { const L = []; for (let i = 0; i < 64; i++) { const dir = i % 2 ? 1 : -1; L.push({ tb: TI + 0.02 + Math.pow(rnd(i * 1.3), 1.4) * 1.0, dir, v: 0.5 + rnd(i * 2.9) * 0.9, up: rnd(i * 4.4), s: 0.6 + rnd(i * 7.7) * 0.8, rot: rnd(i * 5.2) * 6.28 }); } return L.sort((a, b) => b.up - a.up); }
+  function groundPuffs() { const L = []; for (let i = 0; i < 64; i++) { const dir = i % 2 ? 1 : -1; L.push({ tb: TI - 0.4 + Math.pow(rnd(i * 1.3), 1.2) * 1.25, dir, v: 0.5 + rnd(i * 2.9) * 0.9, up: rnd(i * 4.4), s: 0.6 + rnd(i * 7.7) * 0.8, rot: rnd(i * 5.2) * 6.28 }); } return L.sort((a, b) => b.up - a.up); }
   const GP = groundPuffs();
   function drawSmoke(g, sc, u, d, heat) {
     // Rauchsäule (bleibt entlang der Bahn)
@@ -139,8 +139,8 @@
   function sparks(g, u, ny) {
     g.save(); g.globalCompositeOperation = "lighter"; g.lineCap = "round";
     for (let i = 0; i < 90; i++) {
-      const tb = TI - 0.2 + rnd(i * 1.7) * 1.6; const age = u - tb; if (age <= 0 || age > 0.9) continue;
-      const pre = tb < TI; const a = (rnd(i * 3.3) - 0.5) * (pre ? 2.2 : 3.0) - Math.PI / 2 * (pre ? -1 : 0); const sp = (pre ? 300 : 700) * (0.4 + rnd(i * 5.9));
+      const tb = TI - 0.5 + rnd(i * 1.7) * 1.8; const age = u - tb; if (age <= 0 || age > 0.9) continue;
+      const pre = false; const a = (rnd(i * 3.3) - 0.5) * (pre ? 2.2 : 3.0) - Math.PI / 2 * (pre ? -1 : 0); const sp = (pre ? 300 : 700) * (0.4 + rnd(i * 5.9));
       const ang = pre ? Math.PI / 2 + (rnd(i * 3.3) - 0.5) * 2.4 : (rnd(i * 2.1) < 0.5 ? Math.PI - 0.2 - rnd(i * 4.7) * 0.6 : 0.2 + rnd(i * 4.7) * 0.6);
       const ox = RX + (rnd(i * 6.1) - 0.5) * 90, oy = pre ? NOZ + 10 : 1225;
       const vx = Math.cos(ang) * sp, vy = Math.sin(ang) * sp * (pre ? 1 : -0.55) - (pre ? 0 : 200);
@@ -152,13 +152,13 @@
   }
 
   TYPES.h_rocket = {
-    zone: "bottom", pal: "night", bgv: 0, coverT: 1.55,
+    zone: "bottom", pal: "night", bgv: 0, coverT: 0.95,
     prep(sc, p) { sc.st.sky = sky(); sc.st.pc = puff(false); sc.st.ps = softPuff(); sc.st.pw = puff(true); sc.st.tower = tower(); sc.st.rk = rocketSprite(p.label); sc.st.tmp = document.createElement("canvas"); sc.st.tmp.width = 480; sc.st.tmp.height = 820; },
     draw(g, u, d, p, sc) {
       const lift = rise(u, d); const ign = seg(u, TI, TI + 0.12); const tX = TL + exitDur(d);
       const heat = u < TI ? 0 : Math.min(1, ign * 1.2) * (1 - 0.65 * seg(u, tX - 0.2, tX + 0.8));
       // Kamera: Zittern ab Zündung, leichte Fahrt nach oben beim Start
-      let A = 0; if (u >= TI) A = 15 * Math.exp(-(u - TI) / 0.12) + 6.5 * seg(u, TI, TI + 0.1) * (1 - seg(u, tX - 0.3, tX + 0.5)); if (u > TI - 0.25 && u < TI) A += 1.5 * seg(u, TI - 0.25, TI);
+      let A = 0; if (u >= TI) A = 15 * Math.exp(-(u - TI) / 0.12) + 6.5 * seg(u, TI, TI + 0.1) * (1 - seg(u, tX - 0.3, tX + 0.5)); A += 10 * Math.exp(-Math.max(0, u) / 0.1);
       const shx = Math.sin(u * 71) * A + Math.sin(u * 133) * A * 0.4, shy = Math.cos(u * 63) * A + Math.cos(u * 117) * A * 0.4;
       const camY = 70 * inOut(seg(u, TL, tX + 0.2)); const z = 1.0 + 0.03 * cl(u / 0.8) + 0.02 * inOut(seg(u, TL, tX));
       g.save(); g.translate(540 + shx, 860 + shy); g.rotate(Math.sin(u * 47) * A * 0.0012); g.scale(z, z); g.translate(-540, -860 + camY);
@@ -195,7 +195,7 @@
         g.save(); g.globalAlpha = 0.5 * (1 - cl(lift / 200)); g.fillStyle = "#000"; g.beginPath(); g.ellipse(RX, 1222, 150, 14, 0, 0, 7); g.fill(); g.restore();
         g.drawImage(tmp, dx, dy);
         // Dampf vor dem Start (Bewegung ab Bild 0)
-        if (u < TI + 0.3) { for (let i = 0; i < 9; i++) { const ph = (u * 1.4 + i / 9) % 1; const side = i % 2 ? 1 : -1; const x = RX + side * (100 + ph * 120 + rnd(i) * 20), y = 700 + i * 40 - ph * 60; const r = 18 + ph * 60; g.globalAlpha = (1 - ph) * 0.55 * (1 - seg(u, TI, TI + 0.3)); g.drawImage(sc.st.pc, x - r, y - r, 2 * r, 2 * r); } g.globalAlpha = 1; }
+        if (false) { for (let i = 0; i < 9; i++) { const ph = (u * 1.4 + i / 9) % 1; const side = i % 2 ? 1 : -1; const x = RX + side * (100 + ph * 120 + rnd(i) * 20), y = 700 + i * 40 - ph * 60; const r = 18 + ph * 60; g.globalAlpha = (1 - ph) * 0.55 * (1 - seg(u, TI, TI + 0.3)); g.drawImage(sc.st.pc, x - r, y - r, 2 * r, 2 * r); } g.globalAlpha = 1; }
         sc.st.fl = [RX + vib + rj, ny - 4, (lift > 5 ? 360 + Math.min(260, vel * 3) : 120 + 220 * ign), 128, u, u < TI ? 0 : ign];
       } else sc.st.fl = null;
       // Rauch, dann Flamme darüber (leuchtet in den Rauch)
@@ -203,23 +203,15 @@
       if (sc.st.fl) flame(g, ...sc.st.fl);
       sparks(g, u, ny);
       g.restore();
-      // Countdown
-      for (let k = 0; k < 3; k++) {
-        const t0 = TB[k], x = u - t0; if (x < 0 || x > 0.36) continue; const e = outBack(seg(x, 0, 0.12), 2.4), a = 1 - seg(x, 0.2, 0.32);
-        g.save(); g.translate(225, 820); g.scale(lerp(1.7, 1, e) * (1 + 0.15 * seg(x, 0.2, 0.32)), lerp(1.7, 1, e) * (1 + 0.15 * seg(x, 0.2, 0.32))); g.globalAlpha = a;
-        shadow(g, 60, 0, "rgba(255,200,120,0.9)"); txt(g, String(3 - k), 0, 0, { w: 900, px: 300, c: "#ffffff" }); noShadow(g);
-        g.strokeStyle = `rgba(255,230,180,${0.8 * (1 - seg(x, 0, 0.3))})`; g.lineWidth = 6; g.beginPath(); g.arc(0, 0, 140 + 70 * out3(seg(x, 0, 0.3)), 0, 7); g.stroke(); g.restore();
-      }
       // Zündblitz
-      const fl = u >= TI ? Math.exp(-(u - TI) / 0.07) : 0; if (fl > 0.01) { g.save(); g.globalCompositeOperation = "lighter"; g.fillStyle = `rgba(255,190,120,${0.45 * fl})`; g.fillRect(0, 0, W, H); g.restore(); }
+      const fl = Math.exp(-Math.max(0, u) / 0.09); if (fl > 0.01) { g.save(); g.globalCompositeOperation = "lighter"; g.fillStyle = `rgba(255,190,120,${0.4 * fl})`; g.fillRect(0, 0, W, H); g.restore(); }
       // Vignette und Platz für Untertitel
       gr = g.createLinearGradient(0, 1300, 0, 1920); gr.addColorStop(0, "rgba(0,0,0,0)"); gr.addColorStop(0.4, "rgba(0,0,0,0.35)"); gr.addColorStop(1, "rgba(0,0,0,0.75)"); g.fillStyle = gr; g.fillRect(0, 1300, W, 620);
       const vg = g.createRadialGradient(540, 900, 520, 540, 900, 1250); vg.addColorStop(0, "rgba(0,0,0,0)"); vg.addColorStop(1, "rgba(0,0,0,0.5)"); g.fillStyle = vg; g.fillRect(0, 0, W, H);
     },
     ev(d, p) {
       const tX = TL + exitDur(d);
-      return [[TB[0], "rk_beep0", 0.85, 0], [TB[1], "rk_beep1", 0.85, 0], [TB[2], "rk_beep2", 0.95, 0], [0, "rk_hiss", 0.4, 0],
-        [TI, "rk_ignite", 1.0, 0], [TI, "rk_roar", 0.95, 0], [TL, "rk_lift", 0.8, 0], [tX - 0.35, "rk_pass", 0.7, 0]];
+      return [[0, "rk_ignite", 1.0, 0], [0, "rk_roar", 0.95, 0], [TL, "rk_lift", 0.8, 0], [tX - 0.35, "rk_pass", 0.7, 0]];
     },
   };
 })();

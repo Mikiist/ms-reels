@@ -1,23 +1,9 @@
-# Klänge für h_rocket: Countdown-Piepen, Dampfzischen, Zündung, Triebwerksdröhnen, Abheben, Vorbeiflug nach oben.
+# Klänge für h_rocket: Zündung (Sound-Hook bei 0,00 s), Triebwerksdröhnen, Abheben, Vorbeiflug nach oben.
 _rk_rng = np.random.default_rng(321)
 
 def _rk_env(n, att=0.004, rel=0.02):
     t = T(n); d = n / SR
     return np.minimum(1, t / att) * np.minimum(1, np.maximum(0, (d - t) / rel))
-
-def rk_beep(f):
-    n = int(0.16 * SR); t = T(n)
-    s = np.sin(2 * np.pi * f * t) + 0.3 * np.sin(2 * np.pi * 2 * f * t) + 0.12 * np.sin(2 * np.pi * 3 * f * t)
-    s = s * _rk_env(n, 0.003, 0.05) * (0.75 + 0.25 * np.exp(-t * 20))
-    tail = np.zeros(int(0.2 * SR)); out = np.concatenate([s, tail])
-    for dl, gn in ((0.045, 0.25), (0.09, 0.12)):
-        i = int(dl * SR); out[i:i + n] += s * gn
-    return out / 1.0
-
-def rk_hiss():
-    n = int(0.85 * SR); t = T(n)
-    s = bpf(_rk_rng.standard_normal(n), 3000, 12000) * (0.6 + 0.4 * np.sin(2 * np.pi * 3.2 * t) ** 2)
-    return s * _rk_env(n, 0.02, 0.25) * 0.35
 
 def rk_ignite():
     n = int(1.6 * SR); t = T(n)
@@ -35,7 +21,7 @@ def rk_roar():
     for i in idx: m = 300; cr[i:i + m] += _rk_rng.standard_normal(m) * np.exp(-np.arange(m) / 40) * _rk_rng.random()
     cr = bpf(cr, 1500, 9000) * 0.5
     rum = 1 + 0.35 * np.sin(2 * np.pi * 7 * t) * np.sin(2 * np.pi * 2.3 * t)
-    env = np.minimum(1, t / 0.15) * np.where(t < 1.2, 1, np.exp(-(t - 1.2) * 1.4))
+    env = np.minimum(1, t / 0.04) * np.where(t < 1.2, 1, np.exp(-(t - 1.2) * 1.4))
     s = (low * rum + mid_ + cr) * env
     return np.tanh(s * 1.3) * _rk_env(n, 0.01, 0.4) * 0.9
 
@@ -52,10 +38,6 @@ def rk_pass():
     s = lpv(x, 6000 * (1 - t) ** 2 + 300) * np.sin(np.pi * np.clip(t * 1.3, 0, 1)) ** 1.5
     return s * _rk_env(n, 0.01, 0.1) * 0.9
 
-SOUND["rk_beep0"] = lambda: rk_beep(880.0)
-SOUND["rk_beep1"] = lambda: rk_beep(880.0)
-SOUND["rk_beep2"] = lambda: rk_beep(1318.5)
-SOUND["rk_hiss"] = rk_hiss
 SOUND["rk_ignite"] = rk_ignite
 SOUND["rk_roar"] = rk_roar
 SOUND["rk_lift"] = rk_lift
