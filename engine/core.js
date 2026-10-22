@@ -136,10 +136,33 @@ function render(t) {
     sc.T.draw(g, u, sc.d, sc.p, sc, sc.P);
     drawPhrases(sc, t);
   }
+  hookText(t);
   $("flash").style.opacity = flash * 0.9;
   $("cam").style.transform = shake(t);
   const gr = $("grain"); gr.style.transform = `translate(${-Math.floor(rnd(Math.floor(t * 30)) * 40)}px,${-Math.floor(rnd(Math.floor(t * 30) + 7) * 40)}px)`;
 }
+
+// Text-Hook oben (für Stummschauer): erscheint ab Bild 0, bleibt während Szene 1
+const HT_STYLES = [{ bg: "#ffffff", c: "#0b0b0b" }, { bg: "#fde047", c: "#0b0b0b" }, { bg: "#ef4444", c: "#ffffff" }, { bg: "rgba(0,0,0,0)", c: "#ffffff", outline: true }, { bg: "#0b0b0b", c: "#ffffff" }];
+function hookText(t) {
+  const box = $("hooktext"); const txt = SPEC.hook_text; if (!txt || !SC.length) { box.style.visibility = "hidden"; return; }
+  const sp = box.firstChild; if (!sp.dataset.ok) { sp.dataset.ok = 1; sp.innerHTML = txt.replace(/\*([^*]+)\*/g, "<u>$1</u>"); const st = HT_STYLES[SPEC.hook_style != null ? SPEC.hook_style : Math.floor(R(77) * HT_STYLES.length)];
+    sp.style.background = st.bg; sp.style.color = st.c; if (st.outline) { sp.style.webkitTextStroke = "3px #000"; sp.style.textShadow = "0 6px 0 #000, 0 10px 30px rgba(0,0,0,0.6)"; } else sp.style.boxShadow = "0 18px 50px rgba(0,0,0,0.35)";
+    sp.querySelectorAll("u").forEach((u) => { u.style.textDecoration = "none"; u.style.color = st.bg === "#ef4444" ? "#fde047" : st.bg === "#fde047" ? "#dc2626" : st.outline ? "#fde047" : "#dc2626"; });
+    if (sp.offsetWidth > 960) sp.style.fontSize = Math.floor(74 * 960 / sp.offsetWidth) + "px"; }
+  const end = SC[0].t1 + 0.1; if (t > end + 0.2) { box.style.visibility = "hidden"; return; }
+  box.style.visibility = "visible"; const k = seg(t, 0, 0.14); const ex = seg(t, end - 0.05, end + 0.15);
+  const wig = Math.sin(t * 9) * 1.2 * (1 - ex);
+  box.style.transform = `translateY(${-ex * 120}px) scale(${lerp(1.35, 1, outBack(k, 2.2)) * (1 - 0.2 * ex)}) rotate(${wig - 1.5}deg)`; box.style.opacity = cl(k * 3) * (1 - ex);
+}
+// Titelbild: Hook-Szene im besten Moment + großer Titel in der 3:4-Mitte
+function renderCover() {
+  setup(); const s0 = SC[0]; const t = s0.t0 + (s0.T.coverT != null ? Math.min(s0.T.coverT, s0.d) : Math.min(s0.d * 0.6, 1.6));
+  render(t); SC.forEach((sc) => sc.phrases.forEach((ph) => (ph.div.style.visibility = "hidden"))); $("hooktext").style.visibility = "hidden"; $("flash").style.opacity = 0; $("cam").style.transform = "scale(1.06)"; $("cam").style.filter = "blur(7px) brightness(0.62) saturate(1.15)";
+  const c = $("cover"); const h = c.querySelector("h1"); h.innerHTML = (SPEC.cover_title || SPEC.hook_text || "").replace(/\*([^*]+)\*/g, "<em>$1</em>");
+  c.style.visibility = "visible"; let fs = 128; h.style.fontSize = fs + "px"; while (h.offsetHeight > 700 && fs > 70) { fs -= 6; h.style.fontSize = fs + "px"; }
+}
+window.renderCover = renderCover;
 
 function EVENTS() {
   setup(); const E = [];
@@ -147,5 +170,5 @@ function EVENTS() {
     if (sc.i > 0) E.push([sc.t0 - 0.12, sc.tr === "flash" ? "flash" : sc.tr.startsWith("slide") || sc.tr === "push_down" || sc.tr === "diag" ? "whoosh_side" : "whoosh_up", 0.45, 0, 0]); });
   return E.sort((a, b) => a[0] - b[0]);
 }
-function INFO() { setup(); return { dur: SPEC.dur, drop: (SC.find((s) => s.T.drop) || SC[Math.min(2, SC.length - 1)]).t0, scenes: SC.map((s) => ({ i: s.i, type: s.type, t0: s.t0, t1: s.t1, pal: s.pal, tr: s.tr, phrases: s.phrases.map((p) => p.spans.map((x) => x.el.textContent).join(" ")) })), cta: (SC.find((s) => s.type === "cta") || {}).t0 }; }
+function INFO() { setup(); const s0 = SC[0]; return { cover_t: s0.t0 + (s0.T.coverT != null ? Math.min(s0.T.coverT, s0.d - 0.1) : Math.min(s0.d * 0.6, 1.6)), music: SPEC.music || "", dur: SPEC.dur, drop: (SC.find((s) => s.T.drop) || SC[Math.min(2, SC.length - 1)]).t0, scenes: SC.map((s) => ({ i: s.i, type: s.type, t0: s.t0, t1: s.t1, pal: s.pal, tr: s.tr, phrases: s.phrases.map((p) => p.spans.map((x) => x.el.textContent).join(" ")) })), cta: (SC.find((s) => s.type === "cta") || {}).t0 }; }
 window.render = render; window.EVENTS = EVENTS; window.INFO = INFO;

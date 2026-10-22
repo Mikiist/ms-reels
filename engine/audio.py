@@ -136,48 +136,111 @@ SOUND = {
     "riser_short": lambda: riser(0.3, 1.0), "buzz": lambda: buzz(1.0), "glitch": lambda: glitch(1.0),
 }
 
+# ---------- Klänge der Hook-Szenen (engine/sfx/*.py, je Datei ergänzt sie SOUND) ----------
+import glob as _glob, os as _os
+for _f in sorted(_glob.glob(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "sfx", "*.py"))):
+    exec(compile(open(_f, encoding="utf-8").read(), _f, "exec"), globals())
+
 # ---------- Effekte aus der Animation ----------
 for at, kind, gain, pan, extra in EV:
     if kind == "riser": s = riser(max(0.2, extra or 0.6), 1.0)
     elif kind.startswith("chime_up"): i = int(kind[-1]); s = mx(chime(1318.5 * 2 ** (i * 2 / 12), 0.9, 1.0), shimmer(0.4, 0.4, 3000))
     elif kind.startswith("blip_up"): i = int(kind[-1]); s = blip(500 + i * 160, 900 + i * 220, 0.12, 1.0)
     elif kind in SOUND: s = SOUND[kind]()
-    else: continue
+    else: print("unbekannter Klang:", kind); continue
     add(sfx, at, s, gain, pan)
 
-# ---------- Musik ----------
+# ---------- Musik (Stil aus job.json "music": drive, trap, house, cinematic, phonk; sonst nach Seed) ----------
 KEYS = [  # Akkorde (MIDI), je 4 Takte
     [[42, 49, 54, 57], [38, 45, 50, 54], [45, 52, 57, 61], [40, 47, 52, 56]],
     [[45, 52, 57, 60], [41, 48, 53, 57], [48, 55, 60, 64], [43, 50, 55, 59]],
     [[40, 47, 52, 55], [36, 43, 48, 52], [43, 50, 55, 59], [38, 45, 50, 54]],
     [[43, 50, 55, 58], [39, 46, 51, 55], [46, 53, 58, 62], [41, 48, 53, 57]],
 ]
-CH = KEYS[seed % len(KEYS)]; BEAT = 60 / (118 + seed % 9)
+STYLES = ["drive", "trap", "house", "cinematic", "phonk"]
+STYLE = INFO.get("music") or STYLES[seed % len(STYLES)]
+if STYLE not in STYLES: STYLE = "drive"
+BPM = {"drive": 118 + seed % 9, "trap": 140, "house": 124, "cinematic": 88, "phonk": 128}[STYLE]
+CH = KEYS[seed % len(KEYS)]; BEAT = 60 / BPM
 sc = INFO["scenes"]; s1 = sc[1]["t0"] if len(sc) > 1 else 2.0; DROP = INFO["drop"]; CTA = INFO.get("cta") or DUR - 4
 if DROP <= s1 + 1.0: DROP = s1
-# Intro: Drone
-add(music, 0, pad([mid(CH[0][0]), mid(CH[0][0] + 7)], s1 + 0.3, 0.22, 420)); add(music, 0, sub(mid(CH[0][0] - 12), s1, 0.25))
-# Vor dem Drop: gefilterter Groove
-t = s1
-while t < DROP - 0.05:
-    add(music, t, kick(0.5)); add(music, t + BEAT / 2, hat(0.08))
-    t += BEAT
-seg_ = s1; k = 0
-while seg_ < DROP - 0.1:
-    e = min(DROP, seg_ + 4 * BEAT); ch = CH[k % 4]; add(music, seg_, pad([mid(m) for m in ch[1:]], e - seg_ + 0.3, 0.14, 900)); add(music, seg_, sub(mid(ch[0] - 12), e - seg_, 0.32)); seg_ = e; k += 1
+
+def snare(g=0.5):
+    n = int(0.3 * SR); t = T(n); x = bpf(rng.standard_normal(n), 1200, 9000) * np.exp(-t * 16)
+    body = np.sin(2 * np.pi * 190 * t) * np.exp(-t * 30) * 0.6
+    return np.tanh((x + body) * 1.6) * g
+def s808(f, d, g=0.5, glide_to=None):
+    n = int(d * SR); t = T(n); ff = np.full(n, f) if glide_to is None else f + (glide_to - f) * np.clip((t - d * 0.4) / (d * 0.35), 0, 1)
+    s = np.sin(2 * np.pi * np.cumsum(ff) / SR) * np.minimum(1, t / 0.005) * np.exp(-t * 1.6) * np.minimum(1, (d - t) / 0.03)
+    return np.tanh(s * 2.2) * g
+def bell(f, d=0.6, g=0.12):
+    n = int(d * SR); t = T(n); return (np.sin(2 * np.pi * f * t) + 0.4 * np.sin(2 * np.pi * f * 2.0 * t) * np.exp(-t * 6) + 0.2 * np.sin(2 * np.pi * f * 3.01 * t) * np.exp(-t * 10)) * np.exp(-t * 4.5) * g
+def cowbell(f, d=0.22, g=0.14):
+    n = int(d * SR); t = T(n); sq = np.sign(np.sin(2 * np.pi * f * t)) + np.sign(np.sin(2 * np.pi * f * 1.48 * t))
+    return bpf(sq, 400, 4000) * np.exp(-t * 14) * g
+def tom(f=90, g=0.6):
+    n = int(0.6 * SR); t = T(n); s = np.sin(2 * np.pi * np.cumsum(f + 60 * np.exp(-t * 18)) / SR) * np.exp(-t * 5)
+    return np.tanh((s + lpf(rng.standard_normal(n), 900) * np.exp(-t * 25) * 0.3) * 1.5) * g
+def braam(freqs, d, g=0.2):
+    s = sum(saw(f, d, (-0.3, -0.1, 0.1, 0.3)) for f in freqs) / len(freqs); t = T(len(s))
+    return np.tanh(lpf(s, 700) * 2.5) * np.minimum(1, t / 0.08) * np.exp(-t * 0.9) * g
+def stab(ch, g=0.08):
+    return sum(pluck(mid(m + 12), 0.22, g) for m in ch[1:]) / 2
+
+def section(t0, t1, full):
+    """Spielt den Stil von t0 bis t1. full=False: sparsame Variante vor dem Drop."""
+    t = t0; k = 0
+    while t < t1 - 0.05:
+        bar = int(k / 4) % 4; ch = CH[bar]; ib = k % 4; root = mid(ch[0] - 12)
+        if STYLE == "drive":
+            add(music, t, kick(0.9 if full else 0.5)); add(music, t + BEAT / 2, hat(0.08))
+            if full:
+                if ib in (1, 3): add(music, t, clap(0.4), 1, 0.05)
+                for q in range(4): add(music, t + q * BEAT / 4, hat(0.06 if q % 2 == 0 else 0.1), 1, 0.25)
+                for e2 in (0, BEAT / 2): add(music, t + e2 + 0.02, sub(root, BEAT * 0.45, 0.4))
+                arp = [ch[1], ch[2], ch[3], ch[2] + 12]
+                for q in range(4): add(music, t + q * BEAT / 4, pluck(mid(arp[(ib * 4 + q) % 4] + 12), 0.3, 0.07), 1, -0.3 + 0.2 * q)
+        elif STYLE == "trap":
+            if ib == 0: add(music, t, kick(0.95 if full else 0.6)); add(music, t, s808(root, BEAT * (2.6 if full else 1.8), 0.55 if full else 0.35, glide_to=root * (1.5 if bar % 2 else 1)))
+            if ib == 1 and full: add(music, t + BEAT / 2, kick(0.7))
+            if ib == 2 and full: add(music, t, snare(0.55)); add(music, t, clap(0.3))
+            roll = full and ib == 3 and bar % 2 == 1
+            steps = 8 if roll else 2
+            for q in range(steps): add(music, t + q * BEAT / steps, hat(0.07 if q % 2 else 0.1), 1, 0.3)
+            if full and ib % 2 == 0: add(music, t, bell(mid(ch[[1, 2, 3, 2][(k // 2) % 4]] + 24), 0.5, 0.06), 1, -0.3)
+        elif STYLE == "house":
+            add(music, t, kick(0.9 if full else 0.55))
+            add(music, t + BEAT / 2, hat(0.12 if full else 0.06, op=True), 1, 0.2)
+            if full:
+                if ib in (1, 3): add(music, t, clap(0.42))
+                add(music, t + BEAT / 2, stab(ch, 0.07), 1, -0.2)
+                add(music, t + BEAT / 2 + 0.01, sub(root, BEAT * 0.4, 0.42))
+                for q in (1, 3): add(music, t + q * BEAT / 4, hat(0.05), 1, 0.35)
+        elif STYLE == "cinematic":
+            if ib == 0:
+                add(music, t, tom(70, 0.8 if full else 0.5)); add(music, t, braam([root * 2, root * 3], BEAT * 4, 0.22 if full else 0.12))
+            if full:
+                if ib == 2: add(music, t, tom(110, 0.55), 1, -0.3); add(music, t + BEAT / 2, tom(140, 0.45), 1, 0.3)
+                for q in range(2): add(music, t + q * BEAT / 2, click(0.18), 1, 0.4)
+            else:
+                add(music, t, tick(1800, 0.12))
+        elif STYLE == "phonk":
+            add(music, t, kick(0.85 if full else 0.5))
+            if ib in (1, 3) and full: add(music, t, snare(0.6))
+            for q in range(2): add(music, t + q * BEAT / 2, hat(0.08), 1, 0.25)
+            if full:
+                mel = [ch[1] + 12, ch[2] + 12, ch[3] + 12, ch[2] + 12, ch[1] + 24, ch[3] + 12, ch[2] + 12, ch[1] + 12]
+                for q in range(2): add(music, t + q * BEAT / 2, cowbell(mid(mel[(k * 2 + q) % 8]), 0.2, 0.13), 1, -0.15)
+                if ib == 0: add(music, t, s808(root, BEAT * 1.9, 0.5, glide_to=root * 0.75))
+        if ib == 0 and STYLE in ("drive", "trap", "house"): add(music, t, pad([mid(m) for m in ch[1:]], 4 * BEAT + 0.1, 0.09 if full else 0.12, 2200 if full else 900))
+        if ib == 0 and STYLE == "cinematic": add(music, t, pad([mid(m) for m in ch[1:]], 4 * BEAT + 0.3, 0.14, 1400))
+        t += BEAT; k += 1
+
+# Intro: Drone unter dem Hook (der Hook-Sound steht vorn)
+add(music, 0, pad([mid(CH[0][0]), mid(CH[0][0] + 7)], s1 + 0.3, 0.18, 420)); add(music, 0, sub(mid(CH[0][0] - 12), s1, 0.2))
+section(s1, DROP, False)
 if DROP > s1 + 0.8: add(music, max(s1, DROP - 1.6), riser(min(1.6, DROP - s1), 0.45))
-# Drop bis zum Aufruf: volles Arrangement
-t = DROP; k = 0
-while t < CTA - 0.05:
-    bar = int(k / 4) % 4; ch = CH[bar]; inbar = k % 4
-    add(music, t, kick(0.9))
-    if inbar in (1, 3): add(music, t, clap(0.4), 1, 0.05)
-    for q in range(4): add(music, t + q * BEAT / 4, hat(0.06 if q % 2 == 0 else 0.1), 1, 0.25)
-    for e2 in (0, BEAT / 2): add(music, t + e2 + 0.02, sub(mid(ch[0] - 12), BEAT * 0.45, 0.4))
-    arp = [ch[1], ch[2], ch[3], ch[2] + 12]
-    for q in range(4): add(music, t + q * BEAT / 4, pluck(mid(arp[(inbar * 4 + q) % 4] + 12), 0.3, 0.07), 1, -0.3 + 0.2 * q)
-    if inbar == 0: add(music, t, pad([mid(m) for m in ch[1:]], 4 * BEAT + 0.1, 0.09, 2200))
-    t += BEAT; k += 1
+section(DROP, CTA, True)
 # Aufruf: ruhiger Teppich
 ch = CH[0]; add(music, CTA, pad([mid(m) for m in ch[1:]] + [mid(ch[1] + 12)], DUR - CTA + 0.4, 0.16, 1800)); add(music, CTA, sub(mid(ch[0] - 12), DUR - CTA, 0.3))
 t = CTA + BEAT / 2

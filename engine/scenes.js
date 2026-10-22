@@ -393,7 +393,7 @@ TYPES.cursor_click = {
     background(g, P, u, sc); const cy = sc.gc; const { c } = this.times(d); const pressed = seg(u, c - 0.05, c + 0.1); const done = u > c + 0.15;
     const label = done ? (p.done || "Anfrage gesendet") : (p.button || "Jetzt anfragen"); const intro = outBack(seg(u, 0, 0.35), 1.6); const bs = intro * (1 - 0.08 * Math.sin(Math.PI * pressed));
     g.save(); g.translate(540, cy); g.scale(bs, bs); shadow(g, 60, 24, done ? "rgba(22,163,74,0.45)" : hexA(P.acc, 0.45)); fillRR(g, -380, -100, 760, 200, 100, done ? "#16a34a" : P.acc); noShadow(g);
-    const px = fitPx(g, label, 600, 60, 800); txt(g, label, done ? 40 : 0, 2, { w: 800, px, c: "#fff" }); if (done) check(g, -250 + 0 * px, 0, 60, out3(seg(u, c + 0.15, c + 0.45)), "#fff", 12); g.restore();
+    const px = fitPx(g, label, done ? 540 : 600, 60, 800); font(g, 800, px); const tw = g.measureText(label).width; txt(g, label, done ? 36 : 0, 2, { w: 800, px, c: "#fff" }); if (done) check(g, 36 - tw / 2 - 52, 2, 46, out3(seg(u, c + 0.15, c + 0.45)), "#fff", 11); g.restore();
     if (u > c) { const rk = seg(u, c, c + 0.6); ring(g, 540 + 40, cy + 20, 60 + rk * 300, 10 * (1 - rk), hexA(P.acc, 0.6 * (1 - rk))); }
     confetti(g, 540, cy, u - c - 0.05, 90, undefined, 900, sc.i * 31);
     const mk = inOut(seg(u, 0.1, c - 0.05)); const mx = lerp(900, 580, mk) + Math.sin(mk * Math.PI) * 60, my = lerp(cy + 600, cy + 20, mk); cursor(g, mx, my, 1.5, pressed > 0 && pressed < 1 ? 1 : 0);

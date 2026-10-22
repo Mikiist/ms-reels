@@ -8,7 +8,8 @@ const b = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium", a
 const p = await (await b.newContext({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 / 3 })).newPage();
 const errs = []; p.on("pageerror", (e) => errs.push(String(e))); p.on("console", (m) => { if (m.type() === "error") errs.push(m.text()); });
 await p.addInitScript((s) => { window.SPEC = s; }, spec);
-await p.goto("file://" + here + "/reel.html"); await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(300);
+await p.goto("file://" + here + "/reel.html");
+await p.evaluate(() => Promise.all([["D", [300, 600, 700, 800, 900]], ["I", [400, 500, 600, 700]]].flatMap(([f, ws]) => ws.map((w) => document.fonts.load(`${w} 40px ${f}`)))).then(() => document.fonts.ready)); await p.waitForTimeout(300);
 const ts = times.length ? times.map(Number) : [];
 if (!ts.length) { const info = await p.evaluate(() => window.INFO()); for (const s of info.scenes) { const d = s.t1 - s.t0; ts.push(+(s.t0 + 0.12).toFixed(2), +(s.t0 + d * 0.5).toFixed(2), +(s.t1 - 0.05).toFixed(2)); } }
 for (const t of ts) { await p.evaluate((t) => window.render(t), t); await p.screenshot({ path: `${outDir}/f_${String(Math.round(t * 100)).padStart(5, "0")}.jpg`, type: "jpeg", quality: 80 }); }

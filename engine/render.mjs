@@ -12,7 +12,8 @@ async function page() {
   const p = await (await b.newContext({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 })).newPage();
   p.on("pageerror", (e) => errs.push(String(e))); p.on("console", (m) => { if (m.type() === "error") errs.push(m.text()); });
   await p.addInitScript((s) => { window.SPEC = s; }, spec);
-  await p.goto("file://" + here + "/reel.html"); await p.evaluate(() => document.fonts.ready); await p.waitForTimeout(400); return p;
+  await p.goto("file://" + here + "/reel.html");
+  await p.evaluate(() => Promise.all([["D", [300, 600, 700, 800, 900]], ["I", [400, 500, 600, 700]]].flatMap(([f, ws]) => ws.map((w) => document.fonts.load(`${w} 40px ${f}`)))).then(() => document.fonts.ready)); await p.waitForTimeout(400); return p;
 }
 const p0 = await page();
 const info = await p0.evaluate(() => window.INFO()); info.id = spec.id;
@@ -27,6 +28,7 @@ await Promise.all(pages.map(async (p, k) => {
     done++; if (done % 150 === 0) console.log(`Bild ${done}/${n}, ${Math.round((Date.now() - t0) / 1000)} s`);
   }
 }));
+await p0.evaluate(() => window.renderCover()); await p0.screenshot({ path: dir + "/cover.jpg", type: "jpeg", quality: 92 });
 await b.close();
 if (errs.length) { console.error("FEHLER im Browser:\n" + errs.slice(0, 8).join("\n")); }
 const r = spawnSync("ffmpeg", ["-y", "-v", "error", "-framerate", String(FPS), "-i", `${fr}/%05d.jpg`, "-c:v", "libx264", "-preset", "slow", "-crf", "20", "-maxrate", "4500k", "-bufsize", "9000k",

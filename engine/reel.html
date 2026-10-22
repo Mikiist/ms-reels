@@ -22,6 +22,13 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
 .w { display: inline-block; margin: 0 0.12em; opacity: 0; will-change: transform, opacity, filter; }
 #flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
 #grain { position: absolute; inset: -40px; opacity: 0.07; mix-blend-mode: overlay; pointer-events: none; }
+#hooktext { position: absolute; left: 60px; right: 60px; top: 205px; display: flex; justify-content: center; pointer-events: none; z-index: 50; visibility: hidden; }
+#hooktext span { display: inline-block; font-family: "D"; font-weight: 900; font-size: 74px; line-height: 1.05; text-align: center; padding: 18px 30px 22px; border-radius: 22px; letter-spacing: -0.01em; }
+#cover { position: absolute; inset: 0; z-index: 60; visibility: hidden; display: flex; align-items: center; justify-content: center; }
+#cover .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 20%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0.55) 65%, rgba(0,0,0,0) 85%); }
+#cover h1 { position: relative; width: 900px; font-family: "D"; font-weight: 900; font-size: 128px; line-height: 0.98; text-align: center; color: #fff; letter-spacing: -0.03em; text-shadow: 0 8px 40px rgba(0,0,0,0.5); }
+#cover .brand { position: absolute; left: 0; right: 0; top: 1500px; text-align: center; font-family: "I"; font-weight: 600; font-size: 34px; letter-spacing: 12px; color: rgba(255,255,255,0.85); }
+#cover h1 em { font-style: normal; color: #fde047; }
 #vig { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse 85% 70% at 50% 48%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.28) 100%); }
 </style>
 </head>
@@ -30,9 +37,12 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
 <div id="flash"></div>
 <canvas id="grain" width="1160" height="2000"></canvas>
 <div id="vig"></div>
+<div id="hooktext"><span></span></div>
+<div id="cover"><div class="shade"></div><h1></h1><div class="brand">MIHAJLO SYSTEMS</div></div>
 <img id="logo" src="assets/ms-logo.png" style="display:none" />
 <script src="engine.js"></script>
 <script src="scenes.js"></script>
+<script src="hooks/index.js"></script>
 <script src="core.js"></script>
 </body>
 </html>

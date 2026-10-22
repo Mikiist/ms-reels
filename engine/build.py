@@ -8,7 +8,14 @@ Im Sprechtext markiert *Wort* ein Akzentwort (farbig auf dem Bildschirm), "|" er
 """
 import sys, os, re, json, subprocess, difflib
 HERE = os.path.dirname(os.path.abspath(__file__))
-DELAY = 0.35  # Stimme startet nach 0,35 s (Hook knallt zuerst)
+DELAY = 0.35  # Standard: Stimme startet nach 0,35 s (Hook knallt zuerst)
+def voice_delay(job):
+    if job.get("voice_delay") is not None: return float(job["voice_delay"])
+    f = os.path.join(HERE, "hooks", job["segments"][0]["scene"]["type"] + ".js")
+    if os.path.exists(f):
+        m = re.search(r"VOICE_DELAY:\s*([0-9.]+)", open(f, encoding="utf-8").read())
+        if m: return float(m.group(1))
+    return DELAY
 
 def sh(cmd, **kw):
     r = subprocess.run(cmd, capture_output=True, text=True, **kw)
@@ -45,10 +52,15 @@ def check_text(job):
     types = [s["scene"]["type"] for s in job["segments"]]
     if types[-1] != "cta": bad.append("Letzte Szene muss 'cta' sein")
     known = set(re.findall(r"^TYPES\.(\w+) =", open(os.path.join(HERE, "scenes.js"), encoding="utf-8").read(), re.M))
+    for hf in os.listdir(os.path.join(HERE, "hooks")):
+        if hf.endswith(".js"): known |= set(re.findall(r"^\s*TYPES\.(\w+)\s*=", open(os.path.join(HERE, "hooks", hf), encoding="utf-8").read(), re.M))
+    if not job.get("hook_text"): bad.append("hook_text fehlt (Text-Hook oben für Stummschauer)")
+    if not job.get("cover_title"): bad.append("cover_title fehlt (Titel fürs Titelbild)")
+    if not job.get("audio_name"): bad.append("audio_name fehlt (Name statt Original-Audio)")
     for t in types:
         if t not in known: bad.append(f"Unbekannter Szenentyp {t}")
     words = len(voice_text(job).split())
-    if not 45 <= words <= 110: bad.append(f"{words} Wörter (Ziel 55 bis 95, also etwa 22 bis 38 Sekunden)")
+    if not 35 <= words <= 100: bad.append(f"{words} Wörter (Ziel 40 bis 80, also etwa 17 bis 33 Sekunden)")
     for i, s in enumerate(job["segments"]):
         n = len(s["say"].split())
         if n < 3: bad.append(f"Segment {i + 1} hat nur {n} Wörter (mindestens 3, sonst ist die Szene zu kurz)")
@@ -100,6 +112,8 @@ def main():
         print(voice_text(job)); return
     bad = check_text(job)
     if bad: raise SystemExit("PROBLEME:\n- " + "\n- ".join(bad))
+    global DELAY
+    DELAY = voice_delay(job)
     wav = process_voice(d)
     sw = script_words(job); ww, vdur = whisper(wav, voice_text(job))
     T, q = align(sw, ww)
@@ -113,7 +127,7 @@ def main():
         sc = dict(s["scene"]); sc["t0"] = round(t0, 3); scenes.append(sc)
     last = max(w["e"] for w in words)
     dur = max(last + 0.9, scenes[-1]["t0"] + 3.6, vdur + DELAY + 0.6)
-    spec = {"id": job["id"], "dur": round(dur, 2), "scenes": scenes, "words": words}
+    spec = {"id": job["id"], "dur": round(dur, 2), "scenes": scenes, "words": words, "hook_text": job.get("hook_text", ""), "hook_style": job.get("hook_style"), "cover_title": job.get("cover_title", ""), "music": job.get("music", "")}
     json.dump(spec, open(os.path.join(d, "spec.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     import hashlib
     h = hashlib.sha1(json.dumps(spec, sort_keys=True).encode()); 
@@ -135,15 +149,16 @@ def main():
     out = os.path.join(d, "final.mp4")
     sh(["ffmpeg", "-y", "-v", "error", "-i", os.path.join(d, "video.mp4"), "-i", wav, "-i", os.path.join(d, "music.wav"), "-i", os.path.join(d, "sfx.wav"),
         "-filter_complex", fc, "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "128k", "-ar", "48000", "-t", str(spec["dur"]), "-movflags", "+faststart", out])
-    cover_t = max(0.5, hook_end - 0.35)
-    sh(["ffmpeg", "-y", "-v", "error", "-ss", str(cover_t), "-i", out, "-frames:v", "1", "-q:v", "3", os.path.join(d, "cover.jpg")])
+    cover_t = max(0.3, info.get("cover_t", hook_end - 0.35))
+    if not os.path.exists(os.path.join(d, "cover.jpg")):
+        sh(["ffmpeg", "-y", "-v", "error", "-ss", str(cover_t), "-i", out, "-frames:v", "1", "-q:v", "3", os.path.join(d, "cover.jpg")])
     pr = json.loads(sh(["ffprobe", "-v", "error", "-show_entries", "format=duration,bit_rate,size:stream=codec_name,width,height,r_frame_rate,sample_rate", "-of", "json", out]))
     br = int(pr["format"]["bit_rate"]); size = int(pr["format"]["size"])
     problems = []
     if br > 5_000_000: problems.append(f"Bitrate {br / 1e6:.1f} Mbit/s über 5")
     if size > 95_000_000: problems.append("Datei über 95 MB")
     post = {"id": job["id"], "date": job.get("date"), "slot": job.get("slot"), "video": job["id"] + ".mp4", "caption": job["caption"],
-            "thumb_offset": int(cover_t * 1000), "dur": spec["dur"], "topic": job.get("topic", ""), "keyword": job.get("keyword", "WEBSITE")}
+            "thumb_offset": int(cover_t * 1000), "dur": spec["dur"], "audio_name": job.get("audio_name", ""), "cover_title": job.get("cover_title", ""), "first_comment": job.get("first_comment", ""), "topic": job.get("topic", ""), "keyword": job.get("keyword", "WEBSITE")}
     json.dump(post, open(os.path.join(d, "post.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print(json.dumps({"final": out, "dur": spec["dur"], "mbit": round(br / 1e6, 2), "mb": round(size / 1e6, 1), "streams": pr["streams"], "problems": problems}, ensure_ascii=False))
     if problems: sys.exit(3)

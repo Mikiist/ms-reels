@@ -2,12 +2,17 @@
 
 Jeden Tag drei Videos aus **drei verschiedenen Säulen**. Kein Thema öfter als einmal in 14 Tagen (siehe `log/posted.jsonl`). Eigene neue Themen sind erwünscht, solange sie zu den Fakten passen. Neue gute Themen unten ergänzen.
 
-## Tagesplan
-| Slot | Uhrzeit (Berlin) | Säule |
-|---|---|---|
-| 1 | 11:30 | Wissen: Tipp, Mythos oder Fehler (Wert ohne Verkauf, wird gespeichert und geteilt) |
-| 2 | 17:00 | Problem oder Branche (Schmerz zeigen, Lösung andeuten) |
-| 3 | 20:00 | Angebot oder Vertrauen (Preis, Ablauf, Sterne, Chatbot, Bestellsystem) |
+## Tagesplan (Uhrzeiten Europe/Berlin, jeden Tag gleich, damit die Follower einen Rhythmus lernen)
+| Slot | Uhrzeit | Säule | Warum diese Zeit |
+|---|---|---|---|
+| 1 | 07:30 | Wissen: Tipp, Mythos, Fehler (wird gespeichert und geteilt) | Handwerker und Inhaber scrollen vor Arbeitsbeginn |
+| 2 | 13:30 | Angebot oder Vertrauen (Preis, Ablauf, Sterne, Chatbot, Bestellsystem) | Mittagspause, Studien sehen 12 bis 19 Uhr stark |
+| 3 | 19:30 | Problem oder Story mit dem stärksten Hook (größte Reichweite) | Feierabend, Abendfenster 18 bis 21 Uhr ist am stärksten |
+
+Nach der Testwoche die eigenen Insights prüfen (Professional Dashboard: Reichweite je Uhrzeit, Wiedergabezeit, Sends) und die Zeiten anpassen.
+
+## Hashtags (genau 5, Instagram-Grenze seit Dezember 2025)
+Mischung pro Video: 1 breiter Begriff (#webdesign, #website, #seo, #onlinemarketing, #marketingtipps), 1 Zielgruppe (#handwerker, #handwerk, #selbstständig, #kleinunternehmen, #unternehmer, Branche wie #friseur, #gastronomie, #kfzwerkstatt, #dachdecker), 1 Ort im Wechsel (#berlin, #goslar, #hannover, #braunschweig, #harz, #deutschland), 2 Themen-Tags (#googlemaps, #ki, #chatbot, #itsicherheit, #digitalisierung, #googlebewertungen …). Suchbegriffe gehören zusätzlich in den Fließtext der Caption, weil Instagram ihn für die Suche liest.
 
 ## Säule A: Wissen (Tipps, Mythen, Fehler)
 - „Herzlich willkommen“ als Überschrift kostet Kunden: besser „Malerbetrieb in Goslar“ (Was + Wo).
