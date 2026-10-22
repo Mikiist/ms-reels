@@ -1,0 +1,6 @@
+work/
+site/
+test/
+frames/
+__pycache__/
+*.pyc
