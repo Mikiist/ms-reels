@@ -248,7 +248,7 @@ video("2026-10-30", 2, "Bestellsystem für Restaurants", "Der *Geheimtipp* für 
       ("Der Geheimtipp für Restaurants: Bestellungen ohne *Provision*.", {"type": "h_vault", "params": {"label": "GEHEIMTIPP"}}),
       ("Ihre Gäste bestellen direkt über Ihre eigene Seite, per QR-Code am *Tisch*.", {"type": "phone_notifs", "params": {"items": [["Neue Bestellung", "Tisch 4"], ["Neue Bestellung", "Abholung 18:30"], ["Neue Bestellung", "Tisch 7"]], "count": 6}}),
       ("Website, iPad und Tischaufsteller sind *dabei*.", {"type": "checklist", "params": {"items": ["Eigene Website", "iPad 11 Zoll", "Tischaufsteller mit QR", "Keine Provision"], "stamp": "Komplett"}}),
-      ("499 Euro Einrichtung, dann 149 Euro im *Monat*.", {"type": "big_number", "params": {"value": 149, "suffix": " €", "label": "im Monat, plus 499 € Einrichtung"}}),
+      ("499 Euro Einrichtung, dann 149 Euro im *Monat*.", {"type": "big_number", "params": {"value": 149, "suffix": " €", "label": "im Monat", "pre": {"value": 499, "suffix": " €", "label": "Einrichtung, einmalig"}}}),
       ], C("Der Geheimtipp für Restaurants: Bestellungen ohne Provision. 🍕",
            "Mit dem Bestellsystem von Mihajlo Systems bestellen Ihre Gäste direkt über Ihre eigene Seite, am Tisch per QR-Code oder zum Abholen. Ohne Provision an Lieferportale. Website, iPad 11 Zoll und Tischaufsteller sind dabei.",
            "499 € Einrichtung, dann 149 € im Monat, 24 Monate Laufzeit. Auch für Friseure mit Terminbuchung."),

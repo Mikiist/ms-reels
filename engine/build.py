@@ -127,7 +127,7 @@ def main():
         sc = dict(s["scene"]); sc["t0"] = round(t0, 3); scenes.append(sc)
     last = max(w["e"] for w in words)
     dur = max(last + 0.9, scenes[-1]["t0"] + 3.6, vdur + DELAY + 0.6)
-    spec = {"id": job["id"], "dur": round(dur, 2), "scenes": scenes, "words": words, "hook_text": job.get("hook_text", ""), "hook_style": job.get("hook_style"), "cover_title": job.get("cover_title", ""), "music": job.get("music", "")}
+    spec = {"id": job["id"], "dur": round(dur, 2), "scenes": scenes, "words": words, "hook_text": job.get("hook_text", ""), "hook_style": job.get("hook_style"), "cover_title": job.get("cover_title", ""), "music": job.get("music", ""), "look": job.get("look", "clean")}
     json.dump(spec, open(os.path.join(d, "spec.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     import hashlib
     h = hashlib.sha1(json.dumps(spec, sort_keys=True).encode()); 

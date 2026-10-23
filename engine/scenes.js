@@ -75,7 +75,7 @@ TYPES.alarm = {
       const title = p.title || "ACHTUNG"; const px = fitPx(g, title, 960, 150, 900);
       g.save(); g.globalAlpha = tk; g.translate(0, (1 - tk) * 60);
       if (glitch) { txt(g, title, 540 - 8, cy + 230, { w: 900, px, c: "rgba(0,255,255,0.7)" }); txt(g, title, 540 + 8, cy + 230, { w: 900, px, c: "rgba(255,0,80,0.7)" }); }
-      txt(g, title, 540, cy + 230, { w: 900, px, c: "#ffffff" });
+      txt(g, title, 540, cy + 230, { w: 900, px, c: P.fg });
       if (p.sub) txt(g, p.sub, 540, cy + 340, { w: 600, px: 46, fam: "I", c: P.sub });
       g.restore();
     }
@@ -87,8 +87,15 @@ TYPES.alarm = {
 // ===== 3. Große Zahl mit Ring =====
 TYPES.big_number = {
   zone: "top", pal: "navy", bgv: 2,
+  prep(o, p) { // Zähler startet, wenn die Zahl gesprochen wird; p.pre = {value, label, prefix, suffix} steht davor im Bild
+    const ws = (SPEC.words || []).filter((w) => w.scene === o.i); const want = String(p.value || "").replace(/[^0-9]/g, "");
+    const hit = want && ws.find((w) => w.w.replace(/[^0-9]/g, "") === want); p._start = hit && p.pre ? Math.max(0.15, hit.t - o.t0 - 0.3) : 0.15;
+  },
   draw(g, u, d, p, sc, P) {
-    background(g, P, u, sc); const cy = sc.gc; const D = Math.min(1.6, d * 0.6); const k = outExpo(seg(u, 0.15, 0.15 + D));
+    background(g, P, u, sc); const cy = sc.gc; const st = p._start != null ? p._start : 0.15; const D = Math.min(1.6, (d - st) * 0.6); const k = outExpo(seg(u, st, st + D));
+    if (p.pre && u < st) { const pk = outBack(seg(u, 0, 0.3), 2); const q = p.pre; const ps = (q.prefix || "") + q.value + (q.suffix != null ? q.suffix : p.suffix || "");
+      ring(g, 540, cy, 360, 34, hexA(P.fg, 0.12)); g.save(); g.translate(540, cy); g.scale(pk, pk); const px = fitPx(g, ps, 600, 240, 900); txt(g, ps, 0, -10, { w: 900, px, c: P.fg });
+      if (q.label) { const lp = fitPx(g, q.label, 560, 44, 600, "I"); txt(g, q.label, 0, 130, { w: 600, px: lp, fam: "I", c: P.sub }); } g.restore(); return; }
     const v = (p.value || 0) * k; const dec = p.decimals || 0; let s = v.toFixed(dec).replace(".", ","); s = (p.prefix || "") + s + (p.suffix || "");
     ring(g, 540, cy, 360, 34, hexA(P.fg, 0.12)); g.lineCap = "round"; ring(g, 540, cy, 360, 34, P.acc, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * k * (p.ring == null ? 1 : p.ring)); g.lineCap = "butt";
     const px = fitPx(g, s, 600, 240, 900); txt(g, s, 540, cy - 10, { w: 900, px, c: P.fg });
@@ -96,7 +103,8 @@ TYPES.big_number = {
     if (k > 0.98) sparkles(g, 540, cy, u, 16, 470, P.acc2, sc.i);
     if (p.source) txt(g, "Quelle: " + p.source, 540, cy + 470, { w: 500, px: 26, fam: "I", c: P.sub });
   },
-  ev(d) { const D = Math.min(1.6, d * 0.6); const E = []; for (let i = 0; i < 14; i++) E.push([0.15 + D * (1 - Math.pow(1 - i / 14, 2.5)) * 0.85, "tick", 0.16]); E.push([0.15 + D * 0.8, "ding", 0.4]); return E; },
+  ev(d, p) { const st = p && p._start != null ? p._start : 0.15; const D = Math.min(1.6, (d - st) * 0.6); const E = []; if (p && p.pre) E.push([0.05, "pop", 0.4]);
+    for (let i = 0; i < 14; i++) E.push([st + D * (1 - Math.pow(1 - i / 14, 2.5)) * 0.85, "tick", 0.16]); E.push([st + D * 0.8, "ding", 0.4]); return E; },
 };
 
 // ===== 4. Handy, Benachrichtigungen prasseln rein =====
@@ -150,7 +158,7 @@ TYPES.google_search = {
       g.save(); shadow(g, 50 * glow + 20, 12, hexA(P.acc, 0.45)); fillRR(g, x - 10 * glow, ry - 6 * glow, w + 20 * glow, 160 + 12 * glow, 28, "#fff"); noShadow(g);
       g.strokeStyle = P.acc; g.lineWidth = 6; rr(g, x - 10 * glow, ry - 6 * glow, w + 20 * glow, 160 + 12 * glow, 28); g.stroke();
       txt(g, p.result || "Ihre Firma", x + 40, ry + 58, { w: 700, px: 36, fam: "I", c: "#1a0dab", al: "left" }); txt(g, p.url || "ihre-firma.de", x + 40, ry + 110, { w: 500, px: 26, fam: "I", c: "#16a34a", al: "left" }); g.restore();
-      const bk = outBack(seg(u, tb, tb + 0.25), 2.5); if (bk > 0) { g.save(); g.translate(x + w - 120, ry + 6); g.rotate(-0.12); g.scale(bk, bk); fillRR(g, -110, -40, 220, 80, 40, P.acc); txt(g, p.badge || "Ganz oben", 0, 2, { w: 800, px: 32, c: "#fff" }); g.restore(); }
+      const bk = outBack(seg(u, tb, tb + 0.25), 2.5); if (bk > 0) { g.save(); g.translate(x + w - 120, ry + 6); g.rotate(-0.12); g.scale(bk, bk); fillRR(g, -110, -40, 220, 80, 40, P.acc); txt(g, p.badge || "Ganz oben", 0, 2, { w: 800, px: 32, c: inkOn(P.acc) }); g.restore(); }
     }
     g.restore();
   },
@@ -176,7 +184,7 @@ TYPES.map_pin = {
     if (drop > 0) { g.save(); g.translate(540, py); shadow(g, 30, 14, "rgba(0,0,0,0.3)"); g.fillStyle = "#ef4444"; g.beginPath(); g.arc(0, -80, 64, Math.PI * 0.85, Math.PI * 2.15); g.lineTo(0, 40); g.closePath(); g.fill(); noShadow(g); circle(g, 0, -82, 26, "#fff"); g.restore(); }
     const lk = outBack(seg(u, 0.9, 1.2), 2); if (lk > 0) { g.save(); g.translate(540, cy - 300); g.scale(lk, lk); shadow(g, 40, 14, "rgba(0,0,0,0.2)"); fillRR(g, -300, -70, 600, 140, 30, "#fff"); noShadow(g);
       txt(g, p.title || "Ihre Firma", -260, -22, { w: 800, px: 40, c: "#0b1220", al: "left" }); txt(g, p.place || FACTS.ort, -260, 30, { w: 500, px: 28, fam: "I", c: "#5b6474", al: "left" });
-      fillRR(g, 150, -34, 120, 68, 34, P.acc); txt(g, p.cta || "Route", 210, 2, { w: 700, px: 26, fam: "I", c: "#fff" }); g.restore(); }
+      fillRR(g, 150, -34, 120, 68, 34, P.acc); txt(g, p.cta || "Route", 210, 2, { w: 700, px: 26, fam: "I", c: inkOn(P.acc) }); g.restore(); }
   },
   ev() { return [[0.25, "whoosh_down", 0.4], [0.62, "thump", 0.7], [0.8, "ping", 0.25], [0.9, "pop", 0.35], [1.5, "ping", 0.2]]; },
 };
@@ -225,7 +233,7 @@ TYPES.speed = {
     background(g, P, u, sc); const cy = sc.gc + 60;
     g.save(); g.globalAlpha = 0.35; g.strokeStyle = "#fff"; g.lineCap = "round"; for (let i = 0; i < 26; i++) { const yy = R(i * 3 + 1) * H, len = 120 + R(i) * 380, sp = 1600 + R(i + 9) * 1800; const xx = ((R(i * 5) * W * 2 - u * sp) % (W + 600) + W + 600) % (W + 600) - 300; g.lineWidth = 3 + R(i) * 6; g.beginPath(); g.moveTo(xx, yy); g.lineTo(xx + len, yy); g.stroke(); } g.restore();
     const r = 360, k = inOut(seg(u, 0.2, Math.min(d - 0.4, 1.3))); const score = p.score || 97;
-    g.lineCap = "round"; ring(g, 540, cy, r, 46, "rgba(255,255,255,0.18)", Math.PI, Math.PI * 2);
+    g.lineCap = "round"; ring(g, 540, cy, r, 46, hexA(P.fg, 0.18), Math.PI, Math.PI * 2);
     const cols = ["#ef4444", "#f59e0b", "#22c55e"]; const ang = Math.PI + Math.PI * (score / 100) * k;
     const gr = g.createLinearGradient(180, 0, 900, 0); gr.addColorStop(0, cols[0]); gr.addColorStop(0.5, cols[1]); gr.addColorStop(1, cols[2]); ring(g, 540, cy, r, 46, gr, Math.PI, ang); g.lineCap = "butt";
     g.save(); g.translate(540, cy); g.rotate(ang); fillRR(g, -10, -10, r - 40, 20, 10, "#fff"); g.restore(); circle(g, 540, cy, 34, "#fff");
@@ -246,17 +254,17 @@ TYPES.chat = {
     for (let i = 0; i < 60; i++) { const tw = 0.4 + 0.6 * Math.abs(Math.sin(u * (1 + R(i)) * 2 + i)); circle(g, R(i * 3) * W, R(i * 7) * H * 0.55, 1 + R(i * 11) * 2.5, `rgba(255,255,255,${0.6 * tw})`); }
     const mg = g.createRadialGradient(860, 260, 0, 860, 260, 260); mg.addColorStop(0, "rgba(255,240,200,0.35)"); mg.addColorStop(1, "rgba(255,240,200,0)"); g.fillStyle = mg; g.fillRect(500, 0, 580, 600);
     circle(g, 860, 260, 90, "#fef3c7"); circle(g, 900, 230, 86, P.bg[0]);
-    txt(g, p.clock || "23:47", 200, 250, { w: 300, px: 90, c: "rgba(255,255,255,0.85)" });
+    txt(g, p.clock || "23:47", 200, 250, { w: 300, px: 90, c: hexA(P.fg, 0.85) });
     const x = 110, w = 860, y = cy - 430, h = 900; const intro = out3(seg(u, 0, 0.35));
     g.save(); g.translate(0, (1 - intro) * 200); g.globalAlpha = intro; shadow(g, 60, 20, "rgba(0,0,0,0.5)"); fillRR(g, x, y, w, h, 40, "#111827"); noShadow(g);
-    fillRR(g, x, y, w, 110, [40, 40, 0, 0], "#1f2937"); circle(g, x + 70, y + 55, 30, P.acc); txt(g, "KI", x + 70, y + 57, { w: 800, px: 24, c: "#fff" });
+    fillRR(g, x, y, w, 110, [40, 40, 0, 0], "#1f2937"); circle(g, x + 70, y + 55, 30, P.acc); txt(g, "KI", x + 70, y + 57, { w: 800, px: 24, c: inkOn(P.acc) });
     txt(g, p.botname || "Website-Assistent", x + 120, y + 42, { w: 700, px: 28, fam: "I", c: "#fff", al: "left" }); txt(g, "online", x + 120, y + 76, { w: 500, px: 22, fam: "I", c: "#4ade80", al: "left" });
     const m = this.msgs(p), ts = this.times(d, p); let yy = y + 150;
     for (let i = 0; i < m.length; i++) { if (u < ts[i] - (m[i][0] === "bot" ? 0.35 : 0)) break; const me = m[i][0] !== "bot";
       font(g, 500, 30, "I"); const lines = wrapLines(g, m[i][1], 520); const bh = 34 + lines.length * 40, bw = Math.min(600, Math.max(...lines.map((l) => g.measureText(l).width)) + 56);
       const bx = me ? x + w - 30 - bw : x + 30; const k = outBack(seg(u, ts[i], ts[i] + 0.22), 2);
       if (!me && u < ts[i]) { fillRR(g, bx, yy, 120, 64, 32, "#374151"); for (let j = 0; j < 3; j++) circle(g, bx + 34 + j * 26, yy + 32, 8, `rgba(255,255,255,${0.4 + 0.6 * Math.abs(Math.sin(u * 8 + j))})`); }
-      else { g.save(); g.translate(bx + (me ? bw : 0), yy); g.scale(k, k); fillRR(g, me ? -bw : 0, 0, bw, bh, 30, me ? P.acc : "#374151"); lines.forEach((l, j) => txt(g, l, (me ? -bw : 0) + 28, 38 + j * 40, { w: 500, px: 30, fam: "I", c: "#fff", al: "left" })); g.restore(); }
+      else { g.save(); g.translate(bx + (me ? bw : 0), yy); g.scale(k, k); fillRR(g, me ? -bw : 0, 0, bw, bh, 30, me ? P.acc : "#374151"); lines.forEach((l, j) => txt(g, l, (me ? -bw : 0) + 28, 38 + j * 40, { w: 500, px: 30, fam: "I", c: me ? inkOn(P.acc) : "#fff", al: "left" })); g.restore(); }
       yy += bh + 24; }
     g.restore();
   },
@@ -271,10 +279,10 @@ TYPES.checklist = {
     background(g, P, u, sc); const { it, ts } = this.times(d, p); const cy = sc.gc; const rowH = 150, h = it.length * rowH + 120, y = cy - h / 2, x = 120, w = 840;
     const intro = out3(seg(u, 0, 0.35)); g.save(); g.translate(0, (1 - intro) * 200); g.globalAlpha = intro;
     shadow(g, 50, 20, "rgba(60,40,10,0.18)"); fillRR(g, x, y, w, h, 40, "#fffdf8"); noShadow(g);
-    if (p.title) txt(g, p.title, x + 60, y + 40, { w: 700, px: 30, fam: "I", c: P.sub, al: "left", ls: 2 });
+    if (p.title) txt(g, p.title, x + 60, y + 40, { w: 700, px: 30, fam: "I", c: "#7c6f5f", al: "left", ls: 2 });
     it.forEach((s, i) => { const ry = y + 90 + i * rowH; const k = seg(u, ts[i], ts[i] + 0.3);
-      fillRR(g, x + 60, ry, 80, 80, 22, k > 0 ? P.acc : "#efe7d8"); if (k > 0) check(g, x + 100, ry + 42, 50, out3(k), "#fff", 12);
-      const px = fitPx(g, s, w - 260, 52, 700); txt(g, s, x + 180, ry + 42, { w: 700, px, c: k > 0 ? P.fg : hexA(P.fg, 0.35), al: "left" }); });
+      fillRR(g, x + 60, ry, 80, 80, 22, k > 0 ? P.acc : "#efe7d8"); if (k > 0) check(g, x + 100, ry + 42, 50, out3(k), inkOn(P.acc), 12);
+      const px = fitPx(g, s, w - 260, 52, 700); txt(g, s, x + 180, ry + 42, { w: 700, px, c: k > 0 ? "#1c1917" : "rgba(28,25,23,0.35)", al: "left" }); });
     g.restore();
     if (p.stamp) { const t = ts[ts.length - 1] + 0.45; const sk = outExpo(seg(u, t, t + 0.18)); if (sk > 0) { g.save(); g.translate(760, y + h - 40); g.rotate(-0.18); g.scale(lerp(2.2, 1, sk), lerp(2.2, 1, sk)); g.globalAlpha = cl(sk * 3);
       g.strokeStyle = "#16a34a"; g.lineWidth = 10; rr(g, -190, -60, 380, 120, 20); g.stroke(); txt(g, p.stamp.toUpperCase(), 0, 4, { w: 900, px: 52, c: "#16a34a", ls: 4 }); g.restore(); } }
@@ -289,35 +297,48 @@ TYPES.cross_list = {
   draw(g, u, d, p, sc, P) {
     background(g, P, u, sc); const { it, ts } = this.times(d, p); const cy = sc.gc; const rowH = 170, y0 = cy - (it.length * rowH) / 2;
     it.forEach((s, i) => { const ry = y0 + i * rowH + rowH / 2; const a = out3(seg(u, ts[i] - 0.25, ts[i])); const k = seg(u, ts[i], ts[i] + 0.25);
-      g.save(); g.globalAlpha = a; g.translate((1 - a) * -80, 0); const px = fitPx(g, s, 720, 70, 800); txt(g, s, 230, ry, { w: 800, px, c: k > 0 ? "rgba(255,255,255,0.45)" : "#fff", al: "left" });
+      g.save(); g.globalAlpha = a; g.translate((1 - a) * -80, 0); const px = fitPx(g, s, 720, 70, 800); txt(g, s, 230, ry, { w: 800, px, c: k > 0 ? hexA(P.fg, 0.45) : P.fg, al: "left" });
       if (k > 0) { font(g, 800, px); const tw = g.measureText(s).width; g.strokeStyle = P.acc; g.lineWidth = 12; g.lineCap = "round"; g.beginPath(); g.moveTo(220, ry + 4); g.lineTo(220 + (tw + 20) * out3(k), ry - 4); g.stroke();
-        g.save(); g.translate(140, ry); const xk = outBack(k, 3); g.scale(xk, xk); circle(g, 0, 0, 48, P.acc); cross(g, 0, 0, 18, 1, "#fff", 10); g.restore(); }
+        g.save(); g.translate(140, ry); const xk = outBack(k, 3); g.scale(xk, xk); circle(g, 0, 0, 48, P.acc); cross(g, 0, 0, 18, 1, inkOn(P.acc), 10); g.restore(); }
       g.restore(); });
   },
   ev(d, p) { const { ts } = this.times(d, p); return ts.map((t, i) => [t, "slap", 0.55, -0.3 + i * 0.15]); },
 };
 
-// ===== 12. Preis: Monatspreis, dann Festpreis + gespart =====
+// ===== 12. Preis: Karte zeigt den Preis, der gerade gesprochen wird (Reihenfolge und Dreh-Zeitpunkt aus den Wortzeiten) =====
 TYPES.price = {
   zone: "top", pal: "electric", bgv: 3,
   pk(p) { return FACTS.pakete[p.paket || "landingpage"] || FACTS.pakete.landingpage; },
-  times(d) { return { roll: 0.2, flip: Math.max(1.0, d * 0.5), stick: Math.max(1.0, d * 0.5) + 0.55 }; },
+  prep(o, p) { // erster genannter Preis vorne, Drehung kurz bevor der zweite gesprochen wird
+    const pk = this.pk(p); const num = (w) => w.replace(/[^0-9]/g, "");
+    const ws = (SPEC.words || []).filter((w) => w.scene === o.i); let first = null, second = null;
+    for (const w of ws) { const n = num(w.w); const k = n === String(pk.fest) ? "fest" : n === String(pk.monat) ? "monat" : null; if (!k) continue; if (!first) first = { k, t: w.t - o.t0 }; else if (k !== first.k) { second = { k, t: w.t - o.t0 }; break; } }
+    p._first = p.only || (first ? first.k : "monat"); p._flip = second ? Math.max(0.6, second.t - 0.35) : null;
+  },
+  times(d, p) { const flip = p && p._flip != null ? p._flip : Math.max(1.0, d * 0.5); return { roll: 0.2, flip, stick: flip + 0.55 }; },
+  side(g, kind, pk, P) {
+    if (kind === "monat") { txt(g, "ab", -200, -150, { w: 600, px: 44, fam: "I", c: "#5b6474" }); txt(g, pk.monat + " €", 0, -40, { w: 900, px: 200, c: "#0b1220" });
+      txt(g, "im Monat", 0, 110, { w: 600, px: 44, fam: "I", c: "#5b6474" }); txt(g, "12 Monate Mindestlaufzeit", 0, 280, { w: 500, px: 28, fam: "I", c: "#8b93a3" }); }
+    else { txt(g, "einmalig", 0, -160, { w: 600, px: 44, fam: "I", c: "#5b6474" }); txt(g, pk.fest.toLocaleString("de-DE") + " €", 0, -30, { w: 900, px: 170, c: cardInk(P) }); txt(g, "Festpreis", 0, 110, { w: 700, px: 48, fam: "I", c: "#0b1220" }); }
+  },
   draw(g, u, d, p, sc, P) {
-    background(g, P, u, sc); const cy = sc.gc; const pk = this.pk(p); const { roll, flip, stick } = this.times(d); const only = p.only; // "monat" | "fest"
-    const fk = only ? (only === "fest" ? 1 : 0) : inOut(seg(u, flip, flip + 0.45)); const sx = Math.abs(Math.cos(fk * Math.PI)); const back = fk > 0.5;
+    background(g, P, u, sc); const cy = sc.gc; const pk = this.pk(p); const { roll, flip, stick } = this.times(d, p); const only = p.only;
+    const first = p._first || "monat", second = first === "monat" ? "fest" : "monat";
+    const fk = only ? 0 : inOut(seg(u, flip, flip + 0.45)); const sx = Math.abs(Math.cos(fk * Math.PI)); const back = fk > 0.5;
     const intro = outBack(seg(u, 0, 0.35), 1.5);
     g.save(); g.translate(540, cy); g.scale(sx * intro, intro); shadow(g, 70, 30, "rgba(0,0,30,0.35)"); fillRR(g, -380, -400, 760, 800, 50, "#fff"); noShadow(g);
     txt(g, pk.name.toUpperCase(), 0, -300, { w: 700, px: 32, fam: "I", c: "#5b6474", ls: 6 });
-    if (!back) { const k = outExpo(seg(u, roll, roll + 0.9)); const v = Math.round(pk.monat * k); txt(g, "ab", -200, -150, { w: 600, px: 44, fam: "I", c: "#5b6474" }); txt(g, v + " €", 0, -40, { w: 900, px: 200, c: "#0b1220" });
-      txt(g, "im Monat", 0, 110, { w: 600, px: 44, fam: "I", c: "#5b6474" }); txt(g, "12 Monate Mindestlaufzeit", 0, 280, { w: 500, px: 28, fam: "I", c: "#8b93a3" }); }
-    else { txt(g, "oder einmalig", 0, -160, { w: 600, px: 44, fam: "I", c: "#5b6474" }); txt(g, pk.fest.toLocaleString("de-DE") + " €", 0, -30, { w: 900, px: 170, c: P.bg[1] }); txt(g, "Festpreis", 0, 110, { w: 700, px: 48, fam: "I", c: "#0b1220" });
-      txt(g, "Hosting, SSL und Wartung bei Miete inklusive", 0, 280, { w: 500, px: 24, fam: "I", c: "#8b93a3" }); }
+    const kind = back ? second : first; const k = outExpo(seg(u, roll, roll + 0.9));
+    if (!back) { // Zähler rollt beim ersten Preis hoch
+      const shown = { ...pk, monat: Math.round(pk.monat * k), fest: Math.round(pk.fest * k) }; this.side(g, kind, shown, P);
+    } else this.side(g, kind, pk, P);
+    txt(g, kind === "monat" ? "Hosting, SSL und Wartung inklusive" : "", 0, 340, { w: 500, px: 24, fam: "I", c: "#8b93a3" });
     g.restore();
     if (!only) { const save = pk.monat * 12 - pk.fest; const sk = outBack(seg(u, stick, stick + 0.25), 2.6); if (sk > 0 && save > 0) { g.save(); g.translate(800, cy - 380); g.rotate(0.18); g.scale(sk, sk); shadow(g, 30, 10, "rgba(0,0,0,0.3)"); circle(g, 0, 0, 120, "#facc15"); noShadow(g);
       txt(g, save + " €", 0, -18, { w: 900, px: 58, c: "#0b1220" }); txt(g, "gespart", 0, 36, { w: 700, px: 32, fam: "I", c: "#0b1220" }); g.restore(); }
       confetti(g, 540, cy - 200, u - stick, 80, undefined, 800, sc.i * 17); }
   },
-  ev(d, p) { const { roll, flip, stick } = this.times(d); const E = []; for (let i = 0; i < 12; i++) E.push([roll + 0.9 * (1 - Math.pow(1 - i / 12, 3)), "tick", 0.2]); E.push([roll + 0.85, "cash", 0.5]);
+  ev(d, p) { const { roll, flip, stick } = this.times(d, p); const E = []; for (let i = 0; i < 12; i++) E.push([roll + 0.9 * (1 - Math.pow(1 - i / 12, 3)), "tick", 0.2]); E.push([roll + 0.85, "cash", 0.5]);
     if (!p.only) { E.push([flip, "whoosh_side", 0.5]); E.push([stick, "slap", 0.6]); E.push([stick + 0.02, "cash", 0.5]); } return E; },
 };
 
@@ -346,9 +367,9 @@ TYPES.logo = {
     shock(g, 540, cy, seg(u, 0.12, 1.2), "rgba(96,165,250,A)", 1000, 3);
     for (let i = 0; i < 40; i++) { const a = rnd(i + sc.i) * 7, v = 300 + rnd(i * 3) * 900, kk = out3(seg(u, 0.12, 1.4)); circle(g, 540 + Math.cos(a) * v * kk, cy + Math.sin(a) * v * kk, 3 + rnd(i) * 5, `rgba(255,255,255,${0.8 * (1 - kk)})`); }
     if (k > 0) { g.save(); g.translate(540, cy - 60); g.scale(k, k); shadow(g, 80, 0, "rgba(59,130,246,0.7)"); g.drawImage(logoImg(), -170, -170, 340, 340); noShadow(g); g.restore(); }
-    const tk = out3(seg(u, 0.4, 0.9)); if (tk > 0) { g.save(); g.globalAlpha = tk; txt(g, "MIHAJLO SYSTEMS", 540, cy + 200, { w: 300, px: 78, c: "#fff", ls: lerp(40, 14, tk) });
+    const tk = out3(seg(u, 0.4, 0.9)); if (tk > 0) { g.save(); g.globalAlpha = tk; txt(g, "MIHAJLO SYSTEMS", 540, cy + 200, { w: 300, px: 78, c: P.fg, ls: lerp(40, 14, tk) });
       if (p.tagline) txt(g, p.tagline, 540, cy + 290, { w: 500, px: 34, fam: "I", c: P.sub, ls: 3 }); g.restore(); }
-    sparkles(g, 540, cy - 60, u, 14, 300, "#fff", 9);
+    sparkles(g, 540, cy - 60, u, 14, 300, P.dark ? "#fff" : P.acc, 9);
   },
   ev() { return [[0.0, "riser_short", 0.4], [0.12, "boom", 1.0], [0.14, "shimmer", 0.35], [0.5, "shimmer_hi", 0.25]]; },
   drop: true,
@@ -359,6 +380,7 @@ TYPES.cta = {
   zone: "top", pal: "violet", bgv: 0,
   times(d, p) { const kw = (p.keyword || "WEBSITE").toUpperCase(); const t0 = 0.35, t1 = t0 + Math.min(0.9, kw.length * 0.09); return { kw, t0, t1, send: t1 + 0.25 }; },
   draw(g, u, d, p, sc, P) {
+    if (LOOK.cta === "giant") return this.giant(g, u, d, p, sc, P);
     background(g, P, u, sc); const cy = sc.gc - 80; const { kw, t0, t1, send } = this.times(d, p);
     const intro = out3(seg(u, 0, 0.35)); g.save(); g.translate(0, (1 - intro) * 200); g.globalAlpha = intro;
     // Kommentarfeld
@@ -377,10 +399,29 @@ TYPES.cta = {
       for (let i = 0; i < 8; i++) { const hk2 = seg(u, send + 0.45 + i * 0.07, send + 1.6 + i * 0.07); if (hk2 <= 0 || hk2 >= 1) continue; g.globalAlpha = 1 - hk2; heart(g, 850 + Math.sin(hk2 * 6 + i) * 40 - i * 8, by - hk2 * 500, 18 + (i % 3) * 6, ["#ef4444", "#f472b6", "#fb7185"][i % 3]); g.globalAlpha = 1; } }
     g.restore();
     const pk = outBack(seg(u, send + 0.5, send + 0.8), 1.8); if (pk > 0) { const bob = Math.sin(u * 5) * 6; g.save(); g.translate(540, cy + 300 + bob); g.scale(pk, pk);
-      const label = p.button || "Kostenloses Erstgespräch"; const px = fitPx(g, label, 760, 46, 800); shadow(g, 40, 14, hexA(P.acc, 0.6)); fillRR(g, -420, -62, 840, 124, 62, P.acc); noShadow(g); txt(g, label, 0, 2, { w: 800, px, c: "#fff" }); g.restore(); }
-    const lk = out3(seg(u, send + 0.8, send + 1.2)); if (lk > 0) { g.save(); g.globalAlpha = lk; g.drawImage(logoImg(), 540 - 260, cy + 470, 80, 80); txt(g, FACTS.url, 540 - 160, cy + 512, { w: 700, px: 36, fam: "I", c: "#fff", al: "left" }); g.restore(); }
+      const label = p.button || "Kostenloses Erstgespräch"; const px = fitPx(g, label, 760, 46, 800); shadow(g, 40, 14, hexA(P.acc, 0.6)); fillRR(g, -420, -62, 840, 124, 62, P.acc); noShadow(g); txt(g, label, 0, 2, { w: 800, px, c: inkOn(P.acc) }); g.restore(); }
+    const lk = out3(seg(u, send + 0.8, send + 1.2)); if (lk > 0) { g.save(); g.globalAlpha = lk; g.drawImage(logoImg(), 540 - 260, cy + 470, 80, 80); txt(g, FACTS.url, 540 - 160, cy + 512, { w: 700, px: 36, fam: "I", c: P.fg, al: "left" }); g.restore(); }
   },
-  ev(d, p) { const { kw, t0, t1, send } = this.times(d, p); const E = [[0, "whoosh_up", 0.4]]; for (let i = 0; i < kw.length; i++) E.push([t0 + (t1 - t0) * i / kw.length, "key", 0.32, 0.1]);
+  giant(g, u, d, p, sc, P) { // Variante: Stichwort riesig, Buchstabe für Buchstabe, Markerbalken, Pfeil zu den Kommentaren
+    background(g, P, u, sc); const cy = sc.gc - 150; const { kw, t0, t1, send } = this.times(d, p);
+    const px = fitPx(g, kw, 920, 300, 900); font(g, 900, px); const tw = g.measureText(kw).width; const x0 = 540 - tw / 2;
+    const bar = out3(seg(u, t0 - 0.1, t1 + 0.1)); const bh = px * 0.92; const ink = inkOn(P.acc);
+    g.save(); g.translate(540, cy); g.rotate(-0.035); g.translate(-540, -cy);
+    g.fillStyle = P.acc; g.fillRect(x0 - 34, cy - bh / 2 - 6, (tw + 68) * bar, bh + 12);
+    for (let i = 0; i < kw.length; i++) { const ti = t0 + (t1 - t0) * i / kw.length; const k = seg(u, ti, ti + 0.14); if (k <= 0) continue;
+      const pre = g.measureText(kw.slice(0, i)).width, cw = g.measureText(kw[i]).width; const e = outExpo(k);
+      g.save(); g.translate(x0 + pre + cw / 2, cy + (1 - e) * -60); g.scale(lerp(2.2, 1, e), lerp(2.2, 1, e)); g.globalAlpha = cl(k * 4);
+      txt(g, kw[i], 0, px * 0.04, { w: 900, px, c: (x0 + pre + cw / 2 - x0 + 34) <= (tw + 68) * bar ? ink : P.fg }); g.restore(); }
+    g.restore();
+    const lk = out3(seg(u, send - 0.1, send + 0.3)); if (lk > 0) { g.save(); g.globalAlpha = lk; g.translate(0, (1 - lk) * 40);
+      txt(g, "in die Kommentare", 540, cy + bh / 2 + 90, { w: 800, px: 58, c: P.fg });
+      const bob = Math.sin(u * 7) * 18; g.translate(540, cy + bh / 2 + 210 + bob); g.fillStyle = P.acc; g.beginPath(); g.moveTo(-60, -30); g.lineTo(60, -30); g.lineTo(0, 45); g.closePath(); g.fill(); g.restore(); }
+    const pk = outBack(seg(u, send + 0.5, send + 0.8), 1.8); if (pk > 0) { g.save(); g.translate(540, cy + bh / 2 + 400); g.scale(pk, pk);
+      const label = p.button || "Kostenloses Erstgespräch"; const bpx = fitPx(g, label, 760, 46, 800); fillRR(g, -420, -62, 840, 124, LOOK.cs === "box" ? 0 : 62, P.fg); txt(g, label, 0, 2, { w: 800, px: bpx, c: P.dark ? "#0a0a0a" : "#ffffff" }); g.restore(); }
+    const ok = out3(seg(u, send + 0.8, send + 1.2)); if (ok > 0) { g.save(); g.globalAlpha = ok; g.drawImage(logoImg(), 540 - 260, cy + bh / 2 + 520, 80, 80); txt(g, FACTS.url, 540 - 160, cy + bh / 2 + 562, { w: 700, px: 36, fam: "I", c: P.fg, al: "left" }); g.restore(); }
+  },
+  ev(d, p) { const { kw, t0, t1, send } = this.times(d, p); const E = [[0, "whoosh_up", 0.4]];
+    if (LOOK.cta === "giant") { for (let i = 0; i < kw.length; i++) E.push([t0 + (t1 - t0) * i / kw.length, i === kw.length - 1 ? "thump" : "key", i === kw.length - 1 ? 0.6 : 0.4, 0.1]); E.push([send, "whoosh_up", 0.4]); E.push([send + 0.5, "pop", 0.4]); E.push([send + 0.55, "chime", 0.25]); return E; } for (let i = 0; i < kw.length; i++) E.push([t0 + (t1 - t0) * i / kw.length, "key", 0.32, 0.1]);
     E.push([send - 0.05, "click", 0.7]); E.push([send, "whoosh_up", 0.45]); E.push([send + 0.42, "pop", 0.4]); E.push([send + 0.5, "chime", 0.25]); E.push([send + 0.55, "pop", 0.35]); return E; },
 };
 function heart(g, x, y, s, c) { g.fillStyle = c; g.beginPath(); g.moveTo(x, y + s * 0.9); g.bezierCurveTo(x - s * 1.6, y - s * 0.1, x - s * 0.8, y - s * 1.3, x, y - s * 0.45); g.bezierCurveTo(x + s * 0.8, y - s * 1.3, x + s * 1.6, y - s * 0.1, x, y + s * 0.9); g.fill(); }
@@ -454,8 +495,8 @@ TYPES.versus = {
     const kl = out3(seg(u, 0.1, 0.45)), kr = out3(seg(u, Math.min(d * 0.45, 0.9), Math.min(d * 0.45, 0.9) + 0.35));
     const card = (x, k, lines, good, dir) => { if (k <= 0) return; g.save(); g.globalAlpha = k; g.translate(x + dir * (1 - k) * 200, cy); shadow(g, 50, 20, "rgba(0,0,0,0.2)"); fillRR(g, -230, -380, 460, 760, 40, good ? P.acc : "#e5e7eb"); noShadow(g);
       circle(g, 0, -200, 90, good ? "#fff" : "#9ca3af"); if (good) check(g, 0, -200, 70, cl(k * 1.5 - 0.3), P.acc, 16); else cross(g, 0, -200, 34, cl(k * 1.5 - 0.3), "#fff", 14);
-      const px = fitPx(g, lines[0], 400, 50, 800); txt(g, lines[0], 0, -20, { w: 800, px, c: good ? "#fff" : "#374151" });
-      g.font = "500 34px I"; wrapLines(g, lines[1] || "", 380).slice(0, 4).forEach((l, i) => txt(g, l, 0, 70 + i * 46, { w: 500, px: 34, fam: "I", c: good ? "rgba(255,255,255,0.9)" : "#6b7280" })); g.restore(); };
+      const px = fitPx(g, lines[0], 400, 50, 800); txt(g, lines[0], 0, -20, { w: 800, px, c: good ? inkOn(P.acc) : "#374151" });
+      g.font = "500 34px I"; wrapLines(g, lines[1] || "", 380).slice(0, 4).forEach((l, i) => txt(g, l, 0, 70 + i * 46, { w: 500, px: 34, fam: "I", c: good ? hexA(inkOn(P.acc), 0.85) : "#6b7280" })); g.restore(); };
     card(285, kl, L, false, -1); card(795, kr, Rr, true, 1);
     const vk = outBack(seg(u, 0.4, 0.7), 2.5); if (vk > 0) { g.save(); g.translate(540, cy); g.scale(vk, vk); circle(g, 0, 0, 60, P.fg); txt(g, "VS", 0, 3, { w: 900, px: 44, c: P.bg[0] }); g.restore(); }
   },

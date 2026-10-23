@@ -9,7 +9,10 @@ function setup() {
   const cam = $("cam"); const scenes = SPEC.scenes; let lastPal = "", lastTr = "", trI = Math.floor(R(5) * TRANS.length);
   scenes.forEach((s, i) => {
     const T = TYPES[s.type] || TYPES.statement; const p = s.params || {};
-    let pal = s.pal || T.pal; if (pal === lastPal) { const keys = Object.keys(PAL).filter((k) => k !== lastPal && PAL[k].dark === PAL[pal].dark); pal = keys[Math.floor(R(i * 3) * keys.length)]; }
+    let pal = s.pal || T.pal;
+    if (LOOK.pals && !String(s.type).startsWith("h_")) { const L = LOOK.pals; pal = L[(i + SEED) % L.length]; if (pal === lastPal) pal = L[(i + SEED + 1) % L.length]; }
+    else if (!LOOK.pals && s.type === "cta" && !s.pal) { const C = ["violet", "crimson", "navy", "black", "sunset", "gold"]; pal = C[SEED % C.length]; }
+    if (pal === lastPal && !LOOK.pals) { const keys = Object.keys(PAL).filter((k) => k !== lastPal && PAL[k].dark === PAL[pal].dark); pal = keys[Math.floor(R(i * 3) * keys.length)]; }
     lastPal = pal; let tr = s.tr; if (!tr) { tr = TRANS[trI % TRANS.length]; trI += 1 + Math.floor(R(i * 9) * 2); if (tr === lastTr) tr = TRANS[(trI++) % TRANS.length]; } lastTr = tr;
     const t0 = s.t0, t1 = i + 1 < scenes.length ? scenes[i + 1].t0 : SPEC.dur; const zone = s.zone || T.zone;
     const gc = zone === "top" ? 1070 : zone === "bottom" ? 790 : 960;
@@ -21,6 +24,9 @@ function setup() {
     if (s.bgv != null) o.bgv = s.bgv; if (T.prep) T.prep(o, p); SC.push(o);
   });
   buildPhrases();
+  $("grain").style.opacity = String(LOOK.grain);
+  if (LOOK.ovl === "letterbox") $("ovl").innerHTML = '<div class="bar" style="top:0"></div><div class="bar" style="bottom:0"></div>';
+  if (LOOK.ovl === "scan") { $("ovl").style.background = "repeating-linear-gradient(0deg, rgba(0,0,0,0.22) 0 2px, rgba(0,0,0,0) 2px 5px)"; }
   // Körnung
   const gc = $("grain").getContext("2d"); const im = gc.createImageData(1160, 2000); for (let i = 0; i < im.data.length; i += 4) { const v = Math.floor(rnd(i * 0.37) * 255); im.data[i] = im.data[i + 1] = im.data[i + 2] = v; im.data[i + 3] = 255; } gc.putImageData(im, 0, 0);
 }
@@ -47,13 +53,15 @@ function buildPhrases() {
       // Markierung hinter Akzentwort
       if (hasAcc && R(sc.i * 13 + k) > 0.45) spans.forEach((s) => { if (s.acc) { s.el.style.background = P.acc; s.el.style.color = P.dark && P.acc !== "#fde047" ? "#fff" : (P.acc === "#fde047" ? "#0b1220" : "#fff"); s.el.style.padding = "0 .18em"; s.el.style.borderRadius = ".12em"; } });
       if (!P.dark) div.style.textShadow = "none"; else div.style.textShadow = "0 6px 30px rgba(0,0,0,0.35)";
+      capStyle(div, spans, P, sc);
       sc.tx.appendChild(div);
       // Größe: so groß wie möglich, eine Zeile bis 940 px, sonst zwei Zeilen
-      let fs = sc.zone === "center" ? 170 : 132; div.style.fontSize = fs + "px"; div.style.whiteSpace = "nowrap";
+      let fs = Math.round((sc.zone === "center" ? 170 : 132) * (CAPSIZE[LOOK.cs] || 1)); div.style.fontSize = fs + "px"; div.style.whiteSpace = "nowrap";
       const MAXW = 860; const wpx = div.scrollWidth; if (wpx > MAXW) { fs = Math.max(76, Math.floor(fs * MAXW / wpx)); div.style.fontSize = fs + "px"; if (div.scrollWidth > MAXW) div.style.whiteSpace = "normal"; }
       const hpx = div.offsetHeight; const baseY = sc.zone === "top" ? 410 : sc.zone === "bottom" ? 1440 : 960;
       const jy = (R(sc.i * 5 + k * 3) - 0.5) * 70, jx = (R(sc.i * 3 + k * 5) - 0.5) * 40; div.style.top = (baseY - hpx / 2 + jy) + "px"; div.style.left = (70 + jx) + "px";
-      const start = ph[0].t - 0.08; return { div, spans, start, rx: (R(k * 11 + sc.i) - 0.5) * 16, ry: (R(k * 17 + sc.i) - 0.5) * 22, dir: k % 2 ? 1 : -1, mode };
+      const flatPh = LOOK.cs === "box" || LOOK.cs === "sticker" || LOOK.cs === "mono";
+      const start = ph[0].t - 0.08; return { div, spans, start, rx: flatPh ? 0 : (R(k * 11 + sc.i) - 0.5) * 16, ry: flatPh ? 0 : (R(k * 17 + sc.i) - 0.5) * 22, dir: k % 2 ? 1 : -1, mode, rot: LOOK.cs === "sticker" ? (R(k * 5 + sc.i) - 0.5) * 7 : LOOK.cs === "box" ? (R(k * 9 + sc.i) - 0.5) * 3 : 0 };
     });
     sc.phrases.forEach((ph, k) => { const nx = sc.phrases[k + 1]; ph.end = nx ? nx.start : sc.t1 + TR + 0.5; });
   });
@@ -71,6 +79,9 @@ function wordFx(sp, t, P) {
     const c = P.dark ? "255,255,255" : "20,20,20"; ts = `${-50 * gg}px 0 0 rgba(${c},${0.3 * gg}), ${-110 * gg}px 0 0 rgba(${c},${0.15 * gg})`; if (gg <= 0) tf = "skewX(-10deg)"; }
   else if (m === "glow") { const p = seg(t, t0 - 0.04, t0 + 0.3), e = out3(p); const fl = p < 1 ? (rnd(Math.floor(t * 30)) > 0.35 ? 1 : 0.25) : 1; o = cl(p * 2) * fl; tf = `scale(${lerp(1.25, 1, e)})`; }
   else if (m === "track") { const p = seg(t, t0 - 0.03, t0 + 0.4), e = out3(p); o = cl(p * 2); el.style.letterSpacing = lerp(0.35, 0, e) + "em"; f = `blur(${(1 - e) * 12}px)`; }
+  else if (m === "cut") { const p = seg(t, t0 - 0.02, t0 + 0.07); o = t >= t0 - 0.02 ? 1 : 0; tf = `scale(${lerp(1.3, 1, outExpo(p))})`; }
+  else if (m === "pop") { const p = seg(t, t0 - 0.04, t0 + 0.24), e = outBack(p, 2.8); o = cl(p * 4); tf = `scale(${Math.max(0, e)}) rotate(${(1 - p) * -14}deg)`; }
+  else if (m === "type") { const p = seg(t, t0 - 0.03, t0 + Math.min(0.28, 0.035 * el.textContent.length)); o = p > 0 ? 1 : 0; el.style.clipPath = `inset(0 ${(1 - p) * 100}% 0 0)`; }
   else if (m === "stamp") { const p = seg(t, t0 - 0.02, t0 + 0.16), e = outExpo(p); o = cl(p * 4); tf = `rotate(${lerp(-14, -3, e)}deg) scale(${lerp(2.1, 1, e)})`; }
   el.style.opacity = o; el.style.transform = tf; el.style.filter = f; if (ts || m === "speed") el.style.textShadow = ts;
 }
@@ -80,7 +91,7 @@ function drawPhrases(sc, t) {
     if (t < ph.start - 0.1 || t > ph.end + 0.05) { ph.div.style.visibility = "hidden"; continue; }
     ph.div.style.visibility = "visible"; const ex = seg(t, ph.end - 0.13, ph.end); const ent = out3(seg(t, ph.start - 0.05, ph.start + 0.3));
     const dx = ex * ph.dir * 260, dy = -ex * 40; const blur = ex * 18;
-    ph.div.style.transform = `translate(${dx}px,${dy + (1 - ent) * 20}px) rotateX(${ph.rx}deg) rotateY(${ph.ry * (1 - ex) + ph.dir * ex * 30}deg) scale(${lerp(1.06, 1, ent)})`;
+    ph.div.style.transform = `translate(${dx}px,${dy + (1 - ent) * 20}px) rotate(${ph.rot || 0}deg) rotateX(${ph.rx}deg) rotateY(${ph.ry * (1 - ex) + ph.dir * ex * 30}deg) scale(${lerp(1.06, 1, ent)})`;
     ph.div.style.opacity = 1 - ex; ph.div.style.filter = blur > 0.2 ? `blur(${blur}px)` : "";
     for (const sp of ph.spans) wordFx(sp, t, sc.P);
   }
@@ -115,6 +126,9 @@ function transOut(prev, next, t) { // ausgehende Szene reagiert
   }
 }
 
+let ACCS = null;
+function punch(t) { if (!ACCS) ACCS = (SPEC.words || []).filter((w) => w.acc).map((w) => w.t); let z = 0; for (const a of ACCS) if (t >= a && t < a + 0.4) z += LOOK.punch * Math.exp(-(t - a) / 0.09); return Math.min(z, LOOK.punch * 1.4); }
+function hitK(t) { if (!HITS) shake(0); let k = 0; for (const [h] of HITS) if (t >= h && t < h + 0.25) k = Math.max(k, 1 - (t - h) / 0.25); if (!ACCS) punch(0); for (const a of ACCS) if (t >= a && t < a + 0.18) k = Math.max(k, 0.6 * (1 - (t - a) / 0.18)); return k; }
 let HITS = null;
 function shake(t) {
   if (!HITS) HITS = EVENTS().filter((e) => ["boom", "thump", "slap", "glass", "thunder"].includes(e[1])).map((e) => [e[0], e[1] === "boom" || e[1] === "glass" ? 20 : e[1] === "thunder" ? 14 : 7]);
@@ -138,7 +152,8 @@ function render(t) {
   }
   hookText(t);
   $("flash").style.opacity = flash * 0.9;
-  $("cam").style.transform = shake(t);
+  $("cam").style.transform = shake(t) + ` scale(${1 + punch(t)})`;
+  if (LOOK.rgb) { const h = hitK(t); $("cam").style.filter = h > 0.05 ? `drop-shadow(${10 * h}px 0 0 rgba(255,0,90,0.55)) drop-shadow(${-10 * h}px 0 0 rgba(0,240,255,0.55))` : ""; }
   const gr = $("grain"); gr.style.transform = `translate(${-Math.floor(rnd(Math.floor(t * 30)) * 40)}px,${-Math.floor(rnd(Math.floor(t * 30) + 7) * 40)}px)`;
 }
 
@@ -146,7 +161,7 @@ function render(t) {
 const HT_STYLES = [{ bg: "#ffffff", c: "#0b0b0b" }, { bg: "#fde047", c: "#0b0b0b" }, { bg: "#ef4444", c: "#ffffff" }, { bg: "rgba(0,0,0,0)", c: "#ffffff", outline: true }, { bg: "#0b0b0b", c: "#ffffff" }];
 function hookText(t) {
   const box = $("hooktext"); const txt = SPEC.hook_text; if (!txt || !SC.length) { box.style.visibility = "hidden"; return; }
-  const sp = box.firstChild; if (!sp.dataset.ok) { sp.dataset.ok = 1; sp.innerHTML = txt.replace(/\*([^*]+)\*/g, "<u>$1</u>"); const st = HT_STYLES[SPEC.hook_style != null ? SPEC.hook_style : Math.floor(R(77) * HT_STYLES.length)];
+  const sp = box.firstChild; if (!sp.dataset.ok) { sp.dataset.ok = 1; sp.innerHTML = txt.replace(/\*([^*]+)\*/g, "<u>$1</u>"); headFont(sp); let st = HT_STYLES[SPEC.hook_style != null ? SPEC.hook_style : Math.floor(R(77) * HT_STYLES.length)]; if (st.outline && (LOOK.cs === "serif" || LOOK.cs === "mono")) st = HT_STYLES[1];
     sp.style.background = st.bg; sp.style.color = st.c; if (st.outline) { sp.style.webkitTextStroke = "3px #000"; sp.style.textShadow = "0 6px 0 #000, 0 10px 30px rgba(0,0,0,0.6)"; } else sp.style.boxShadow = "0 18px 50px rgba(0,0,0,0.35)";
     sp.querySelectorAll("u").forEach((u) => { u.style.textDecoration = "none"; u.style.color = st.bg === "#ef4444" ? "#fde047" : st.bg === "#fde047" ? "#dc2626" : st.outline ? "#fde047" : "#dc2626"; });
     if (sp.offsetWidth > 960) sp.style.fontSize = Math.floor(74 * 960 / sp.offsetWidth) + "px"; }
@@ -159,7 +174,7 @@ function hookText(t) {
 function renderCover() {
   setup(); const s0 = SC[0]; const t = s0.t0 + (s0.T.coverT != null ? Math.min(s0.T.coverT, s0.d) : Math.min(s0.d * 0.6, 1.6));
   render(t); SC.forEach((sc) => sc.phrases.forEach((ph) => (ph.div.style.visibility = "hidden"))); $("hooktext").style.visibility = "hidden"; $("flash").style.opacity = 0; $("cam").style.transform = "scale(1.06)"; $("cam").style.filter = "blur(7px) brightness(0.62) saturate(1.15)";
-  const c = $("cover"); const h = c.querySelector("h1"); h.innerHTML = (SPEC.cover_title || SPEC.hook_text || "").replace(/\*([^*]+)\*/g, "<em>$1</em>");
+  const c = $("cover"); const h = c.querySelector("h1"); h.innerHTML = (SPEC.cover_title || SPEC.hook_text || "").replace(/\*([^*]+)\*/g, "<em>$1</em>"); headFont(h); if (LOOK.cs === "serif") h.querySelectorAll("em").forEach((e) => (e.style.fontStyle = "italic"));
   c.style.visibility = "visible"; let fs = 128; h.style.fontSize = fs + "px"; while (h.offsetHeight > 700 && fs > 70) { fs -= 6; h.style.fontSize = fs + "px"; }
 }
 window.renderCover = renderCover;
@@ -172,3 +187,38 @@ function EVENTS() {
 }
 function INFO() { setup(); const s0 = SC[0]; return { cover_t: s0.t0 + (s0.T.coverT != null ? Math.min(s0.T.coverT, s0.d - 0.1) : Math.min(s0.d * 0.6, 1.6)), music: SPEC.music || "", dur: SPEC.dur, drop: (SC.find((s) => s.T.drop) || SC[Math.min(2, SC.length - 1)]).t0, scenes: SC.map((s) => ({ i: s.i, type: s.type, t0: s.t0, t1: s.t1, pal: s.pal, tr: s.tr, phrases: s.phrases.map((p) => p.spans.map((x) => x.el.textContent).join(" ")) })), cta: (SC.find((s) => s.type === "cta") || {}).t0 }; }
 window.render = render; window.EVENTS = EVENTS; window.INFO = INFO;
+
+// ---------- Untertitel-Stile der Looks ----------
+const CAPSIZE = { box: 1.3, serif: 1.18, cine: 1.15, mono: 0.8, sticker: 1.0, glow: 0.92, plain: 1 };
+function headFont(el) { // Schrift für Hook-Text und Titelbild passend zum Look
+  if (LOOK_KEY === "clean") return; el.style.fontFamily = LOOK.cap; el.style.fontWeight = String(LOOK.capW);
+  if (LOOK.upper) { el.style.textTransform = "uppercase"; el.style.letterSpacing = LOOK.cs === "cine" ? "0.03em" : "0"; }
+  if (LOOK.cs === "serif") { el.style.letterSpacing = "-0.01em"; if (el.tagName === "SPAN") el.style.fontSize = "92px"; }
+}
+function capStyle(div, spans, P, sc) {
+  const cs = LOOK.cs; div.style.fontFamily = LOOK.cap; div.style.fontWeight = String(LOOK.capW);
+  if (LOOK.upper) div.style.textTransform = "uppercase";
+  const accs = spans.filter((s) => s.acc);
+  if (cs === "plain") { div.style.letterSpacing = "-0.03em"; return; }
+  if (cs === "box") { div.style.lineHeight = "1.12"; div.style.letterSpacing = "0"; div.style.textShadow = "none";
+    const bg = P.dark ? "#ffffff" : "#0a0a0a", fg = P.dark ? "#0a0a0a" : "#ffffff";
+    spans.forEach((s) => { const a = s.acc; s.el.style.background = a ? P.acc : bg; s.el.style.color = a ? inkOn(P.acc) : fg; s.el.style.padding = "0.02em 0.14em 0"; s.el.style.margin = "0 0.05em 0.06em"; s.el.style.borderRadius = "0"; s.mode = a ? "stamp" : "cut"; });
+    return; }
+  if (cs === "glow") { div.style.letterSpacing = "-0.03em"; div.style.lineHeight = "1.08";
+    spans.forEach((s) => { const c = s.acc ? P.acc2 : P.acc; s.el.style.color = s.acc ? P.acc2 : "#ffffff"; s.el.style.background = "none"; s.el.style.padding = "0"; s.el.style.textShadow = `0 0 10px ${c}, 0 0 30px ${hexA(c, 0.85)}, 0 0 60px ${hexA(c, 0.5)}`; if (!s.acc && s.mode === "speed") s.mode = "glow"; });
+    div.style.textShadow = "none"; return; }
+  if (cs === "serif") { div.style.letterSpacing = "-0.01em"; div.style.lineHeight = "0.98"; div.style.textShadow = "none";
+    spans.forEach((s) => { s.el.style.color = s.acc ? P.acc : P.fg; s.el.style.background = "none"; s.el.style.padding = "0"; if (s.acc) s.el.style.fontStyle = "italic"; s.mode = s.acc ? "rise" : (s.mode === "speed" || s.mode === "glow" ? "rise" : s.mode === "slam" ? "track" : s.mode); });
+    return; }
+  if (cs === "sticker") { div.style.letterSpacing = "-0.01em"; div.style.lineHeight = "1.12";
+    spans.forEach((s) => { s.el.style.background = s.acc ? P.acc : "none"; s.el.style.color = s.acc ? inkOn(P.acc) : "#ffffff"; s.el.style.padding = s.acc ? "0 0.14em" : "0"; s.el.style.borderRadius = "0.12em";
+      s.el.style.webkitTextStroke = s.acc ? "0" : "0.075em #111"; s.el.style.paintOrder = "stroke fill"; s.el.style.textShadow = s.acc ? "none" : "0.06em 0.07em 0 #111"; s.el.style.boxShadow = s.acc ? "0.06em 0.07em 0 #111" : "none"; s.mode = "pop"; });
+    div.style.textShadow = "none"; return; }
+  if (cs === "mono") { div.style.letterSpacing = "-0.04em"; div.style.lineHeight = "1.12"; div.style.textAlign = "left";
+    spans.forEach((s) => { s.el.style.color = s.acc ? "#000" : P.acc; s.el.style.background = s.acc ? P.acc : "none"; s.el.style.padding = s.acc ? "0 0.12em" : "0"; s.el.style.borderRadius = "0"; s.el.style.textShadow = s.acc ? "none" : `0 0 18px ${hexA(P.acc, 0.55)}`; s.mode = "type"; });
+    const pr = document.createElement("span"); pr.className = "w"; pr.textContent = ">"; pr.style.color = P.sub; pr.style.opacity = 1; div.insertBefore(pr, div.firstChild);
+    div.style.textShadow = "none"; return; }
+  if (cs === "cine") { div.style.letterSpacing = "0.03em"; div.style.lineHeight = "1.0";
+    spans.forEach((s) => { s.el.style.color = s.acc ? P.acc : "#ffffff"; s.el.style.background = "none"; s.el.style.padding = "0"; s.mode = s.acc ? "track" : "rise"; });
+    div.style.textShadow = "0 6px 30px rgba(0,0,0,0.6)"; return; }
+}

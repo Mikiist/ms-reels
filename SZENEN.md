@@ -34,3 +34,19 @@ Hinweise
 - Szenen unter etwa 1,8 Sekunden wirken hektisch: Segmente mit mindestens 6 Wörtern, Hook darf kürzer sein.
 - Die Szene mit `logo` ist der Musik-Drop. Ohne `logo` liegt der Drop auf Szene 3.
 - Preise, Sterne und Zitat kommen fest aus der Engine (`engine/engine.js`, `FACTS`). Nie andere Zahlen in Parametern erfinden.
+
+
+## Looks (seit 23.10.2026)
+Jedes Video hat einen Look (`"look"` in `job.json`, verteilt mit `plan/looks.py`). Der Look ändert Schrift, Hintergrund, Farbwelten, Untertitel, Wort-Animation, Effekte und die Schluss-Szene. Hook-Szenen (`h_*`) behalten ihre eigenen Farben.
+
+| Look | Schrift | Hintergrund | Untertitel | Schluss (cta) | Extra |
+|---|---|---|---|---|---|
+| brutal | Anton, Großbuchstaben | Vollfarbe Schwarz/Gelb/Rot/Weiß, Rahmen | Wörter in harten Kästen, Schnitt-Animation | Riesiges Stichwort mit Markerbalken | starker Zoom-Stoß auf Betonungen |
+| neon | Unbounded | Synthwave-Gitterboden, Sonne | Leuchtschrift | Riesiges Stichwort | Scanlines, RGB-Versatz bei Treffern |
+| editorial | Instrument Serif | Papier, Rasterpunkte, Linien | Serifen, Betonung kursiv rot | Kommentar-UI | ruhig, Magazin |
+| pop | Archivo Black | Farbe wechselt bei jeder Zeile, Strahlen | Sticker mit Kontur und Schatten | Riesiges Stichwort | Pop-Animation |
+| cinema | Bebas Neue, Großbuchstaben | Kino-Verlauf, Lichtfleck, Staub | breit gesperrt, gold betont | Riesiges Stichwort | Letterbox-Balken, Körnung |
+| terminal | Space Mono | Code-Regen, Punktraster | Schreibmaschine mit „>“ | Kommentar-UI | Scanlines |
+| clean | Syne | alter Stil (Verläufe) | wie bisher | Kommentar-UI | nur als Rückfall |
+
+Regeln: Schrift auf Akzentflächen immer mit `inkOn(farbe)`, Schrift auf weißen Karten dunkel, nie `"#fff"` fest auf Hintergründen (Looks haben helle Farbwelten). Neue Szenen in mindestens brutal (hell und dunkel) und editorial prüfen.

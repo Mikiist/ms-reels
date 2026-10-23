@@ -12,6 +12,14 @@
 @font-face { font-family: "D"; src: url(fonts/InterDisplay-Bold.otf); font-weight: 700; }
 @font-face { font-family: "D"; src: url(fonts/InterDisplay-ExtraBold.otf); font-weight: 800; }
 @font-face { font-family: "D"; src: url(fonts/InterDisplay-Black.otf); font-weight: 900; }
+@font-face { font-family: "A"; src: url(fonts/Anton.ttf); font-weight: 100 900; }
+@font-face { font-family: "K"; src: url(fonts/ArchivoBlack.ttf); font-weight: 100 900; }
+@font-face { font-family: "B"; src: url(fonts/BebasNeue.ttf); font-weight: 100 900; }
+@font-face { font-family: "S"; src: url(fonts/InstrumentSerif.ttf); font-weight: 100 900; font-style: normal; }
+@font-face { font-family: "S"; src: url(fonts/InstrumentSerif-Italic.ttf); font-weight: 100 900; font-style: italic; }
+@font-face { font-family: "M"; src: url(fonts/SpaceMono-Bold.ttf); font-weight: 100 900; }
+@font-face { font-family: "U"; src: url(fonts/Unbounded.ttf); font-weight: 200 900; }
+@font-face { font-family: "Y"; src: url(fonts/Syne.ttf); font-weight: 400 800; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
 #cam { position: absolute; inset: 0; transform-origin: 50% 50%; }
@@ -29,6 +37,8 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
 #cover h1 { position: relative; width: 900px; font-family: "D"; font-weight: 900; font-size: 128px; line-height: 0.98; text-align: center; color: #fff; letter-spacing: -0.03em; text-shadow: 0 8px 40px rgba(0,0,0,0.5); }
 #cover .brand { position: absolute; left: 0; right: 0; top: 1500px; text-align: center; font-family: "I"; font-weight: 600; font-size: 34px; letter-spacing: 12px; color: rgba(255,255,255,0.85); }
 #cover h1 em { font-style: normal; color: #fde047; }
+#ovl { position: absolute; inset: 0; pointer-events: none; z-index: 40; }
+#ovl .bar { position: absolute; left: 0; right: 0; height: 120px; background: #000; }
 #vig { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse 85% 70% at 50% 48%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.28) 100%); }
 </style>
 </head>
@@ -37,6 +47,7 @@ html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; 
 <div id="flash"></div>
 <canvas id="grain" width="1160" height="2000"></canvas>
 <div id="vig"></div>
+<div id="ovl"></div>
 <div id="hooktext"><span></span></div>
 <div id="cover"><div class="shade"></div><h1></h1><div class="brand">MIHAJLO SYSTEMS</div></div>
 <img id="logo" src="assets/ms-logo.png" style="display:none" />

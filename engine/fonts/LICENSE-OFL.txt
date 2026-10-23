@@ -1,0 +1,2 @@
+Anton, Archivo Black, Bebas Neue, Instrument Serif, Space Mono, Unbounded, Syne:
+SIL Open Font License 1.1, Quelle github.com/google/fonts (Ordner ofl/). Frei nutzbar, auch kommerziell.
