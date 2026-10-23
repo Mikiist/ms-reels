@@ -3,7 +3,7 @@
 Alles, was hier nicht steht, wird nicht behauptet. Keine erfundenen Kunden, Zahlen, Studien, Prozentwerte, Bewertungen, Garantien oder Antwortzeiten (UWG, Abmahnrisiko). Fehlt ein Beleg: weglassen.
 
 ## Wer
-- Mihajlo Systems, Inhaber Mihajlo Stanojevic, Goslar (Niedersachsen). Website: mihajlostanojevic.com
+- Mihajlo Systems, Inhaber Mihajlo Stanojevic. Sitz Goslar, aber **Goslar nie in Reels nennen** (Mihajlo, 23.10.2026). Website: mihajlostanojevic.com
 - Baut Websites, KI-Chatbots und Bestellsysteme für Betriebe jeder Größe: Handwerker, Praxen, Friseure, Restaurants, kleine Firmen bis Großunternehmen.
 - Kunden u. a. in Goslar, Braunschweig, Hannover, Berlin. Arbeitet deutschlandweit (Videoanruf, Telefon, WhatsApp).
 - Ein Ansprechpartner, baut alles selbst, keine Agentur. Hosting, SSL, Wartung und Updates bei der Miete inklusive.

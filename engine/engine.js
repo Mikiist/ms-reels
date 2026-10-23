@@ -91,7 +91,6 @@ const FACTS = {
   google: { sterne: "4,8", anzahl: 19 },
   zitat: { text: "Nach 1 Woche schon 4 Neukunden gewonnen.", name: "Justus Haase" },
   url: "mihajlostanojevic.com",
-  ort: "Goslar",
 };
 
 // ---------- Zeichenhilfen ----------

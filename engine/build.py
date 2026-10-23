@@ -45,6 +45,7 @@ def check_text(job):
     bad = []
     txt = voice_text(job) + " " + job.get("caption", "")
     if re.search(r"[–—]", txt): bad.append("Gedankenstrich im Text (verboten)")
+    if re.search(r"goslar", txt + json.dumps([x["scene"] for x in job["segments"]], ensure_ascii=False), re.I): bad.append("Goslar im Reel (Mihajlo, 23.10.2026: nie mehr in Reels)")
     if re.search(r"\b(du|dein|deine|dich|dir)\b", voice_text(job), re.I): bad.append("Du-Form im Sprechtext (Sie-Form verlangt)")
     tags = re.findall(r"#\w+", job.get("caption", ""))
     if len(tags) > 5: bad.append(f"{len(tags)} Hashtags (Instagram erlaubt 5)")

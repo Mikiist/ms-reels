@@ -15,7 +15,7 @@ Nach der Testwoche die eigenen Insights prüfen (Professional Dashboard: Reichwe
 Mischung pro Video: 1 breiter Begriff (#webdesign, #website, #seo, #onlinemarketing, #marketingtipps), 1 Zielgruppe (#handwerker, #handwerk, #selbstständig, #kleinunternehmen, #unternehmer, Branche wie #friseur, #gastronomie, #kfzwerkstatt, #dachdecker), 1 Ort im Wechsel (#berlin, #goslar, #hannover, #braunschweig, #harz, #deutschland), 2 Themen-Tags (#googlemaps, #ki, #chatbot, #itsicherheit, #digitalisierung, #googlebewertungen …). Suchbegriffe gehören zusätzlich in den Fließtext der Caption, weil Instagram ihn für die Suche liest.
 
 ## Säule A: Wissen (Tipps, Mythen, Fehler)
-- „Herzlich willkommen“ als Überschrift kostet Kunden: besser „Malerbetrieb in Goslar“ (Was + Wo).
+- „Herzlich willkommen“ als Überschrift kostet Kunden: besser „Malerbetrieb in Hannover“ (Was + Wo).
 - Google-Unternehmensprofil: Fotos, Öffnungszeiten, Leistungen ausfüllen.
 - Telefonnummer als Knopf, der am Handy direkt anruft.
 - Mythos: „Ich habe doch Instagram, ich brauche keine Website.“
@@ -49,7 +49,7 @@ Mischung pro Video: 1 breiter Begriff (#webdesign, #website, #seo, #onlinemarket
 - 4,8 Sterne bei Google, echtes Zitat von Justus Haase (`stars`).
 - KI-Chatbot einzeln ab 200 € einmalig.
 - Bestellsystem für Restaurants: ohne Provision, iPad inklusive.
-- Websites aus Goslar für ganz Deutschland.
+- Websites für Betriebe in ganz Deutschland.
 
 ## Hook-Formate (erste Szene immer wechseln, nie zweimal am Tag dasselbe)
 - `hook_countdown`: „Drei. Zwei. Eins. Weg.“ (Ladezeit, Geduld)

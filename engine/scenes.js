@@ -141,7 +141,7 @@ TYPES.phone_notifs = {
 // ===== 5. Suche: Anfrage wird getippt, Ihre Firma rutscht nach oben =====
 TYPES.google_search = {
   zone: "top", pal: "sky", bgv: 1,
-  times(d, p) { const q = p.query || "Elektriker Goslar"; const t0 = 0.25, t1 = t0 + Math.min(1.0, 0.045 * q.length); return { q, t0, t1, tr: Math.min(d - 0.6, t1 + 0.6), tb: Math.min(d - 0.3, t1 + 1.1) }; },
+  times(d, p) { const q = p.query || "Elektriker Hannover"; const t0 = 0.25, t1 = t0 + Math.min(1.0, 0.045 * q.length); return { q, t0, t1, tr: Math.min(d - 0.6, t1 + 0.6), tb: Math.min(d - 0.3, t1 + 1.1) }; },
   draw(g, u, d, p, sc, P) {
     background(g, P, u, sc); const { q, t0, t1, tr, tb } = this.times(d, p); const cy = sc.gc; const x = 90, w = 900, y = cy - 470;
     const intro = out3(seg(u, 0, 0.35)); g.save(); g.translate(0, (1 - intro) * 300); g.globalAlpha = intro;
@@ -183,7 +183,7 @@ TYPES.map_pin = {
     g.fillStyle = "rgba(0,0,0,0.18)"; g.beginPath(); g.ellipse(540, cy + 40, 50 * cl(drop * 1.5), 16 * cl(drop * 1.5), 0, 0, 7); g.fill();
     if (drop > 0) { g.save(); g.translate(540, py); shadow(g, 30, 14, "rgba(0,0,0,0.3)"); g.fillStyle = "#ef4444"; g.beginPath(); g.arc(0, -80, 64, Math.PI * 0.85, Math.PI * 2.15); g.lineTo(0, 40); g.closePath(); g.fill(); noShadow(g); circle(g, 0, -82, 26, "#fff"); g.restore(); }
     const lk = outBack(seg(u, 0.9, 1.2), 2); if (lk > 0) { g.save(); g.translate(540, cy - 300); g.scale(lk, lk); shadow(g, 40, 14, "rgba(0,0,0,0.2)"); fillRR(g, -300, -70, 600, 140, 30, "#fff"); noShadow(g);
-      txt(g, p.title || "Ihre Firma", -260, -22, { w: 800, px: 40, c: "#0b1220", al: "left" }); txt(g, p.place || FACTS.ort, -260, 30, { w: 500, px: 28, fam: "I", c: "#5b6474", al: "left" });
+      txt(g, p.title || "Ihre Firma", -260, -22, { w: 800, px: 40, c: "#0b1220", al: "left" }); txt(g, p.place || "Ihre Stadt", -260, 30, { w: 500, px: 28, fam: "I", c: "#5b6474", al: "left" });
       fillRR(g, 150, -34, 120, 68, 34, P.acc); txt(g, p.cta || "Route", 210, 2, { w: 700, px: 26, fam: "I", c: inkOn(P.acc) }); g.restore(); }
   },
   ev() { return [[0.25, "whoosh_down", 0.4], [0.62, "thump", 0.7], [0.8, "ping", 0.25], [0.9, "pop", 0.35], [1.5, "ping", 0.2]]; },
