@@ -50,3 +50,7 @@ Jedes Video hat einen Look (`"look"` in `job.json`, verteilt mit `plan/looks.py`
 | clean | Syne | alter Stil (Verläufe) | wie bisher | Kommentar-UI | nur als Rückfall |
 
 Regeln: Schrift auf Akzentflächen immer mit `inkOn(farbe)`, Schrift auf weißen Karten dunkel, nie `"#fff"` fest auf Hintergründen (Looks haben helle Farbwelten). Neue Szenen in mindestens brutal (hell und dunkel) und editorial prüfen.
+
+## Objekt-Reels (seit 23.10.2026, Mihajlo: „so wie die Kugel, die ganze Zeit muss etwas passieren“)
+Ein einziges physisches Ding trägt das ganze Video. 7 bis 8 Sekunden ohne Stimme, nur Bild und Geräusche, eine offene Frage oben (Zähler, „Wie viele …?“), Zeitlupe kurz vor der Auflösung, dann Stimme, Umbau, Auflösung, Schlusskarte. Look `objekt` (Creme-Studio, Kamera-HUD, kleine ruhige Untertitel, Klangfläche `music: "ambient"`, Schluss `card`), Stimme „Ads stimme“ `kJLuJl0MAmUoVyx3oDIT` wie im Seifenblasen-Video.
+- `h_galton` (Galton-Brett): 34 Stahlkugeln klickern durch Messingstifte, Beinahe-Treffer in Zeitlupe, bei „Mensch“ werden Kugeln zu Personen, bei „schwach…“ Schilder an den Stiften, bei „Ich“ drehen die Stifte zu Schienen, alle Kugeln landen in „IHR BETRIEB“. VOICE_DELAY 8,5. Job: zwei Segmente (`h_galton` mit dem ganzen Text, dann `cta`). Beispiel `work/obj-galton/job.json`.

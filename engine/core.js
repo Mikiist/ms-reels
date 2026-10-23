@@ -58,9 +58,9 @@ function buildPhrases() {
       // Größe: so groß wie möglich, eine Zeile bis 940 px, sonst zwei Zeilen
       let fs = Math.round((sc.zone === "center" ? 170 : 132) * (CAPSIZE[LOOK.cs] || 1)); div.style.fontSize = fs + "px"; div.style.whiteSpace = "nowrap";
       const MAXW = 860; const wpx = div.scrollWidth; if (wpx > MAXW) { fs = Math.max(76, Math.floor(fs * MAXW / wpx)); div.style.fontSize = fs + "px"; if (div.scrollWidth > MAXW) div.style.whiteSpace = "normal"; }
-      const hpx = div.offsetHeight; const baseY = sc.zone === "top" ? 410 : sc.zone === "bottom" ? 1440 : 960;
-      const jy = (R(sc.i * 5 + k * 3) - 0.5) * 70, jx = (R(sc.i * 3 + k * 5) - 0.5) * 40; div.style.top = (baseY - hpx / 2 + jy) + "px"; div.style.left = (70 + jx) + "px";
-      const flatPh = LOOK.cs === "box" || LOOK.cs === "sticker" || LOOK.cs === "mono";
+      const hpx = div.offsetHeight; const baseY = LOOK.capY || (sc.zone === "top" ? 410 : sc.zone === "bottom" ? 1440 : 960);
+      const jq = LOOK.calm ? 0 : 1; const jy = (R(sc.i * 5 + k * 3) - 0.5) * 70 * jq, jx = (R(sc.i * 3 + k * 5) - 0.5) * 40 * jq; div.style.top = (baseY - hpx / 2 + jy) + "px"; div.style.left = (70 + jx) + "px";
+      const flatPh = LOOK.cs === "box" || LOOK.cs === "sticker" || LOOK.cs === "mono" || LOOK.calm;
       const start = ph[0].t - 0.08; return { div, spans, start, rx: flatPh ? 0 : (R(k * 11 + sc.i) - 0.5) * 16, ry: flatPh ? 0 : (R(k * 17 + sc.i) - 0.5) * 22, dir: k % 2 ? 1 : -1, mode, rot: LOOK.cs === "sticker" ? (R(k * 5 + sc.i) - 0.5) * 7 : LOOK.cs === "box" ? (R(k * 9 + sc.i) - 0.5) * 3 : 0 };
     });
     sc.phrases.forEach((ph, k) => { const nx = sc.phrases[k + 1]; ph.end = nx ? nx.start : sc.t1 + TR + 0.5; });
@@ -90,8 +90,8 @@ function drawPhrases(sc, t) {
   for (const ph of sc.phrases) {
     if (t < ph.start - 0.1 || t > ph.end + 0.05) { ph.div.style.visibility = "hidden"; continue; }
     ph.div.style.visibility = "visible"; const ex = seg(t, ph.end - 0.13, ph.end); const ent = out3(seg(t, ph.start - 0.05, ph.start + 0.3));
-    const dx = ex * ph.dir * 260, dy = -ex * 40; const blur = ex * 18;
-    ph.div.style.transform = `translate(${dx}px,${dy + (1 - ent) * 20}px) rotate(${ph.rot || 0}deg) rotateX(${ph.rx}deg) rotateY(${ph.ry * (1 - ex) + ph.dir * ex * 30}deg) scale(${lerp(1.06, 1, ent)})`;
+    const dx = LOOK.calm ? 0 : ex * ph.dir * 260, dy = LOOK.calm ? -ex * 10 : -ex * 40; const blur = ex * (LOOK.calm ? 8 : 18);
+    ph.div.style.transform = `translate(${dx}px,${dy + (1 - ent) * 20}px) rotate(${ph.rot || 0}deg) rotateX(${ph.rx}deg) rotateY(${ph.ry * (1 - ex) + (LOOK.calm ? 0 : ph.dir * ex * 30)}deg) scale(${lerp(LOOK.calm ? 1 : 1.06, 1, ent)})`;
     ph.div.style.opacity = 1 - ex; ph.div.style.filter = blur > 0.2 ? `blur(${blur}px)` : "";
     for (const sp of ph.spans) wordFx(sp, t, sc.P);
   }
@@ -160,7 +160,7 @@ function render(t) {
 // Text-Hook oben (für Stummschauer): erscheint ab Bild 0, bleibt während Szene 1
 const HT_STYLES = [{ bg: "#ffffff", c: "#0b0b0b" }, { bg: "#fde047", c: "#0b0b0b" }, { bg: "#ef4444", c: "#ffffff" }, { bg: "rgba(0,0,0,0)", c: "#ffffff", outline: true }, { bg: "#0b0b0b", c: "#ffffff" }];
 function hookText(t) {
-  const box = $("hooktext"); const txt = SPEC.hook_text; if (!txt || !SC.length) { box.style.visibility = "hidden"; return; }
+  const box = $("hooktext"); const txt = SPEC.hook_text; if (!txt || !SC.length || LOOK.hideHook) { box.style.visibility = "hidden"; return; }
   const sp = box.firstChild; if (!sp.dataset.ok) { sp.dataset.ok = 1; sp.innerHTML = txt.replace(/\*([^*]+)\*/g, "<u>$1</u>"); headFont(sp); let st = HT_STYLES[SPEC.hook_style != null ? SPEC.hook_style : Math.floor(R(77) * HT_STYLES.length)]; if (st.outline && (LOOK.cs === "serif" || LOOK.cs === "mono")) st = HT_STYLES[1];
     sp.style.background = st.bg; sp.style.color = st.c; if (st.outline) { sp.style.webkitTextStroke = "3px #000"; sp.style.textShadow = "0 6px 0 #000, 0 10px 30px rgba(0,0,0,0.6)"; } else sp.style.boxShadow = "0 18px 50px rgba(0,0,0,0.35)";
     sp.querySelectorAll("u").forEach((u) => { u.style.textDecoration = "none"; u.style.color = st.bg === "#ef4444" ? "#fde047" : st.bg === "#fde047" ? "#dc2626" : st.outline ? "#fde047" : "#dc2626"; });
@@ -189,7 +189,7 @@ function INFO() { setup(); const s0 = SC[0]; return { cover_t: s0.t0 + (s0.T.cov
 window.render = render; window.EVENTS = EVENTS; window.INFO = INFO;
 
 // ---------- Untertitel-Stile der Looks ----------
-const CAPSIZE = { box: 1.3, serif: 1.18, cine: 1.15, mono: 0.8, sticker: 1.0, glow: 0.92, plain: 1 };
+const CAPSIZE = { subtle: 0.4, box: 1.3, serif: 1.18, cine: 1.15, mono: 0.8, sticker: 1.0, glow: 0.92, plain: 1 };
 function headFont(el) { // Schrift für Hook-Text und Titelbild passend zum Look
   if (LOOK_KEY === "clean") return; el.style.fontFamily = LOOK.cap; el.style.fontWeight = String(LOOK.capW);
   if (LOOK.upper) { el.style.textTransform = "uppercase"; el.style.letterSpacing = LOOK.cs === "cine" ? "0.03em" : "0"; }
@@ -200,6 +200,8 @@ function capStyle(div, spans, P, sc) {
   if (LOOK.upper) div.style.textTransform = "uppercase";
   const accs = spans.filter((s) => s.acc);
   if (cs === "plain") { div.style.letterSpacing = "-0.03em"; return; }
+  if (cs === "subtle") { div.style.letterSpacing = "-0.01em"; div.style.lineHeight = "1.25"; div.style.textShadow = "none";
+    spans.forEach((s) => { s.el.style.color = P.fg; s.el.style.background = "none"; s.el.style.padding = "0"; s.el.style.fontWeight = s.acc ? "700" : "500"; s.el.style.margin = "0 0.13em"; s.mode = "rise"; }); return; }
   if (cs === "box") { div.style.lineHeight = "1.12"; div.style.letterSpacing = "0"; div.style.textShadow = "none";
     const bg = P.dark ? "#ffffff" : "#0a0a0a", fg = P.dark ? "#0a0a0a" : "#ffffff";
     spans.forEach((s) => { const a = s.acc; s.el.style.background = a ? P.acc : bg; s.el.style.color = a ? inkOn(P.acc) : fg; s.el.style.padding = "0.02em 0.14em 0"; s.el.style.margin = "0 0.05em 0.06em"; s.el.style.borderRadius = "0"; s.mode = a ? "stamp" : "cut"; });

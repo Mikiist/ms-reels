@@ -59,6 +59,8 @@ const PAL = {
   c_teal:   { bg: ["#03141a", "#0a2a33"], fg: "#ffffff", sub: "#9fc7cf", acc: "#ffb547", acc2: "#4fd1c5", dark: true },
   c_warm:   { bg: ["#1a0d06", "#3a1a0a"], fg: "#ffffff", sub: "#e0b896", acc: "#ffd27a", acc2: "#ff7a45", dark: true },
   c_night:  { bg: ["#05070d", "#121a2b"], fg: "#ffffff", sub: "#9aa7c0", acc: "#ffb547", acc2: "#7aa2ff", dark: true },
+  // Look objekt (ruhiges Studio wie das Seifenblasen-Video)
+  o_cream:  { bg: ["#f5f0e9", "#e9e2d7"], fg: "#18181b", sub: "#8b8379", acc: "#b8862b", acc2: "#2f6fde", dark: false },
 };
 
 // ---------- Looks: jedes Video bekommt einen eigenen Stil (Schrift, Hintergrund, Untertitel, Effekte, Schluss) ----------
@@ -70,6 +72,7 @@ const LOOKS = {
   editorial: { cap: "S", capW: 400, cd: "S", bg: "paper", pals: ["e_cream", "e_ink", "e_sage"], cs: "serif", grain: 0.1, cta: "ui", punch: 0.02 },
   pop:       { cap: "K", capW: 400, cd: "D", bg: "pop", pals: ["p_pink", "p_blue", "p_orange", "p_green", "p_purple"], cs: "sticker", grain: 0.05, cta: "giant", punch: 0.06 },
   terminal:  { cap: "M", capW: 700, cd: "D", bg: "term", pals: ["t_green", "t_amber"], cs: "mono", grain: 0.06, ovl: "scan", cta: "ui", punch: 0.03 },
+  objekt:    { cap: "I", capW: 500, cd: "D", bg: "studio", pals: ["o_cream"], cs: "subtle", grain: 0.03, cta: "card", punch: 0, hideHook: true, calm: true, capY: 1720 },
   cinema:    { cap: "B", capW: 400, cd: "B", bg: "cine", pals: ["c_teal", "c_warm", "c_night"], cs: "cine", upper: true, grain: 0.13, ovl: "letterbox", cta: "giant", punch: 0.025 },
 };
 const LOOK_KEY = LOOKS[SPEC.look] ? SPEC.look : "clean";
@@ -196,6 +199,10 @@ function background(g, P, u, sc) {
 // Hintergründe der Looks
 function phraseIdx(sc, u) { const t = sc.t0 + u; let k = 0; for (const ph of sc.phrases || []) if (t >= ph.start) k++; return k; }
 const BGS = {
+  studio(g, P, u, sc) { // ruhiges Studio: Creme, weiches Licht von oben, Boden-Schatten
+    const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, P.bg[0]); gr.addColorStop(1, P.bg[1]); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+    const lg = g.createRadialGradient(540, 300, 0, 540, 300, 1100); lg.addColorStop(0, "rgba(255,255,255,0.55)"); lg.addColorStop(1, "rgba(255,255,255,0)"); g.fillStyle = lg; g.fillRect(0, 0, W, H);
+  },
   flat(g, P, u, sc) { // brutal: Vollfarbe, harte Streifen-Bahn, Rahmen
     g.fillStyle = P.bg[0]; g.fillRect(0, 0, W, H);
     g.save(); g.translate(W / 2, sc.gc); g.rotate(-0.32); const o = (u * 140) % 80; g.fillStyle = hexA(P.fg, 0.07);

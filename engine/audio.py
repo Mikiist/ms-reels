@@ -157,10 +157,10 @@ KEYS = [  # Akkorde (MIDI), je 4 Takte
     [[40, 47, 52, 55], [36, 43, 48, 52], [43, 50, 55, 59], [38, 45, 50, 54]],
     [[43, 50, 55, 58], [39, 46, 51, 55], [46, 53, 58, 62], [41, 48, 53, 57]],
 ]
-STYLES = ["drive", "trap", "house", "cinematic", "phonk"]
+STYLES = ["drive", "trap", "house", "cinematic", "phonk", "ambient"]
 STYLE = INFO.get("music") or STYLES[seed % len(STYLES)]
 if STYLE not in STYLES: STYLE = "drive"
-BPM = {"drive": 118 + seed % 9, "trap": 140, "house": 124, "cinematic": 88, "phonk": 128}[STYLE]
+BPM = {"drive": 118 + seed % 9, "trap": 140, "house": 124, "cinematic": 88, "phonk": 128, "ambient": 70}[STYLE]
 CH = KEYS[seed % len(KEYS)]; BEAT = 60 / BPM
 sc = INFO["scenes"]; s1 = sc[1]["t0"] if len(sc) > 1 else 2.0; DROP = INFO["drop"]; CTA = INFO.get("cta") or DUR - 4
 if DROP <= s1 + 1.0: DROP = s1
@@ -236,21 +236,31 @@ def section(t0, t1, full):
         if ib == 0 and STYLE == "cinematic": add(music, t, pad([mid(m) for m in ch[1:]], 4 * BEAT + 0.3, 0.14, 1400))
         t += BEAT; k += 1
 
+if STYLE == "ambient":  # ruhige Klangfläche: Raumton + weicher Akkord, keine Beats (Objekt-Reels, die Geräusche tragen)
+    room = lpf(rng.standard_normal(N), 260) * 0.05; music[:, 0] += room; music[:, 1] += np.roll(room, 997)
+    tt = 0.0; k = 0
+    while tt < DUR:
+        ch = CH[k % 4]; dd = min(6.0, DUR - tt + 0.5); add(music, tt, pad([mid(m) for m in ch[1:]], dd + 0.4, 0.1, 700 if tt < (INFO.get("cta") or DUR) else 1300)); add(music, tt, sub(mid(ch[0] - 12), dd, 0.12)); tt += 6.0; k += 1
+    fade = int(0.6 * SR); music[-fade:] *= np.linspace(1, 0, fade)[:, None]; sfx[-fade:] *= np.linspace(1, 0, fade)[:, None]
+    MG = 0.32
+else:
+    MG = 0.8
 # Intro: Drone unter dem Hook (der Hook-Sound steht vorn)
-add(music, 0, pad([mid(CH[0][0]), mid(CH[0][0] + 7)], s1 + 0.3, 0.18, 420)); add(music, 0, sub(mid(CH[0][0] - 12), s1, 0.2))
-section(s1, DROP, False)
-if DROP > s1 + 0.8: add(music, max(s1, DROP - 1.6), riser(min(1.6, DROP - s1), 0.45))
-section(DROP, CTA, True)
-# Aufruf: ruhiger Teppich
-ch = CH[0]; add(music, CTA, pad([mid(m) for m in ch[1:]] + [mid(ch[1] + 12)], DUR - CTA + 0.4, 0.16, 1800)); add(music, CTA, sub(mid(ch[0] - 12), DUR - CTA, 0.3))
-t = CTA + BEAT / 2
-while t < DUR - 0.6: add(music, t, kick(0.32)); t += BEAT
-# Ende ausblenden
-fade = int(0.6 * SR); music[-fade:] *= np.linspace(1, 0, fade)[:, None]; sfx[-fade:] *= np.linspace(1, 0, fade)[:, None]
+if STYLE != "ambient": add(music, 0, pad([mid(CH[0][0]), mid(CH[0][0] + 7)], s1 + 0.3, 0.18, 420)); add(music, 0, sub(mid(CH[0][0] - 12), s1, 0.2))
+if STYLE != "ambient":
+    section(s1, DROP, False)
+    if DROP > s1 + 0.8: add(music, max(s1, DROP - 1.6), riser(min(1.6, DROP - s1), 0.45))
+    section(DROP, CTA, True)
+    # Aufruf: ruhiger Teppich
+    ch = CH[0]; add(music, CTA, pad([mid(m) for m in ch[1:]] + [mid(ch[1] + 12)], DUR - CTA + 0.4, 0.16, 1800)); add(music, CTA, sub(mid(ch[0] - 12), DUR - CTA, 0.3))
+    t = CTA + BEAT / 2
+    while t < DUR - 0.6: add(music, t, kick(0.32)); t += BEAT
+    # Ende ausblenden
+    fade = int(0.6 * SR); music[-fade:] *= np.linspace(1, 0, fade)[:, None]; sfx[-fade:] *= np.linspace(1, 0, fade)[:, None]
 
 def write(name, buf, g):
     x = buf / (np.abs(buf).max() + 1e-9) * g
     w = wave.open(name, "wb"); w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR)
     w.writeframes((np.clip(x, -1, 1) * 32767).astype("<i2").tobytes()); w.close()
-write(D + "/music.wav", music, 0.8); write(D + "/sfx.wav", sfx, 0.9)
+write(D + "/music.wav", music, MG); write(D + "/sfx.wav", sfx, 0.9)
 print("audio ok", round(DUR, 2))

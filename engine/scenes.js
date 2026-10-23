@@ -381,6 +381,7 @@ TYPES.cta = {
   times(d, p) { const kw = (p.keyword || "WEBSITE").toUpperCase(); const t0 = 0.35, t1 = t0 + Math.min(0.9, kw.length * 0.09); return { kw, t0, t1, send: t1 + 0.25 }; },
   draw(g, u, d, p, sc, P) {
     if (LOOK.cta === "giant") return this.giant(g, u, d, p, sc, P);
+    if (LOOK.cta === "card") return this.card(g, u, d, p, sc, P);
     background(g, P, u, sc); const cy = sc.gc - 80; const { kw, t0, t1, send } = this.times(d, p);
     const intro = out3(seg(u, 0, 0.35)); g.save(); g.translate(0, (1 - intro) * 200); g.globalAlpha = intro;
     // Kommentarfeld
@@ -402,6 +403,25 @@ TYPES.cta = {
       const label = p.button || "Kostenloses Erstgespräch"; const px = fitPx(g, label, 760, 46, 800); shadow(g, 40, 14, hexA(P.acc, 0.6)); fillRR(g, -420, -62, 840, 124, 62, P.acc); noShadow(g); txt(g, label, 0, 2, { w: 800, px, c: inkOn(P.acc) }); g.restore(); }
     const lk = out3(seg(u, send + 0.8, send + 1.2)); if (lk > 0) { g.save(); g.globalAlpha = lk; g.drawImage(logoImg(), 540 - 260, cy + 470, 80, 80); txt(g, FACTS.url, 540 - 160, cy + 512, { w: 700, px: 36, fam: "I", c: P.fg, al: "left" }); g.restore(); }
   },
+  ctimes(p) { const kw = (p.keyword || "WEBSITE").toUpperCase(); const t0 = 1.0, t1 = t0 + kw.length * 0.09; return { kw, t0, t1, send: t1 + 0.3 }; },
+  card(g, u, d, p, sc, P) { // Variante: ruhige Schlusskarte (Logo, Name gesperrt, Linie, Knöpfe), Stichwort wird getippt
+    background(g, P, u, sc); const cy = 860; const { kw, t0, t1, send } = this.ctimes(p);
+    const lg = outBack(seg(u, 0.05, 0.5), 1.6); if (lg > 0) { g.save(); g.translate(540, cy - 250); g.scale(lg, lg); shadow(g, 40, 14, "rgba(0,0,0,0.18)"); g.drawImage(logoImg(), -95, -95, 190, 190); noShadow(g); g.restore(); }
+    const tr = out3(seg(u, 0.15, 0.95)); g.save(); g.globalAlpha = cl(tr * 1.5); txt(g, "MIHAJLO SYSTEMS", 540, cy - 60, { w: 300, px: 76, c: P.fg, ls: lerp(40, 16, tr), fam: "D" }); g.restore();
+    const rl = out3(seg(u, 0.45, 0.95)); g.fillStyle = hexA(P.fg, 0.35); g.fillRect(540 - 300 * rl, cy + 10, 600 * rl, 2);
+    g.save(); g.globalAlpha = cl((u - 0.6) / 0.4); txt(g, "WEBSITES  ·  GOOGLE  ·  ANFRAGEN", 540, cy + 62, { w: 500, px: 28, fam: "I", c: P.sub, ls: 6 }); g.restore();
+    const b1 = outBack(seg(u, 0.75, 1.05), 1.8); if (b1 > 0) { g.save(); g.translate(540, cy + 190); g.scale(b1, b1); g.strokeStyle = hexA(P.fg, 0.55); g.lineWidth = 3; rr(g, -330, -50, 660, 100, 50); g.stroke();
+      txt(g, p.button || "Kostenloses Erstgespräch", 0, 2, { w: 600, px: 40, fam: "I", c: P.fg }); g.restore(); }
+    const b2 = outBack(seg(u, t0 - 0.25, t0 + 0.05), 1.8); if (b2 > 0) { const n = Math.floor(kw.length * seg(u, t0, t1)); const sent = u >= send; const pulse = sent ? 1 + 0.035 * Math.sin((u - send) * 7) : 1;
+      g.save(); g.translate(540, cy + 330); g.scale(b2 * pulse, b2 * pulse); shadow(g, 30, 10, "rgba(0,0,0,0.25)"); fillRR(g, -360, -56, 720, 112, 56, "#141416"); noShadow(g);
+      g.fillStyle = "#fff"; rr(g, -312, -20, 44, 34, 10); g.fill(); g.beginPath(); g.moveTo(-302, 12); g.lineTo(-306, 26); g.lineTo(-290, 13); g.fill();
+      font(g, 500, 38, "I"); const pre = "Kommentieren Sie "; const pw = g.measureText(pre).width; font(g, 800, 38, "I"); const kwW = g.measureText(kw).width; const x0 = -250 + (560 - pw - kwW) / 2;
+      txt(g, pre, x0, 2, { w: 500, px: 38, fam: "I", c: "rgba(255,255,255,0.85)", al: "left" }); txt(g, kw.slice(0, n), x0 + pw, 2, { w: 800, px: 38, fam: "I", c: "#ffffff", al: "left" });
+      if (!sent && Math.floor(u * 3) % 2 === 0) { font(g, 800, 38, "I"); g.fillStyle = "#fff"; g.fillRect(x0 + pw + g.measureText(kw.slice(0, n)).width + 4, -20, 4, 42); }
+      g.restore();
+      const hk = outBack(seg(u, send, send + 0.3), 3); if (hk > 0) { g.save(); g.translate(905, cy + 290); g.scale(hk, hk); heart(g, 0, 0, 30, "#ef4444"); g.restore(); } }
+    g.save(); g.globalAlpha = cl((u - send - 0.3) / 0.4); txt(g, FACTS.url, 540, cy + 470, { w: 500, px: 30, fam: "I", c: P.sub }); g.restore();
+  },
   giant(g, u, d, p, sc, P) { // Variante: Stichwort riesig, Buchstabe für Buchstabe, Markerbalken, Pfeil zu den Kommentaren
     background(g, P, u, sc); const cy = sc.gc - 150; const { kw, t0, t1, send } = this.times(d, p);
     const px = fitPx(g, kw, 920, 300, 900); font(g, 900, px); const tw = g.measureText(kw).width; const x0 = 540 - tw / 2;
@@ -421,6 +441,7 @@ TYPES.cta = {
     const ok = out3(seg(u, send + 0.8, send + 1.2)); if (ok > 0) { g.save(); g.globalAlpha = ok; g.drawImage(logoImg(), 540 - 260, cy + bh / 2 + 520, 80, 80); txt(g, FACTS.url, 540 - 160, cy + bh / 2 + 562, { w: 700, px: 36, fam: "I", c: P.fg, al: "left" }); g.restore(); }
   },
   ev(d, p) { const { kw, t0, t1, send } = this.times(d, p); const E = [[0, "whoosh_up", 0.4]];
+    if (LOOK.cta === "card") { const c = this.ctimes(p); const E2 = [[0.05, "shimmer", 0.25], [0.85, "pop", 0.2]]; for (let i = 0; i < c.kw.length; i++) E2.push([c.t0 + (c.t1 - c.t0) * i / c.kw.length, "key", 0.3, 0.1]); E2.push([c.send, "pop", 0.35]); E2.push([c.send + 0.05, "chime", 0.2]); return E2; }
     if (LOOK.cta === "giant") { for (let i = 0; i < kw.length; i++) E.push([t0 + (t1 - t0) * i / kw.length, i === kw.length - 1 ? "thump" : "key", i === kw.length - 1 ? 0.6 : 0.4, 0.1]); E.push([send, "whoosh_up", 0.4]); E.push([send + 0.5, "pop", 0.4]); E.push([send + 0.55, "chime", 0.25]); return E; } for (let i = 0; i < kw.length; i++) E.push([t0 + (t1 - t0) * i / kw.length, "key", 0.32, 0.1]);
     E.push([send - 0.05, "click", 0.7]); E.push([send, "whoosh_up", 0.45]); E.push([send + 0.42, "pop", 0.4]); E.push([send + 0.5, "chime", 0.25]); E.push([send + 0.55, "pop", 0.35]); return E; },
 };
