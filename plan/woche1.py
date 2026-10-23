@@ -259,7 +259,7 @@ video("2026-10-30", 3, "Was die alte Website kostet", "Was kostet Sie Ihre *alte
       ("Was kostet Sie Ihre alte Website *wirklich*?", {"type": "h_receipt", "params": {"items": ["Verpasste Anrufe", "Kunden bei der Konkurrenz", "Schlechter erster Eindruck"], "total": "Zu viel"}}),
       ("Jeder Kunde, der *nicht* anruft, ist ein Auftrag weniger.", {"type": "cross_list", "params": {"items": ["Kein Anruf", "Kein Auftrag", "Kein Umsatz"]}}),
       ("Dagegen steht eine Website ab 99 Euro im *Monat*.", {"type": "price", "params": {"paket": "landingpage", "only": "monat"}}),
-      ("Die rechnet sich oft schon mit *einem* neuen Kunden.", {"type": "bars", "params": {"labels": ["Monat 1", "Monat 2", "Monat 3", "Monat 4", "Monat 5"], "title": "Anfragen über die Website"}}),
+      ("Die rechnet sich oft schon mit *einem* neuen Kunden.", {"type": "bars", "params": {"labels": ["Monat 1", "Monat 2", "Monat 3", "Monat 4", "Monat 5"], "title": "Beispiel: Anfragen über die Website"}}),
       ("Rechnen Sie es mit Mihajlo Systems *durch*.", {"type": "logo", "params": {"tagline": "Websites, die sich rechnen"}}),
       ], C("Was kostet Sie Ihre alte Website wirklich? 🧾",
            "Nicht die Rechnung fürs Hosting, sondern die Kunden, die nie anrufen: weil die Seite langsam ist, am Handy nicht funktioniert oder bei Google nicht auftaucht. Eine neue Website rechnet sich oft schon mit einem einzigen neuen Auftrag.",
