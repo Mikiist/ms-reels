@@ -24,7 +24,7 @@ def main():
     work = os.path.join(ROOT, "work"); posts = []
     for name in sorted(os.listdir(work)) if os.path.isdir(work) else []:
         d = os.path.join(work, name)
-        if name[:10] < date or not os.path.exists(os.path.join(d, "final.mp4")) or not os.path.exists(os.path.join(d, "post.json")): continue
+        if not name[:4].isdigit() or name[:10] < date or not os.path.exists(os.path.join(d, "final.mp4")) or not os.path.exists(os.path.join(d, "post.json")): continue
         p = json.load(open(os.path.join(d, "post.json"), encoding="utf-8")); p["dir"] = d; posts.append(p)
     if not posts: raise SystemExit("Keine fertigen Reels ab " + date)
     keys = [(p["date"], p["slot"]) for p in posts]
