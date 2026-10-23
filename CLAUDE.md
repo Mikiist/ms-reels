@@ -29,13 +29,16 @@ Ein Lauf pro Woche (freitags) produziert die **21 Reels der Folgewoche** (Samsta
 7. **Veröffentlichen**: `python3 engine/publish.py` (ohne Datum: alles ab heute). Schiebt Videos, `queue.json` und `<datum>/slot<N>.json` auf den Branch `gh-pages` (GitHub Pages). Danach `git add -A && git commit -m "Reels Woche <N>: …" && git push origin main`.
 8. **Bericht** an Mihajlo: Liste der 21 Videos mit Uhrzeit, Thema, Hook, Audio-Name. Erkenntnisse in `LERNEN.md`.
 
-## Caption (Text unter dem Reel)
-- Erste Zeile = Hook als Frage oder starke Aussage mit passendem Emoji (nur etwa 125 Zeichen sind ohne „mehr“ sichtbar).
-- 2 bis 4 Sätze mit Suchbegriffen im Fließtext (Website, Google, Branche, Ort). Keine ✅-Listen.
-- Bei Preisen die Mindestlaufzeit der Miete nennen.
-- Aufruf: „💬 Kommentieren Sie WEBSITE und Sie bekommen Ihr kostenloses Erstgespräch per Nachricht.“
-- Zusatz je Säule: Wissen „🔖 Speichern …“, Story „Kennen Sie einen Betrieb, der das sehen sollte? Schicken Sie es ihm.“ (Weiterleitungen sind ein starkes Signal).
-- Genau 5 Hashtags nach der Mischung in `THEMEN.md`.
+## Caption (Text unter dem Reel): LANG schreiben
+Mihajlo, 23.10.2026: Lange Captions bringen viel mehr (Kugel-Post: 3,5 Tsd. Aufrufe, 16 Likes, 14 Teilungen). Aufbau, 1.100 bis 1.500 Zeichen:
+1. Hook-Zeile als Frage oder starke Aussage mit Emoji (nur etwa 125 Zeichen sind ohne „mehr“ sichtbar).
+2. Thema in 2 bis 4 Sätzen mit Suchbegriffen (Website, Google, Branche, Ort). Keine ✅-Listen.
+3. Warum es wirkt (Absatz aus `plan/lange_captions.py`, wechselt).
+4. Wer Mihajlo ist: Ich-Form, Goslar, Kundenstädte, ein Ansprechpartner, fester Preis, „4,8 Sterne bei Google aus 19 Bewertungen (Stand September 2026)“.
+5. Angebot mit Preis; bei Miete die Mindestlaufzeit.
+6. Aufruf: „Kommentieren Sie WEBSITE und ich schicke Ihnen den Link zum kostenlosen Erstgespräch …“
+7. Teilen-Zeile, Signatur „Mihajlo Systems, Webdesign aus Goslar“, genau 5 Hashtags nach `THEMEN.md`.
+Praktisch: Plan wie bisher mit kurzer Caption schreiben, nach dem Bauen `python3 plan/lange_captions.py` laufen lassen (macht daraus die lange Fassung, prüft Länge und Gedankenstriche).
 
 ## Wenn etwas schiefgeht
 - ElevenLabs nicht erreichbar oder ohne Guthaben: nichts veröffentlichen, im Bericht klar sagen.
