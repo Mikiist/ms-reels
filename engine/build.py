@@ -64,7 +64,7 @@ def check_text(job):
     if not 35 <= words <= 100: bad.append(f"{words} Wörter (Ziel 40 bis 80, also etwa 17 bis 33 Sekunden)")
     for i, s in enumerate(job["segments"]):
         n = len(s["say"].split())
-        if n < 3: bad.append(f"Segment {i + 1} hat nur {n} Wörter (mindestens 3, sonst ist die Szene zu kurz)")
+        if n < 3 and s["scene"]["type"] != "reveal": bad.append(f"Segment {i + 1} hat nur {n} Wörter (mindestens 3, sonst ist die Szene zu kurz)")
     return bad
 
 def process_voice(d):

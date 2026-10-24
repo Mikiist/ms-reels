@@ -523,3 +523,64 @@ TYPES.versus = {
   },
   ev(d) { const r = Math.min(d * 0.45, 0.9); return [[0.1, "whoosh_side", 0.4, -0.5], [0.4, "pop", 0.4], [r, "whoosh_side", 0.4, 0.5], [r + 0.3, "chime", 0.25, 0.5]]; },
 };
+
+// ===== 21. Enthüllung: harter Schnitt auf die Marke (Story-Reels, nach „landeten sie auf …“) =====
+TYPES.reveal = {
+  zone: "center", pal: "ag_dark", bgv: 0, nocap: true, drop: true,
+  draw(g, u, d, p, sc, P) {
+    background(g, P, u, sc); const cx = 540, cy = 900;
+    // Lichtstrahlen drehen sich hinter dem Logo
+    const rk = out3(seg(u, 0.02, 0.5)); g.save(); g.translate(cx, cy); g.rotate(u * 0.35); for (let i = 0; i < 18; i++) { g.rotate(Math.PI * 2 / 18); g.fillStyle = hexA(P.acc, (i % 2 ? 0.05 : 0.11) * rk); g.beginPath(); g.moveTo(0, 0); g.lineTo(-70, -1500); g.lineTo(70, -1500); g.closePath(); g.fill(); } g.restore();
+    shock(g, cx, cy, seg(u, 0.06, 1.0), hexA(P.acc, 1).replace(/[\d.]+\)$/, "A)"), 1100, 3);
+    for (let i = 0; i < 46; i++) { const a = rnd(i + 7) * 7, v = 350 + rnd(i * 3 + 1) * 1000, kk = out3(seg(u, 0.06, 1.1)); circle(g, cx + Math.cos(a) * v * kk, cy + Math.sin(a) * v * kk, 3 + rnd(i) * 7, i % 3 ? `rgba(198,244,50,${0.9 * (1 - kk)})` : `rgba(255,255,255,${0.9 * (1 - kk)})`); }
+    // Logo knallt von groß auf normal
+    const lk = outExpo(seg(u, 0.03, 0.3)); if (lk > 0) { const s = lerp(3.2, 1, lk); g.save(); g.translate(cx, cy - 120); g.scale(s, s); g.globalAlpha = cl(lk * 4); shadow(g, 90, 0, hexA(P.acc, 0.55)); g.drawImage(logoImg(), -150, -150, 300, 300); noShadow(g); g.restore(); }
+    // Buchstaben schlagen einzeln ein
+    const word = (str, y, px, t0, step, col) => { font(g, 900, px, "A"); const ws = [...str].map((c) => g.measureText(c).width + px * 0.06); const tw = ws.reduce((a, b) => a + b, 0); let x = cx - tw / 2;
+      [...str].forEach((c, i) => { const k = outBack(seg(u, t0 + i * step, t0 + i * step + 0.16), 2.4); if (k > 0) { g.save(); g.translate(x + ws[i] / 2, y); g.scale(lerp(2.4, 1, cl(k)), lerp(2.4, 1, cl(k))); g.globalAlpha = cl(k * 3); txt(g, c, 0, 0, { w: 900, px, fam: "A", c: col }); g.restore(); } x += ws[i]; }); };
+    word("MIHAJLO", cy + 150, 170, 0.18, 0.045, P.fg); word("SYSTEMS", cy + 310, 170, 0.36, 0.045, P.acc);
+    const bk = out3(seg(u, 0.75, 1.1)); if (bk > 0) fillRR(g, cx - 300 * bk, cy + 410, 600 * bk, 10, 5, P.acc);
+    sparkles(g, cx, cy - 120, u, 14, 320, "#fff", 21);
+    // Weißblitz am Anfang (kommt aus der Panzer-Szene)
+    const wf = 1 - cl(u / 0.22); if (wf > 0) { g.fillStyle = `rgba(255,255,255,${wf})`; g.fillRect(0, 0, 1080, 1920); }
+  },
+  ev() { const E = [[0.0, "boom", 1.0], [0.02, "flash", 0.5], [0.05, "shimmer", 0.4], [0.06, "thunder", 0.35]];
+    for (let i = 0; i < 7; i++) E.push([0.18 + i * 0.045, "tick_hi", 0.28, -0.3 + i * 0.1]); for (let i = 0; i < 7; i++) E.push([0.36 + i * 0.045, "tick_hi", 0.28, 0.3 - i * 0.1]);
+    E.push([0.7, "shimmer_hi", 0.3]); return E; },
+};
+
+// ===== 22. Leistungen von A bis Z: Kacheln springen auf, wenn ihr Wort fällt =====
+const SVC = {
+  web: (g, c) => { g.strokeStyle = c; g.lineWidth = 9; rr(g, -70, -52, 140, 104, 14); g.stroke(); g.beginPath(); g.moveTo(-70, -22); g.lineTo(70, -22); g.stroke(); [-50, -32, -14].forEach((x) => circle(g, x, -37, 6, c)); fillRR(g, -48, -2, 60, 12, 6, c); fillRR(g, -48, 22, 96, 12, 6, hexA(c, 0.5)); },
+  gutschein: (g, c) => { g.strokeStyle = c; g.lineWidth = 9; g.beginPath(); g.moveTo(-78, -45); g.lineTo(78, -45); g.lineTo(78, -14); g.arc(78, 0, 14, -Math.PI / 2, Math.PI / 2, true); g.lineTo(78, 45); g.lineTo(-78, 45); g.lineTo(-78, 14); g.arc(-78, 0, 14, Math.PI / 2, -Math.PI / 2, true); g.closePath(); g.stroke();
+    g.setLineDash([10, 10]); g.beginPath(); g.moveTo(28, -38); g.lineTo(28, 38); g.stroke(); g.setLineDash([]); txt(g, "€", -22, 4, { w: 900, px: 64, fam: "A", c }); },
+  bestell: (g, c) => { g.strokeStyle = c; g.lineWidth = 9; g.beginPath(); g.arc(0, 22, 62, Math.PI, 0); g.stroke(); fillRR(g, -86, 26, 172, 12, 6, c); circle(g, 0, -48, 10, c); g.beginPath(); g.moveTo(-30, -6); g.quadraticCurveTo(-26, -24, -10, -30); g.stroke(); },
+  chatbot: (g, c) => { g.strokeStyle = c; g.lineWidth = 9; rr(g, -72, -50, 144, 88, 26); g.stroke(); g.beginPath(); g.moveTo(-30, 38); g.lineTo(-44, 64); g.lineTo(-4, 38); g.stroke(); [-30, 0, 30].forEach((x, i) => circle(g, x, -6, 9, c)); },
+  termin: (g, c) => { g.strokeStyle = c; g.lineWidth = 9; rr(g, -66, -50, 132, 106, 14); g.stroke(); g.beginPath(); g.moveTo(-66, -18); g.lineTo(66, -18); g.stroke(); [-34, 34].forEach((x) => fillRR(g, x - 5, -66, 10, 30, 5, c)); check(g, 0, 18, 44, 1, c, 9); },
+};
+TYPES.services = {
+  zone: "top", pal: "ag_dark", bgv: 0,
+  prep(o, p) {
+    const ws = (SPEC.words || []).filter((w) => w.scene === o.i); const nw = (w) => w.toLowerCase().replace(/[^a-zäöüß0-9]/g, "");
+    const it = (p.items || [{ k: "web", label: "Websites", m: "website" }, { k: "gutschein", label: "Gutscheinshop", m: "gutschein" }, { k: "bestell", label: "Bestellsystem", sub: "fürs Restaurant", m: "bestell" }, { k: "chatbot", label: "KI-Chatbot", m: "chatbot|ki" }]).slice(0, 6);
+    let after = 0; p._it = it.map((x, i) => { const re = new RegExp("^(" + x.m + ")"); const w = ws.find((y) => y.t >= after && re.test(nw(y.w))); const t = w ? w.t - o.t0 - 0.08 : 0.4 + i * 0.5; after = w ? w.t + 0.05 : after; return { ...x, t: Math.max(0.12, t) }; });
+    const a = ws.find((y) => /^(a|z)$/.test(nw(y.w))); p._hdr = a ? Math.max(0.05, a.t - o.t0 - 0.1) : 0.1;
+  },
+  draw(g, u, d, p, sc, P) {
+    background(g, P, u, sc); const it = p._it || []; const n = it.length; const cols = 2, rows = Math.ceil(n / cols); const tw = 470, th = 390, gap = 34;
+    const gy = 880, x0 = 540 - (cols * tw + (cols - 1) * gap) / 2;
+    const hk = outExpo(seg(u, p._hdr || 0.1, (p._hdr || 0.1) + 0.25)); if (hk > 0) { g.save(); g.translate(540, gy - 120); g.scale(lerp(1.8, 1, hk), lerp(1.8, 1, hk)); g.globalAlpha = cl(hk * 3);
+      const s = p.title || "VON A BIS Z"; const px = fitPx(g, s, 900, 120, 900, "A"); font(g, 900, px, "A"); const w = g.measureText(s).width + 70; fillRR(g, -w / 2, -px * 0.62, w, px * 1.2, 18, P.acc); txt(g, s, 0, 4, { w: 900, px, fam: "A", c: inkOn(P.acc) }); g.restore(); }
+    // gerade gesprochene Kachel leuchtet
+    let cur = -1; it.forEach((x, i) => { if (u >= x.t) cur = i; });
+    it.forEach((x, i) => { const r = Math.floor(i / cols), c = i % cols; const last = i === n - 1 && n % cols; const tx = last ? 540 - tw / 2 : x0 + c * (tw + gap), ty = gy + r * (th + gap);
+      const k = outBack(seg(u, x.t, x.t + 0.28), 2.2); if (k <= 0) { g.strokeStyle = hexA(P.fg, 0.08); g.lineWidth = 3; g.setLineDash([14, 12]); rr(g, tx, ty, tw, th, 34); g.stroke(); g.setLineDash([]); return; }
+      g.save(); g.translate(tx + tw / 2, ty + th / 2); g.scale(cl(k) * 0.15 + 0.85 * k, k); g.rotate((1 - cl(k)) * (c ? 0.12 : -0.12));
+      const on = i === cur; shadow(g, on ? 70 : 30, 0, on ? hexA(P.acc, 0.45) : "rgba(0,0,0,0.5)"); fillRR(g, -tw / 2, -th / 2, tw, th, 34, on ? "#1b2230" : "#141922"); noShadow(g);
+      g.strokeStyle = on ? P.acc : hexA(P.fg, 0.12); g.lineWidth = on ? 5 : 3; rr(g, -tw / 2, -th / 2, tw, th, 34); g.stroke();
+      g.save(); g.translate(0, -60); const ik = out3(seg(u, x.t + 0.08, x.t + 0.4)); g.scale(ik * 1.25, ik * 1.25); (SVC[x.k] || SVC.web)(g, on ? P.acc : hexA(P.acc, 0.8)); g.restore();
+      const px = fitPx(g, x.label, tw - 60, 60, 800); txt(g, x.label, 0, 95, { w: 800, px, c: P.fg }); if (x.sub) txt(g, x.sub, 0, 150, { w: 500, px: 34, fam: "I", c: P.sub });
+      g.restore(); });
+  },
+  ev(d, p) { const it = (p && p._it) || []; const E = [[(p && p._hdr) || 0.1, "slap", 0.6]]; it.forEach((x, i) => { E.push([x.t, "pop", 0.5, i % 2 ? 0.35 : -0.35]); E.push([x.t + 0.08, "tick_hi", 0.3, i % 2 ? 0.35 : -0.35]); }); return E; },
+};

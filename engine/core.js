@@ -36,6 +36,7 @@ function cleanWord(w) { return w.replace(/^[„"‚'(]+/, "").replace(/[,;:.“"
 function buildPhrases() {
   const words = SPEC.words || [];
   SC.forEach((sc) => {
+    if (sc.T.nocap) return; // Szene zeigt den gesprochenen Text selbst groß
     const ws = words.filter((w) => w.scene === sc.i); let cur = [];
     const flush = () => { if (cur.length) sc.phrases.push(cur); cur = []; };
     ws.forEach((w, j) => { const disp = cleanWord(w.w); if (!disp) return; cur.push({ ...w, disp });

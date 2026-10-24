@@ -74,7 +74,7 @@
     prep(o, p) {
       const W0 = (SPEC.words || []).filter((w) => w.scene === o.i); const f = (re, after = 0, def = null) => { const w = W0.find((x) => x.t >= after && re.test(norm(x.w))); return w ? w.t - o.t0 : def; };
       const T = {}; T.bek = f(/^beklebt/, 0, 2.2); T.ecke = f(/^ecke/, T.bek, T.bek + 1.6); T.weil = f(/^weil/, T.ecke, T.ecke + 0.6); T.abg = f(/^abgeschossen/, T.weil, T.weil + 1.8);
-      T.jetzt = f(/^jetzt/, T.abg, T.abg + 1.0); T.code = f(/^code/, T.jetzt, T.jetzt + 1.0); T.landet = f(/^landet/, T.code, T.code + 0.5); T.web = f(/^website/, T.landet, T.landet + 0.8);
+      T.jetzt = f(/^(jetzt|doch)/, T.abg, T.abg + 1.0); T.code = f(/^code/, T.jetzt, T.jetzt + 1.0); T.landet = f(/^landet/, T.code, T.code + 0.5); T.web = f(/^website/, T.landet, T.landet + 0.8);
       const main = [], extra = [], onMan = []; const span = Math.max(1.2, T.ecke + 0.25 - 0.1);
       const cand = []; for (let r = 0; r < 2; r++) for (let c = 0; c < 10; c++) cand.push([-270 + c * 60 + (rnd(r * 9 + c) - 0.5) * 16, -150 + r * 58 + (rnd(r * 5 + c * 3) - 0.5) * 12]);
       for (let c = 0; c < 9; c++) cand.push([-240 + c * 60 + (rnd(c + 50) - 0.5) * 16, -120 + (rnd(c + 70) - 0.5) * 12]);
@@ -89,7 +89,7 @@
     },
     draw(g, u, d, p, sc, P) {
       const V = p._t, T = V.T; const flash = u >= T.weil - 0.05 && u < T.jetzt - 0.05;
-      const dive = inExpo(cl((u - T.code + 0.05) / 0.4)); const wall = u >= T.code + 0.35;
+      const rev = !!p.reveal; const dive = rev ? inExpo(cl((u - T.landet + 0.1) / Math.max(0.3, d - T.landet + 0.1))) : inExpo(cl((u - T.code + 0.05) / 0.4)); const wall = !rev && u >= T.code + 0.35;
       if (wall) return this.wall(g, u, p, V, T);
       if (flash) { // Rückblende: Drohnen schießen Panzer ohne Codes ab
         const fu = u - T.weil; g.save(); const zz = 1.12 + 0.05 * cl(fu / 2); g.translate(540, 960); g.scale(zz, zz); g.translate(-540, -880); desert(g, u, 0);
@@ -107,7 +107,7 @@
       const KF = [key(0, 1.3, 560, 820), key(T.ecke - 0.2, 1.26, 560, 820), key(T.ecke + 0.4, 1.12, 545, 840), key(T.jetzt - 0.05, 1.18, 545, 760), key(T.jetzt + 0.6, 1.25, 560, 760)];
       let z = KF[0].z, cx = KF[0].x, cy = KF[0].y;
       for (let i = 1; i < KF.length; i++) { const A = KF[i - 1], B = KF[i]; if (u >= A.t) { const k = inOut(cl((u - A.t) / Math.max(0.05, B.t - A.t))); z = lerp(A.z, B.z, k); cx = lerp(A.x, B.x, k); cy = lerp(A.y, B.y, k); } }
-      if (dive > 0) { z *= 1 + dive * 9; const k = inOut(cl((u - T.code + 0.15) / 0.3)); cx = lerp(cx, V.tgt.x, k); cy = lerp(cy, V.tgt.y, k); }
+      if (dive > 0) { z *= 1 + dive * (rev ? 60 : 9); const k = rev ? inOut(cl((u - T.landet + 0.1) / 0.35)) : inOut(cl((u - T.code + 0.15) / 0.3)); cx = lerp(cx, V.tgt.x, k); cy = lerp(cy, V.tgt.y, k); }
       g.save(); g.translate(540, 960); g.scale(z, z); g.translate(-cx, -cy); desert(g, u, 0);
       tank(g, 540, 960, 1, false, null);
       for (const s of V.main) sticker(g, s.x, s.y, s.s, s.r, s.b, (u - s.t) / 0.16);
@@ -118,6 +118,7 @@
         const sb = cl((u - T.jetzt - 0.35) / 0.2) * (1 - cl((u - T.code + 0.05) / 0.1)); if (sb > 0) { g.save(); g.globalAlpha = sb; g.fillStyle = "rgba(80,255,140,0.28)"; g.beginPath(); g.moveTo(dx, dy + 22); g.lineTo(V.tgt.x - 34, V.tgt.y - 30 + Math.sin(u * 20) * 6); g.lineTo(V.tgt.x + 34, V.tgt.y + 30 + Math.sin(u * 20) * 6); g.closePath(); g.fill();
           g.strokeStyle = "#3dff8b"; g.lineWidth = 4; g.strokeRect(V.tgt.x - 34, V.tgt.y - 34, 68, 68); g.restore(); } }
       g.restore();
+      if (rev) { const wf = cl((u - (d - 0.16)) / 0.16); if (wf > 0) { g.fillStyle = `rgba(255,255,255,${wf})`; g.fillRect(0, 0, W, H); } }
     },
     wall(g, u, p, V, T) {
       const wu = u - (T.code + 0.35); g.fillStyle = "#c9b48a"; g.fillRect(0, 0, W, H);
@@ -142,6 +143,7 @@
       E.push([T.weil - 0.05, "whoosh_side", 0.5, 0]); E.push([T.weil, "tbuzz", 0.45, 0.4]);
       [0, 1, 2].forEach((i) => { const h = T.abg - 0.35 + i * 0.2; E.push([h - 0.45, "twhistle", 0.35, (i - 1) * 0.6]); E.push([h, "boom", 0.9, (i - 1) * 0.6]); });
       E.push([T.jetzt - 0.3, "tbuzz", 0.4, 0.6]); E.push([T.jetzt + 0.35, "vscan", 0.5, 0.2]);
+      if (p.reveal) { E.push([T.landet - 0.05, "riser", 0.7, 0, Math.max(0.3, d - T.landet + 0.05)]); return E.filter((e) => e[0] < d + 0.1); }
       E.push([T.code - 0.05, "whoosh_up", 0.6, 0]); for (let i = 0; i < 6; i++) E.push([T.code + 0.35 + i * 0.09, "vbeep", 0.35, (i % 3 - 1) * 0.4]);
       const url = "https://" + (p.url || "mihajlostanojevic.com"); for (let i = 0; i < url.length; i += 2) E.push([T.landet + 0.5 * i / url.length, "key", 0.25, 0]);
       E.push([T.web - 0.05, "ding", 0.45, 0]); E.push([T.web + 0.05, "shimmer", 0.3, 0]);
