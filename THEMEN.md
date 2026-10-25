@@ -65,3 +65,16 @@ Mischung pro Video: 1 breiter Begriff (#webdesign, #website, #seo, #onlinemarket
 - „Drei Sekunden. Wie lange würden Sie warten?“
 - „Dieser eine Satz auf Ihrer Startseite kostet Sie Kunden.“
 - „Sie haben Instagram, aber keine Website? Dann passiert das.“
+
+## Neugier-Geschichten (ab 25.10.2026 das einzige Format)
+Muster: „[Jemand] macht [etwas Absurdes]. Weil [Alltagsproblem]. Doch als [Wendung], landete(n) [sie] auf…“ → MIHAJLO SYSTEMS.
+Erledigt: Panzer mit QR-Codes (24.10.), Transporter mit QR-Codes und Blitzer.
+Ideen-Speicher (jede nur einmal):
+- Eine Frau schreibt ihre Telefonnummer auf 10.000 Bananen im Supermarkt.
+- Ein Mann steht jede Nacht mit einem Suchscheinwerfer auf dem Dach seines Ladens.
+- Ein Bäcker lässt jeden Morgen 500 Luftballons mit seiner Adresse steigen.
+- Ein Hund läuft jeden Tag mit einem Werbeschild durch die Stadt und bekommt mehr Anrufe als sein Herrchen.
+- Ein Friseur eröffnet seinen Salon auf einem fahrenden Zug.
+- Ein Mann baut einen zwölf Meter hohen Pfeil auf sein Dach, damit Kunden ihn finden.
+- Ein Opa schickt jeden Tag eine Brieftaube mit Flyern los.
+- Eine Pizzeria malt ihre Nummer auf den Bürgersteig, quer durch die ganze Stadt.

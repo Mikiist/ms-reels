@@ -58,7 +58,7 @@
     prep(o, p) {
       const W0 = (SPEC.words || []).filter((w) => w.scene === o.i); const f = (re, after = 0, def = null) => { const w = W0.find((x) => x.t >= after && re.test(norm(x.w))); return w ? w.t - o.t0 : def; };
       const T = {}; T.bek = f(/^beklebt/, 0, 2.2); T.ecke = f(/^ecke/, T.bek, T.bek + 1.6); T.leute = f(/^leute/, T.ecke, T.ecke + 0.6); T.sahen = f(/^(sahen|ampel)/, T.leute, T.leute + 0.8);
-      T.anrief = f(/^anriefen/, T.sahen, T.sahen + 1.0); T.blitz = f(/^blitzer/, T.anrief, T.anrief + 1.0); T.code = f(/^code/, T.blitz, T.blitz + 0.6); T.landet = f(/^landet/, T.code, T.code + 0.5); T.web = f(/^website/, T.landet, T.landet + 0.6);
+      T.anrief = f(/^anriefen/, T.sahen, T.sahen + 1.0); T.blitz = f(/^blitzer/, T.anrief, T.anrief + 1.0); T.code = f(/^code/, T.blitz, T.blitz + 0.6); T.landet = f(/^landet/, T.code, T.code + 0.5); if (p.reveal) T.code = Math.max(T.code, T.landet - 0.1); T.web = f(/^website/, T.landet, T.landet + 0.6);
       // Aufkleber: 130 auf dem Transporter (immer schneller), 34 drumherum, 5 auf dem Klempner
       const main = [], extra = [], onMan = []; const span = Math.max(1.2, T.ecke + 0.25 - 0.1);
       const cand = []; for (let r = 0; r < 4; r++) for (let c = 0; c < 10; c++) cand.push([262 + c * 62 + (rnd(r * 9 + c) - 0.5) * 18, 682 + r * 62 + (rnd(r * 5 + c * 3) - 0.5) * 16]);
@@ -79,8 +79,8 @@
         key(T.anrief - 0.25, 1.0, 540, 1000), key(T.anrief + 0.25, 1.45, 330, 760), key(T.blitz - 0.4, 1.45, 330, 760), key(T.blitz - 0.1, 1.28, 860, 740)];
       let z = KF[0].z, cx = KF[0].x, cy = KF[0].y;
       for (let i = 1; i < KF.length; i++) { const A = KF[i - 1], B = KF[i]; if (u >= A.t) { const k = inOut(cl((u - A.t) / Math.max(0.05, B.t - A.t))); z = lerp(A.z, B.z, k); cx = lerp(A.x, B.x, k); cy = lerp(A.y, B.y, k); } }
-      const dive = inExpo(cl((u - T.code + 0.05) / 0.4)); if (dive > 0) { z *= 1 + dive * 9; cx = lerp(cx, V.tgt.x, inOut(cl((u - T.code + 0.15) / 0.3))); cy = lerp(cy, V.tgt.y, inOut(cl((u - T.code + 0.15) / 0.3))); }
-      const wall = u >= T.code + 0.35;
+      const rev = !!p.reveal; const dive = rev ? inExpo(cl((u - T.landet + 0.1) / Math.max(0.3, d - T.landet + 0.1))) : inExpo(cl((u - T.code + 0.05) / 0.4)); if (dive > 0) { z *= 1 + dive * (rev ? 60 : 9); cx = lerp(cx, V.tgt.x, inOut(cl((u - T.code + 0.15) / 0.3))); cy = lerp(cy, V.tgt.y, inOut(cl((u - T.code + 0.15) / 0.3))); }
+      const wall = !rev && u >= T.code + 0.35;
       if (!wall) {
         g.save(); g.translate(540, 960); g.scale(z, z); g.translate(-cx, -cy);
         // Himmel, Wolken, Häuser
@@ -138,6 +138,7 @@
             const rg = cl((u - T.web - 0.2) / 0.2); if (rg > 0) { const wob = Math.sin(u * 60) * 0.12 * rg; g.save(); g.translate(300, 230); g.rotate(wob); fillRR(g, -38, -66, 76, 132, 16, "#e8ecf2"); fillRR(g, -30, -56, 60, 100, 8, "#3dff8b"); g.restore(); } }
           g.restore(); }
       }
+      if (rev) { const wf = cl((u - (d - 0.16)) / 0.16); if (wf > 0) { g.fillStyle = `rgba(255,255,255,${wf})`; g.fillRect(0, 0, 1080, 1920); } }
     },
     ev(d, p) {
       const V = p._v, T = V.T, E = [];
@@ -146,6 +147,7 @@
       E.push([T.leute - 0.3, "vsteps", 0.35, -0.5]); [0, 1, 2].forEach((i) => E.push([T.sahen + 0.2 + i * 0.18, "vshutter", 0.55, -0.4 + i * 0.4]));
       E.push([T.anrief, "vsad", 0.55, 0.3]); E.push([T.anrief + 0.25, "vsteps", 0.3, 0.5]);
       E.push([T.blitz - 0.35, "whoosh_up", 0.4, -0.6]); E.push([T.blitz + 0.05, "vblitz", 0.9, -0.5]); E.push([T.blitz + 0.3, "vscan", 0.5, -0.2]);
+      if (p.reveal) { E.push([T.landet - 0.05, "riser", 0.7, 0, Math.max(0.3, d - T.landet + 0.05)]); return E.filter((e) => e[0] < d + 0.1); }
       E.push([T.code - 0.05, "whoosh_up", 0.6, 0]); for (let i = 0; i < 6; i++) E.push([T.code + 0.35 + i * 0.09, "vbeep", 0.35, (i % 3 - 1) * 0.4]);
       const url = "https://" + (p.url || "ihr-klempner.de"); for (let i = 0; i < url.length; i += 2) E.push([T.landet + 0.45 * i / url.length, "key", 0.25, 0]);
       E.push([T.web - 0.05, "ding", 0.4, 0]); E.push([T.web + 0.2, "vphone", 0.6, 0.4]);

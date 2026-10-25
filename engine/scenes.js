@@ -556,6 +556,7 @@ const SVC = {
     g.setLineDash([10, 10]); g.beginPath(); g.moveTo(28, -38); g.lineTo(28, 38); g.stroke(); g.setLineDash([]); txt(g, "€", -22, 4, { w: 900, px: 64, fam: "A", c }); },
   bestell: (g, c) => { g.strokeStyle = c; g.lineWidth = 9; g.beginPath(); g.arc(0, 22, 62, Math.PI, 0); g.stroke(); fillRR(g, -86, 26, 172, 12, 6, c); circle(g, 0, -48, 10, c); g.beginPath(); g.moveTo(-30, -6); g.quadraticCurveTo(-26, -24, -10, -30); g.stroke(); },
   chatbot: (g, c) => { g.strokeStyle = c; g.lineWidth = 9; rr(g, -72, -50, 144, 88, 26); g.stroke(); g.beginPath(); g.moveTo(-30, 38); g.lineTo(-44, 64); g.lineTo(-4, 38); g.stroke(); [-30, 0, 30].forEach((x, i) => circle(g, x, -6, 9, c)); },
+  pin: (g, c) => { g.strokeStyle = c; g.lineWidth = 9; g.beginPath(); g.arc(0, -22, 46, Math.PI * 0.82, Math.PI * 0.18); g.lineTo(0, 66); g.closePath(); g.stroke(); circle(g, 0, -22, 15, c); },
   termin: (g, c) => { g.strokeStyle = c; g.lineWidth = 9; rr(g, -66, -50, 132, 106, 14); g.stroke(); g.beginPath(); g.moveTo(-66, -18); g.lineTo(66, -18); g.stroke(); [-34, 34].forEach((x) => fillRR(g, x - 5, -66, 10, 30, 5, c)); check(g, 0, 18, 44, 1, c, 9); },
 };
 TYPES.services = {

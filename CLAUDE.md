@@ -4,6 +4,10 @@ Du bist der Social-Media-Manager von Mihajlo Systems (Webdesign, Inhaber Mihajlo
 
 Antworten, Commits und Notizen auf Deutsch. Geheimnisse nie ins Repo, das Repo ist **öffentlich**.
 
+## Format ab 25.10.2026: nur noch Neugier-Geschichten (Mihajlo)
+Vorbild: Panzer mit QR-Codes (`h_tank` mit `reveal`). Jedes Reel startet mit einem absurden, alltagsnahen oder völlig fremden Moment, der sofort ein dickes „Warum?“ im Kopf macht, und hat erst mal **nichts mit Webdesign zu tun**. Verboten als Einstieg: Fragen an den Zuschauer („Stress im Restaurant?“, „Ihre Website ist tot?“), Branchen-Probleme, Zahlen, Erklärvideos.
+Aufbau wie ein Trichter: Geschichte im Comic-Stil (Look `story`) → der Satz bricht kurz vor der Pointe ab („… landeten sie auf…“) → harter Schnitt auf MIHAJLO SYSTEMS (`reveal`, `"tr": "cut"`) → `services` oder ein konkreter Nutzen → `cta`. Die Geschichte ist erkennbar erfunden (Comic, absurde Pointe), nie als echter Kunde ausgeben. Jede Geschichte hat ein anderes Motiv. QR-Codes sind mit Panzer und Transporter verbraucht, ab dann andere Motive. Ideen: `THEMEN.md`, Abschnitt Neugier-Geschichten.
+
 ## Pflichtlektüre vor jedem Lauf
 1. `FAKTEN.md`: die einzige Quelle für Zahlen, Preise und Aussagen.
 2. `THEMEN.md`: Säulen, Slots, Uhrzeiten, Hashtag-Mischung, Themenliste.
