@@ -76,7 +76,7 @@
     g.fillStyle = "#e7c27a"; rr(g, 30, 640, 130, 26, 8); g.fill(); g.restore();
     g.save(); g.lineWidth = 6; g.strokeStyle = OL; g.fillStyle = "#ffffff"; rr(g, 945, 330, 150, 40, 10); g.fill(); g.stroke(); txt(g, "KÜCHE", 1020, 352, { w: 900, px: 26, c: INK, ls: 3 }); g.restore();
   }
-  function tableT(g, x, top, plateY, mont, u) {
+  function tableT(g, x, top, plateY, mont, u, noQR) {
     g.save(); g.lineWidth = 7; g.strokeStyle = OL; g.lineJoin = "round";
     g.fillStyle = "#5a3a22"; g.fillRect(x - 170, top + 120, 22, 150); g.fillRect(x + 148, top + 120, 22, 150); g.strokeRect(x - 170, top + 120, 22, 150); g.strokeRect(x + 148, top + 120, 22, 150);
     g.fillStyle = "#ffffff"; g.beginPath(); g.moveTo(x - 205, top); g.lineTo(x + 205, top); g.lineTo(x + 222, top + 130); g.lineTo(x - 222, top + 130); g.closePath(); g.fill();
@@ -90,11 +90,13 @@
       g.fillStyle = "#ffd34d"; for (let i = 0; i < 6; i++) { g.save(); g.translate(40 + i * 7, -18); g.rotate(-0.6 + i * 0.25); g.fillRect(-5, -26, 10, 40); g.strokeRect(-5, -26, 10, 40); g.restore(); }
       g.fillStyle = "#f2e86d"; g.beginPath(); g.arc(-58, -24, 10, 0, 7); g.fill(); g.lineWidth = 4; g.stroke(); }
     g.restore();
+    if (!noQR) {
     // QR-Aufsteller „Tisch 7“
     g.save(); g.translate(x + 132, top - 14); g.fillStyle = "rgba(255,255,255,0.85)"; g.lineWidth = 6; g.beginPath(); g.moveTo(-40, 0); g.lineTo(40, 0); g.lineTo(32, -112); g.lineTo(-32, -112); g.closePath(); g.fill(); g.stroke();
     fillRR(g, -30, -106, 60, 22, 6, PINK); txt(g, "TISCH 7", 0, -95, { w: 900, px: 13, c: "#ffffff" }); qr(g, 0, -50, 46);
     g.strokeStyle = "rgba(255,92,138,0.7)"; g.lineWidth = 4; for (let i = 0; i < 2; i++) { const r = 18 + ((u * 1.2 + i * 0.5) % 1) * 30; g.globalAlpha = 1 - ((u * 1.2 + i * 0.5) % 1); g.beginPath(); g.arc(30, -100, r, -1.2, 0.1); g.stroke(); } g.globalAlpha = 1;
     g.restore();
+    }
     g.restore();
   }
   function diners(g, u, look) { // kleines Paar hinten rechts
@@ -142,7 +144,7 @@
     else { g.beginPath(); g.moveTo(-18, hyH + 46); for (let i = 1; i <= 6; i++) g.lineTo(-18 + i * 6, hyH + 46 + (i % 2 ? -5 : 4) * (s.emb > 0.3 ? 1 : 0)); g.stroke(); }
     g.restore();
   }
-  function guestSeated(g, x, seatY, u) {
+  function guestSeated(g, x, seatY, u, shy = 0) {
     g.save(); g.translate(x, seatY); g.lineWidth = 8; g.strokeStyle = OL; g.lineJoin = "round";
     g.fillStyle = "#7a4a2a"; rr(g, -110, -330, 220, 40, 12); g.fill(); g.stroke(); g.fillRect(-100, -300, 20, 300); g.strokeRect(-100, -300, 20, 300);
     g.fillStyle = "#4b7fd6"; g.beginPath(); g.ellipse(0, -150, 112, 128, 0, 0, 7); g.fill(); g.stroke();
@@ -150,16 +152,23 @@
     g.fillStyle = "#e5243b"; g.beginPath(); const hx = 0, hy = -185; g.moveTo(hx, hy + 18); g.bezierCurveTo(hx - 30, hy - 6, hx - 14, hy - 30, hx, hy - 14); g.bezierCurveTo(hx + 14, hy - 30, hx + 30, hy - 6, hx, hy + 18); g.fill();
     const fy = Math.sin(u * 9) * 10; g.strokeStyle = OL; g.lineWidth = 40; g.beginPath(); g.moveTo(85, -230); g.lineTo(150, -260 + fy); g.stroke(); g.strokeStyle = "#4b7fd6"; g.lineWidth = 26; g.stroke(); g.lineWidth = 7; g.strokeStyle = OL;
     g.fillStyle = "#c9ced8"; g.fillRect(160, -340 + fy, 8, 90); g.strokeRect(160, -340 + fy, 8, 90); g.fillStyle = "#f1c7a1"; g.beginPath(); g.arc(160, -260 + fy, 20, 0, 7); g.fill(); g.stroke();
-    const hy2 = -340 + Math.sin(u * 6) * 4; g.fillStyle = "#f1c7a1"; g.beginPath(); g.arc(0, hy2, 70, 0, 7); g.fill(); g.stroke();
+    const hy2 = -340 + Math.sin(u * 6) * 4 * (1 - shy); g.fillStyle = mix("#f1c7a1", "#d9262e", shy * 0.85); g.beginPath(); g.arc(0, hy2, 70, 0, 7); g.fill(); g.stroke();
     g.fillStyle = "#5b3a23"; g.beginPath(); g.ellipse(-60, hy2, 15, 32, 0.2, 0, 7); g.fill(); g.beginPath(); g.ellipse(60, hy2, 15, 32, -0.2, 0, 7); g.fill();
+    if (shy > 0.5) { // schaut verlegen auf den Teller
+      g.fillStyle = OL; g.beginPath(); g.arc(-24, hy2 + 4, 8, 0, 7); g.arc(28, hy2 + 4, 8, 0, 7); g.fill(); g.lineWidth = 8; g.beginPath(); g.moveTo(-44, hy2 - 30); g.lineTo(-12, hy2 - 22); g.moveTo(44, hy2 - 30); g.lineTo(12, hy2 - 22); g.stroke();
+      g.fillStyle = "#5b3a23"; g.beginPath(); g.ellipse(-20, hy2 + 24, 24, 11, 0.25, 0, 7); g.ellipse(20, hy2 + 24, 24, 11, -0.25, 0, 7); g.fill();
+      g.lineWidth = 6; g.beginPath(); g.moveTo(-12, hy2 + 46); g.lineTo(12, hy2 + 46); g.stroke();
+      for (let i = 0; i < 2; i++) { const t = (u * 1.5 + i * 0.5) % 1; g.fillStyle = "#7fd0ff"; g.lineWidth = 4; const sx = 72 + i * 10, sy = hy2 - 30 + t * 70; g.beginPath(); g.moveTo(sx, sy - 16); g.quadraticCurveTo(sx + 12, sy + 4, sx, sy + 8); g.quadraticCurveTo(sx - 12, sy + 4, sx, sy - 16); g.fill(); g.stroke(); }
+    } else {
     g.lineWidth = 8; g.beginPath(); g.arc(-26, hy2 - 4, 13, Math.PI * 1.1, Math.PI * 1.9); g.stroke(); g.beginPath(); g.arc(26, hy2 - 4, 13, Math.PI * 1.1, Math.PI * 1.9); g.stroke();
     g.fillStyle = "#5b3a23"; g.beginPath(); g.ellipse(-20, hy2 + 24, 24, 11, 0.25, 0, 7); g.ellipse(20, hy2 + 24, 24, 11, -0.25, 0, 7); g.fill();
     g.fillStyle = "#7a1f2a"; g.beginPath(); g.arc(0, hy2 + 34, 24, 0.1, Math.PI - 0.1); g.closePath(); g.fill(); g.lineWidth = 7; g.stroke();
     g.fillStyle = "rgba(255,90,120,0.45)"; g.beginPath(); g.arc(-46, hy2 + 16, 13, 0, 7); g.arc(46, hy2 + 16, 13, 0, 7); g.fill();
+    }
     g.restore();
   }
-  function chef(g, x, feet, s) { // s: walk (Phase), pad 0..1 (iPad zeigt nach vorn), tap 0..1, thumb 0..1
-    g.save(); g.translate(x, feet); g.lineWidth = 8; g.strokeStyle = OL; g.lineJoin = "round"; g.lineCap = "round";
+  function chef(g, x, feet, s) { // s: walk (Phase), pad 0..1 (iPad zeigt nach vorn), tap 0..1, thumb 0..1, lean, wink, noPad
+    g.save(); g.translate(x, feet); g.rotate(-(s.lean || 0) * 0.2); g.lineWidth = 8; g.strokeStyle = OL; g.lineJoin = "round"; g.lineCap = "round";
     const sw = Math.sin(s.walk) * 22 * (s.moving ? 1 : 0);
     g.fillStyle = "#24262e"; g.save(); g.translate(-28, -210); g.rotate(sw * 0.012); rr(g, -22, 0, 46, 210, 16); g.fill(); g.stroke(); g.restore(); g.save(); g.translate(28, -210); g.rotate(-sw * 0.012); rr(g, -22, 0, 46, 210, 16); g.fill(); g.stroke(); g.restore();
     g.fillStyle = "#111"; rr(g, -66, -24, 66, 28, 12); g.fill(); g.stroke(); rr(g, 4, -24, 66, 28, 12); g.fill(); g.stroke();
@@ -168,7 +177,7 @@
     g.fillStyle = "#e5243b"; rr(g, -50, -492, 100, 30, 12); g.fill(); g.stroke();
     // Kopf
     const hy = -560; g.fillStyle = "#e8b48a"; g.beginPath(); g.arc(0, hy, 64, 0, 7); g.fill(); g.stroke();
-    g.fillStyle = OL; g.beginPath(); g.arc(-22, hy - 8, 8, 0, 7); g.arc(22, hy - 8, 8, 0, 7); g.fill();
+    g.fillStyle = OL; if (s.wink) { g.beginPath(); g.arc(22, hy - 8, 8, 0, 7); g.fill(); g.lineWidth = 7; g.beginPath(); g.moveTo(-34, hy - 6); g.quadraticCurveTo(-22, hy - 14, -10, hy - 6); g.stroke(); } else { g.beginPath(); g.arc(-22, hy - 8, 8, 0, 7); g.arc(22, hy - 8, 8, 0, 7); g.fill(); }
     g.lineWidth = 7; g.beginPath(); g.moveTo(-38, hy - 32); g.lineTo(-10, hy - 34); g.moveTo(38, hy - 32); g.lineTo(10, hy - 34); g.stroke();
     g.fillStyle = "#24170f"; g.beginPath(); g.moveTo(0, hy + 18); g.bezierCurveTo(-30, hy + 8, -54, hy + 20, -62, hy + 6); g.bezierCurveTo(-58, hy + 34, -24, hy + 38, 0, hy + 26); g.bezierCurveTo(24, hy + 38, 58, hy + 34, 62, hy + 6); g.bezierCurveTo(54, hy + 20, 30, hy + 8, 0, hy + 18); g.fill();
     g.beginPath(); g.arc(0, hy + 38, 14, 0.2, Math.PI - 0.2); g.stroke();
@@ -179,10 +188,10 @@
     const px = -60, py = -380;
     if (s.thumb > 0) { g.strokeStyle = OL; g.lineWidth = 40; g.beginPath(); g.moveTo(-80, -440); g.lineTo(-150, -380); g.lineTo(-150, -470 * s.thumb - 380 * (1 - s.thumb)); g.stroke(); g.strokeStyle = "#fff"; g.lineWidth = 26; g.stroke(); g.lineWidth = 7; g.strokeStyle = OL;
       const ty = -480 * s.thumb - 380 * (1 - s.thumb); g.fillStyle = "#e8b48a"; g.beginPath(); g.arc(-150, ty, 24, 0, 7); g.fill(); g.stroke(); g.beginPath(); rr(g, -160, ty - 52, 20, 40, 10); g.fill(); g.stroke(); }
-    g.save(); g.translate(px, py); const fl = s.pad; g.scale(lerp(-1, 1, fl), 1);
+    if (!s.noPad) { g.save(); g.translate(px, py); const fl = s.pad; g.scale(lerp(-1, 1, fl), 1);
     g.fillStyle = "#1b1d24"; rr(g, -78, -58, 156, 116, 14); g.fill(); g.stroke(); g.fillStyle = fl > 0.5 ? "#f3f5fa" : "#2a2f3c"; rr(g, -66, -46, 132, 92, 6); g.fill();
     if (fl > 0.5) { fillRR(g, -56, -36, 52, 18, 5, PINK); g.fillStyle = "#c8ccd6"; g.fillRect(-56, -8, 100, 8); g.fillRect(-56, 8, 80, 8); fillRR(g, -56, 22, 70, 14, 5, LIME); }
-    g.restore();
+    g.restore(); }
     g.strokeStyle = OL; g.lineWidth = 40; g.beginPath(); g.moveTo(80, -440); g.lineTo(110, -360); g.lineTo(px + 60, py + 10 - s.tap * 18); g.stroke(); g.strokeStyle = "#fff"; g.lineWidth = 26; g.stroke(); g.lineWidth = 7; g.strokeStyle = OL;
     g.fillStyle = "#e8b48a"; g.beginPath(); g.arc(px + 60, py + 10 - s.tap * 18, 22, 0, 7); g.fill(); g.stroke();
     if (!s.thumb) { g.strokeStyle = OL; g.lineWidth = 40; g.beginPath(); g.moveTo(-80, -440); g.lineTo(-120, -360); g.lineTo(px - 66, py + 20); g.stroke(); g.strokeStyle = "#fff"; g.lineWidth = 26; g.stroke(); g.lineWidth = 7; g.strokeStyle = OL;
@@ -323,5 +332,95 @@
       E.push([T.gebaut - 0.05, "riser", 0.6, 0, Math.max(0.3, d - T.gebaut + 0.05)]);
       return E.filter((e) => e[0] < d + 0.1 && e[0] >= 0);
     },
+  };
+
+  // ---------- Anti-Werbung-Fassung: reines Restaurant-Drama, keine Technik bis zum Schnitt ----------
+  // h_gast: Gast knallt den Teller hin, will den Chef. Chef kommt ruhig (ohne iPad), flüstert ihm einen Satz ins Ohr,
+  // Gast wird knallrot, sitzt und isst. Montage: jeden Montag wieder da. Bei „hatte“ zwinkert der Chef, Kamera taucht in sein Gesicht, Weiß.
+  // Wörter: knallt, nie, chef, chef, flüstert, knallrot, isst, seitdem, woche, hatte.
+  TYPES.h_gast = {
+    zone: "top", pal: "ag_dark", bgv: 0, coverT: 3.2,
+    prep(o, p) {
+      const W0 = (SPEC.words || []).filter((w) => w.scene === o.i); const f = (re, after = 0, def = null) => { const w = W0.find((x) => x.t - o.t0 >= after && re.test(norm(x.w))); return w ? w.t - o.t0 : def; };
+      const T = {}; T.knall = f(/^knallt$/, 0, 0.6); T.nie = f(/^nie$/, T.knall, T.knall + 1.3); T.chef1 = f(/^chef/, T.nie, T.nie + 0.9); T.chef2 = f(/^chef/, T.chef1 + 0.25, T.chef1 + 0.9);
+      T.fl = f(/^flüstert/, T.chef2, T.chef2 + 1.4); T.rot = f(/^knallrot/, T.fl, T.fl + 2.0); T.isst = f(/^isst/, T.rot, T.rot + 0.6); T.seit = f(/^seitdem/, T.isst, T.isst + 1.0);
+      T.woche = f(/^woche/, T.seit, T.seit + 1.0); T.hatte = f(/^hatte/, T.woche, T.woche + 0.8); T.dv = f(/^denn/, T.woche, T.hatte - 0.5) + 0.15; p._T = T;
+    },
+    draw(g, u, d, p) {
+      const T = p._T; const ph = u < T.isst - 0.1 ? 0 : u < T.seit - 0.12 ? 1 : 2;
+      const key = (t, z, x, y) => ({ t, z, x, y });
+      const KF = ph === 0 ? [key(0, 1.36, 430, 700), key(T.chef1 - 0.1, 1.36, 430, 700), key(T.chef1 + 0.25, 1.55, 470, 650), key(T.chef2 - 0.4, 1.55, 470, 650), key(T.chef2 + 0.3, 1.0, 560, 760),
+          key(T.fl - 0.25, 1.0, 560, 760), key(T.fl + 0.25, 1.6, 650, 610)]
+        : ph === 1 ? [key(T.isst - 0.1, 1.4, 330, 700), key(T.seit, 1.3, 360, 710)] : [key(T.seit - 0.12, 1.3, 420, 700), key(T.seit + 0.5, 1.12, 440, 740)];
+      let z = KF[0].z, cx = KF[0].x, cy = KF[0].y;
+      for (let i = 1; i < KF.length; i++) { const A = KF[i - 1], B = KF[i]; if (u >= A.t) { const k = inOut(cl((u - A.t) / Math.max(0.05, B.t - A.t))); z = lerp(A.z, B.z, k); cx = lerp(A.x, B.x, k); cy = lerp(A.y, B.y, k); } }
+      const slams = [0.12, T.knall + 0.05]; let shake = 0; slams.forEach((s) => { const k = u - s; if (k > 0 && k < 0.3) shake = Math.max(shake, 1 - k / 0.3); });
+      const dive = ph === 2 ? inExpo(cl((u - T.dv) / Math.max(0.3, d - T.dv))) : 0;
+      if (dive > 0) { z *= 1 + dive * 30; const k = inOut(cl((u - T.dv) / 0.3)); cx = lerp(cx, 560, k); cy = lerp(cy, 565, k); }
+      const sx = Math.sin(u * 90) * 14 * shake, sy = Math.cos(u * 77) * 10 * shake; const S = (x, y) => [(x - cx) * z + 540 + sx, (y - cy) * z + 960 + sy];
+      const chefIn = out3(seg(u, T.chef2 - 0.4, Math.min(T.fl - 0.1, T.chef2 + 1.0)));
+      DOOR = ph === 0 ? Math.sin(Math.PI * cl((u - (T.chef2 - 0.5)) / 0.9)) * 0.9 : ph === 1 ? Math.sin(Math.PI * cl((u - T.isst - 0.4) / 0.9)) * 0.9 : 0;
+      g.save(); g.translate(540 + sx, 960 + sy); g.scale(z, z); g.translate(-cx, -cy);
+      room(g, u, ph === 2); if (ph === 2) calendar(g, u, { seit: T.seit, gebaut: T.hatte });
+      diners(g, u, ph === 2 ? 0 : cl(seg(u, T.chef1 - 0.3, T.chef1)));
+      if (ph === 0) {
+        const ang = 1 - seg(u, T.fl, T.rot), emb = seg(u, T.fl + 0.2, T.rot + 0.15), pulse = 0.5 + 0.5 * Math.sin(u * 7);
+        const red = u < T.fl ? 0.55 + 0.15 * pulse : lerp(0.6, 1, emb), shout = (u > 0.35 && u < T.chef2 - 0.3) ? 0.6 + 0.4 * Math.abs(Math.sin(u * 11)) : 0;
+        const armA = lerp(lerp(-0.25, 0.35, 0.5 + 0.5 * Math.sin(u * 6)) * 0.4 + 0.1, 1.35, 1 - ang);
+        let py = 0, pr = 0; slams.forEach((s) => { const k = u - s; if (k > 0 && k < 0.45) { py = Math.max(py, Math.sin(Math.PI * k / 0.45) * 46); pr = Math.sin(k * 30) * 0.08 * (1 - k / 0.45); } });
+        tableT(g, 300, 860, { y: py, r: pr }, false, u, true);
+        g.save(); g.translate(560, 0); g.scale(-1, 1); guest(g, 0, 1130, { red, ang, emb, joy: 0, arm: armA, shout, bob: 0 }); g.restore();
+        if (u < T.fl) for (let i = 0; i < 4; i++) { const t = (u * 1.3 + i * 0.25) % 1; g.fillStyle = `rgba(255,255,255,${0.8 * (1 - t)})`; const side = i % 2 ? 1 : -1; g.beginPath(); g.arc(560 + side * (70 + t * 40), 510 - t * 120, 16 + t * 22, 0, 7); g.fill(); }
+        if (emb > 0.4) for (let i = 0; i < 3; i++) { const t = (u * 1.6 + i * 0.33) % 1; g.fillStyle = "#7fd0ff"; g.strokeStyle = OL; g.lineWidth = 4; const x = 480 - i * 12, y = 540 + t * 120; g.beginPath(); g.moveTo(x, y - 18); g.quadraticCurveTo(x + 13, y + 4, x, y + 8); g.quadraticCurveTo(x - 13, y + 4, x, y - 18); g.fill(); g.stroke(); }
+        if (u > T.chef2 - 0.45) chef(g, lerp(1160, 820, chefIn), 1130, { walk: u * 11, moving: chefIn > 0 && chefIn < 0.98, noPad: true, pad: 0, tap: 0, thumb: 0,
+          lean: inOut(seg(u, T.fl - 0.15, T.fl + 0.2)) * (1 - inOut(seg(u, T.rot + 0.2, T.rot + 0.5))) });
+      } else if (ph === 1) {
+        guestSeated(g, 200, 1050, u, 1); tableT(g, 300, 860, { y: 0, r: 0 }, false, u, true);
+        const back = out3(seg(u, T.isst - 0.1, T.isst + 0.9)); chef(g, lerp(820, 1180, back), 1130, { walk: u * 11, moving: back < 0.98, noPad: true, pad: 0, tap: 0, thumb: 0 });
+      } else {
+        guestSeated(g, 200, 1050, u, 0); tableT(g, 300, 860, { y: 0, r: 0 }, true, u, true);
+        chef(g, 560, 1130, { walk: 0, moving: false, noPad: true, pad: 0, tap: 0, thumb: outBack(seg(u, T.seit + 0.1, T.seit + 0.45), 2), wink: u > T.dv - 0.2 });
+      }
+      g.restore();
+      slams.forEach((s, i) => { const k = (u - s) / 0.55; if (k <= 0 || k >= 1) return; const [x, y] = S(310, 760); g.save(); g.translate(x + (i ? 120 : -60), y - 40); g.rotate(i ? 0.18 : -0.15); const e = outBack(cl(k * 3), 3); g.scale(e, e); g.globalAlpha = cl((1 - k) * 3);
+        g.lineWidth = 16; g.strokeStyle = OL; font(g, 900, 120, "D"); g.textAlign = "center"; g.textBaseline = "middle"; g.strokeText(i ? "KNALL!" : "BAM!", 0, 0); g.fillStyle = "#ffd34d"; g.fillText(i ? "KNALL!" : "BAM!", 0, 0); g.restore(); });
+      const win = (a, b) => outBack(seg(u, a, a + 0.22), 2) * (1 - seg(u, b - 0.12, b));
+      if (ph === 0) {
+        const [gx, gy] = S(560, 500), [cxh, cyh] = S(lerp(1160, 820, chefIn) - 90 * inOut(seg(u, T.fl - 0.15, T.fl + 0.2)), 500);
+        bubble(g, ["Das habe ich *NIE*", "bestellt!"], 470, 520, gx - 30, gy, win(Math.max(0.3, T.nie - 0.6), T.chef1 - 0.42), { shout: true, px: 54 });
+        bubble(g, ["Ich will", "den *CHEF*!"], 460, 520, gx - 30, gy, win(T.chef1 - 0.42, T.chef2 - 0.3), { shout: true, px: 64 });
+        bubble(g, ["*psst…*"], 720, 560, cxh, cyh, win(T.fl - 0.05, T.rot - 0.1), { px: 50 });
+        bubble(g, ["…"], 360, 560, gx - 20, gy + 20, win(T.rot, T.isst), { px: 70 });
+      } else if (ph === 2) {
+        const [gx, gy] = S(200, 640); bubble(g, ["Wie immer,", "*Chef*!"], 300, 600, gx + 20, gy, win(T.seit + 0.35, T.dv), { px: 46 });
+      }
+      const mf = 1 - cl(Math.min(Math.abs(u - (T.seit - 0.12)), Math.abs(u - (T.isst - 0.1))) / 0.1); if (mf > 0) { g.fillStyle = `rgba(255,255,255,${mf * 0.7})`; g.fillRect(0, 0, W, H); }
+      const wf = cl((u - (d - 0.16)) / 0.16); if (wf > 0) { g.fillStyle = `rgba(255,255,255,${wf})`; g.fillRect(0, 0, W, H); }
+    },
+    ev(d, p) {
+      const T = p._T, E = [[0.0, "whoosh_down", 0.35, 0], [0.12, "slap", 0.7, -0.2], [0.13, "boom", 0.35, -0.1], [0.2, "domino_tap", 0.4, 0]];
+      E.push([T.knall + 0.05, "slap", 0.7, 0.1], [T.knall + 0.12, "domino_tap", 0.4, 0.1], [Math.max(0.3, T.nie - 0.6), "pop", 0.45, -0.3], [T.chef1 - 0.42, "pop", 0.5, -0.3]);
+      E.push([T.chef2 - 0.5, "gdoor", 0.5, 0.6], [T.chef2 - 0.2, "vsteps", 0.4, 0.4], [T.fl - 0.05, "pop", 0.25, 0.3], [T.rot, "vsad", 0.35, 0]);
+      E.push([T.isst - 0.12, "whoosh_side", 0.4, 0], [T.isst + 0.4, "gdoor", 0.3, 0.6], [T.seit - 0.15, "whoosh_side", 0.45, 0]);
+      for (let t = T.seit + 0.3; t < T.hatte - 0.2; t += 0.3) E.push([t, "tr_swish", 0.25, 0.3]);
+      E.push([T.dv - 0.2, "ding", 0.4, 0.2], [T.dv, "riser", 0.6, 0, Math.max(0.3, d - T.dv)]);
+      return E.filter((e) => e[0] < d + 0.1 && e[0] >= 0);
+    },
+  };
+  // resto_proof: Auflösung nach dem Schnitt. iPad-Karte (Tisch 7, von Ihrem Handy) bei „zeigt“, Treuekarte bei „Treuepunkten“.
+  TYPES.resto_proof = {
+    zone: "top", pal: "ag_dark", bgv: 0, capY: 1240,
+    prep(o, p) {
+      const W0 = (SPEC.words || []).filter((w) => w.scene === o.i); const f = (re, after = 0, def = null) => { const w = W0.find((x) => x.t - o.t0 >= after && re.test(norm(x.w))); return w ? w.t - o.t0 : def; };
+      const T = {}; T.zeigt = f(/^zeigt/, 0, 0.6); T.tisch = T.zeigt; T.qr = T.zeigt + 0.4; T.handy = f(/^bestellt/, T.zeigt, T.zeigt + 0.9); T.treue = f(/^treue/, T.handy, T.handy + 0.9);
+      T.zehn = T.treue + 0.3; T.haus = f(/^(wallet|besuch)/, T.treue, T.treue + 0.8); T.ipad = T.zeigt - 0.35; p._T = T;
+    },
+    draw(g, u, d, p) {
+      const T = p._T; g.save(); g.translate(540, 960); g.scale(1.1, 1.1); g.translate(-420, -740); DOOR = 0; room(g, u, false); guestSeated(g, 200, 1050, u, 0); tableT(g, 300, 860, { y: 0, r: 0 }, false, u, false); g.restore();
+      g.fillStyle = "rgba(20,12,30,0.62)"; g.fillRect(0, 0, W, H);
+      const ik = seg(u, 0, 0.3) * (1 - inOut(seg(u, T.treue - 0.3, T.treue - 0.05))); if (ik > 0) ipadCard(g, u, T, ik);
+      const wk = seg(u, T.treue - 0.05, T.treue + 0.3); if (wk > 0) walletCard(g, u, T, wk);
+    },
+    ev(d, p) { const T = p._T; return [[0.0, "whoosh_up", 0.35, 0], [T.zeigt, "ding", 0.45, 0], [T.qr, "click", 0.35, 0], [T.handy, "ping", 0.4, 0], [T.treue - 0.05, "whoosh_side", 0.3, 0], [T.zehn, "rc_stamp", 0.5, 0], [T.haus, "shimmer", 0.35, 0]].filter((e) => e[0] < d + 0.1); },
   };
 })();
