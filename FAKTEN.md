@@ -6,6 +6,7 @@ Alles, was hier nicht steht, wird nicht behauptet. Keine erfundenen Kunden, Zahl
 - Mihajlo Systems, Inhaber Mihajlo Stanojevic. Sitz Goslar, aber **Goslar nie in Reels nennen** (Mihajlo, 23.10.2026). Website: mihajlostanojevic.com
 - Baut Websites, KI-Chatbots und Bestellsysteme für Betriebe jeder Größe: Handwerker, Praxen, Friseure, Restaurants, kleine Firmen bis Großunternehmen.
 - Digitale Lösungen aus einer Hand (Mihajlo, 24.10.2026): Websites, Online-Gutscheinshop, Bestellsystem für Restaurants, Terminbuchung, KI-Chatbot.
+- Bestellsystem für Gastro (Mihajlo, 26.10.2026): QR-Codes und NFC-Sticker am Tisch, Gäste bestellen direkt am eigenen Handy, das Bestellterminal am iPad zeigt, welcher Tisch was bestellt hat. Dazu Bonuspunkte bzw. digitale Stempelkarte direkt in Apple Wallet und Google Wallet. Preise dafür noch nicht nennen (Pakete werden gerade neu festgelegt).
 - Kunden u. a. in Goslar, Braunschweig, Hannover, Berlin. Arbeitet deutschlandweit (Videoanruf, Telefon, WhatsApp).
 - Ein Ansprechpartner, baut alles selbst, keine Agentur. Hosting, SSL, Wartung und Updates bei der Miete inklusive.
 - Zweiter Standort für Termine: Berlin (Arthur-Müller-Straße 75). Hauptsitz bleibt Goslar.

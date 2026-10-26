@@ -59,7 +59,7 @@ function buildPhrases() {
       // Größe: so groß wie möglich, eine Zeile bis 940 px, sonst zwei Zeilen
       let fs = Math.round((sc.zone === "center" ? 170 : 132) * (CAPSIZE[LOOK.cs] || 1)); div.style.fontSize = fs + "px"; div.style.whiteSpace = "nowrap";
       const MAXW = 860; const wpx = div.scrollWidth; if (wpx > MAXW) { fs = Math.max(76, Math.floor(fs * MAXW / wpx)); div.style.fontSize = fs + "px"; if (div.scrollWidth > MAXW) div.style.whiteSpace = "normal"; }
-      const hpx = div.offsetHeight; const baseY = (String(sc.type).startsWith("h_") && LOOK.capYHook) || LOOK.capY || (sc.zone === "top" ? 410 : sc.zone === "bottom" ? 1440 : 960);
+      const hpx = div.offsetHeight; const baseY = sc.T.capY || (String(sc.type).startsWith("h_") && LOOK.capYHook) || LOOK.capY || (sc.zone === "top" ? 410 : sc.zone === "bottom" ? 1440 : 960);
       const jq = LOOK.calm ? 0 : 1; const jy = (R(sc.i * 5 + k * 3) - 0.5) * 70 * jq, jx = (R(sc.i * 3 + k * 5) - 0.5) * 40 * jq; div.style.top = (baseY - hpx / 2 + jy) + "px"; div.style.left = (70 + jx) + "px";
       const flatPh = LOOK.cs === "box" || LOOK.cs === "sticker" || LOOK.cs === "mono" || LOOK.calm;
       const start = ph[0].t - 0.08; return { div, spans, start, rx: flatPh ? 0 : (R(k * 11 + sc.i) - 0.5) * 16, ry: flatPh ? 0 : (R(k * 17 + sc.i) - 0.5) * 22, dir: k % 2 ? 1 : -1, mode, rot: LOOK.cs === "sticker" ? (R(k * 5 + sc.i) - 0.5) * 7 : LOOK.cs === "box" ? (R(k * 9 + sc.i) - 0.5) * 3 : 0 };

@@ -132,8 +132,10 @@ def main():
     json.dump(spec, open(os.path.join(d, "spec.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     import hashlib
     h = hashlib.sha1(json.dumps(spec, sort_keys=True).encode()); 
-    for f in sorted(os.listdir(HERE)):
-        if f.endswith((".js", ".html", ".mjs")): h.update(open(os.path.join(HERE, f), "rb").read())
+    for sub in ("", "hooks"):
+        dd = os.path.join(HERE, sub)
+        for f in sorted(os.listdir(dd)) if os.path.isdir(dd) else []:
+            if f.endswith((".js", ".html", ".mjs")): h.update(open(os.path.join(dd, f), "rb").read())
     hp = os.path.join(d, "video.hash")
     if os.path.exists(os.path.join(d, "video.mp4")) and os.path.exists(hp) and open(hp).read() == h.hexdigest():
         print("Video unverändert, Render übersprungen")

@@ -78,3 +78,8 @@ Ideen-Speicher (jede nur einmal):
 - Ein Mann baut einen zwölf Meter hohen Pfeil auf sein Dach, damit Kunden ihn finden.
 - Ein Opa schickt jeden Tag eine Brieftaube mit Flyern los.
 - Eine Pizzeria malt ihre Nummer auf den Bürgersteig, quer durch die ganze Stadt.
+
+## Formate aus Mihajlos Beispielen (26.10.2026)
+- **Zwei Läden** (Vorbild XENA-Café, Döner-Stempelkarte): Mini-Stadt von schräg oben (isometrisch), zwei gleiche Läden, nur einer hat ein System. Kamera fliegt sanft, Wörter leuchten auf, App-Karten (iPad, Wallet, Benachrichtigung) ploppen auf. Am Ende „Welcher wollen Sie sein?“. Szene `h_cafe`.
+- **Aufmerksamkeit** (Vorbild Bleistift): etwas Echtes, Befriedigendes passiert, ein Zähler „Sie schauen seit 8,2 s zu“, dann „Stellen Sie sich vor, das wäre Ihre Website“.
+- **Mitmach-Trick** (Vorbild Kartentrick): Zuschauer merkt sich etwas, am Ende ist es weg, die Lösung stand von Anfang an im Bild. Bringt zweites Anschauen.
