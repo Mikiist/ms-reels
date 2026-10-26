@@ -46,22 +46,25 @@ def check_text(job):
     txt = voice_text(job) + " " + job.get("caption", "")
     if re.search(r"[–—]", txt): bad.append("Gedankenstrich im Text (verboten)")
     if re.search(r"goslar", txt + json.dumps([x["scene"] for x in job["segments"]], ensure_ascii=False), re.I): bad.append("Goslar im Reel (Mihajlo, 23.10.2026: nie mehr in Reels)")
-    if re.search(r"\b(du|dein|deine|dich|dir)\b", voice_text(job), re.I): bad.append("Du-Form im Sprechtext (Sie-Form verlangt)")
+    kunde = bool(job.get("kunde"))  # Kundenvideo: eigene Marke, eigene Ansprache, kein Mihajlo-Systems-Schluss
+    if not kunde and re.search(r"\b(du|dein|deine|dich|dir)\b", voice_text(job), re.I): bad.append("Du-Form im Sprechtext (Sie-Form verlangt)")
     tags = re.findall(r"#\w+", job.get("caption", ""))
     if len(tags) > 5: bad.append(f"{len(tags)} Hashtags (Instagram erlaubt 5)")
     if len(job.get("caption", "")) > 2100: bad.append("Caption zu lang")
     types = [s["scene"]["type"] for s in job["segments"]]
-    if types[-1] != "cta": bad.append("Letzte Szene muss 'cta' sein")
+    if not kunde and types[-1] != "cta": bad.append("Letzte Szene muss 'cta' sein")
     known = set(re.findall(r"^TYPES\.(\w+) =", open(os.path.join(HERE, "scenes.js"), encoding="utf-8").read(), re.M))
-    for hf in os.listdir(os.path.join(HERE, "hooks")):
-        if hf.endswith(".js"): known |= set(re.findall(r"^\s*TYPES\.(\w+)\s*=", open(os.path.join(HERE, "hooks", hf), encoding="utf-8").read(), re.M))
-    if not job.get("hook_text"): bad.append("hook_text fehlt (Text-Hook oben für Stummschauer)")
-    if not job.get("cover_title"): bad.append("cover_title fehlt (Titel fürs Titelbild)")
-    if not job.get("audio_name"): bad.append("audio_name fehlt (Name statt Original-Audio)")
+    for sub in ("hooks", os.path.join("hooks", "kunden")):
+        dd = os.path.join(HERE, sub)
+        for hf in os.listdir(dd) if os.path.isdir(dd) else []:
+            if hf.endswith(".js"): known |= set(re.findall(r"^\s*TYPES\.(\w+)\s*=", open(os.path.join(dd, hf), encoding="utf-8").read(), re.M))
+    if not kunde and not job.get("hook_text"): bad.append("hook_text fehlt (Text-Hook oben für Stummschauer)")
+    if not kunde and not job.get("cover_title"): bad.append("cover_title fehlt (Titel fürs Titelbild)")
+    if not kunde and not job.get("audio_name"): bad.append("audio_name fehlt (Name statt Original-Audio)")
     for t in types:
         if t not in known: bad.append(f"Unbekannter Szenentyp {t}")
     words = len(voice_text(job).split())
-    if not 35 <= words <= 100: bad.append(f"{words} Wörter (Ziel 40 bis 80, also etwa 17 bis 33 Sekunden)")
+    if not kunde and not 35 <= words <= 100: bad.append(f"{words} Wörter (Ziel 40 bis 80, also etwa 17 bis 33 Sekunden)")
     for i, s in enumerate(job["segments"]):
         n = len(s["say"].split())
         if n < 3 and s["scene"]["type"] != "reveal": bad.append(f"Segment {i + 1} hat nur {n} Wörter (mindestens 3, sonst ist die Szene zu kurz)")
@@ -132,7 +135,7 @@ def main():
     json.dump(spec, open(os.path.join(d, "spec.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     import hashlib
     h = hashlib.sha1(json.dumps(spec, sort_keys=True).encode()); 
-    for sub in ("", "hooks"):
+    for sub in ("", "hooks", os.path.join("hooks", "kunden")):
         dd = os.path.join(HERE, sub)
         for f in sorted(os.listdir(dd)) if os.path.isdir(dd) else []:
             if f.endswith((".js", ".html", ".mjs")): h.update(open(os.path.join(dd, f), "rb").read())

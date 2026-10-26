@@ -13,7 +13,7 @@ async function page() {
   p.on("pageerror", (e) => errs.push(String(e))); p.on("console", (m) => { if (m.type() === "error") errs.push(m.text()); });
   await p.addInitScript((s) => { window.SPEC = s; }, spec);
   await p.goto("file://" + here + "/reel.html");
-  await p.evaluate(() => Promise.all([["D", [300, 600, 700, 800, 900]], ["I", [400, 500, 600, 700]], ["A", [400]], ["K", [400]], ["B", [400]], ["S", [400]], ["M", [700]], ["U", [500, 800]], ["Y", [700, 800]]].flatMap(([f, ws]) => ws.map((w) => document.fonts.load(`${w} 40px ${f}`))).concat([document.fonts.load("italic 400 40px S")])).then(() => document.fonts.ready)); await p.waitForTimeout(400); return p;
+  await p.evaluate(() => Promise.all([["D", [300, 600, 700, 800, 900]], ["I", [400, 500, 600, 700]], ["A", [400]], ["K", [400]], ["B", [400]], ["S", [400]], ["M", [700]], ["U", [500, 800]], ["Y", [700, 800]], ["C", [400, 700]]].flatMap(([f, ws]) => ws.map((w) => document.fonts.load(`${w} 40px ${f}`))).concat([document.fonts.load("italic 400 40px S")])).then(() => document.fonts.ready)); await p.waitForTimeout(400); return p;
 }
 const p0 = await page();
 const info = await p0.evaluate(() => window.INFO()); info.id = spec.id;
