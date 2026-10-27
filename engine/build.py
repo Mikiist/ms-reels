@@ -52,7 +52,7 @@ def check_text(job):
     if len(tags) > 5: bad.append(f"{len(tags)} Hashtags (Instagram erlaubt 5)")
     if len(job.get("caption", "")) > 2100: bad.append("Caption zu lang")
     types = [s["scene"]["type"] for s in job["segments"]]
-    if not kunde and types[-1] != "cta": bad.append("Letzte Szene muss 'cta' sein")
+    if not kunde and types[-1] != "cta" and not types[-1].endswith("_end"): bad.append("Letzte Szene muss 'cta' oder eine eigene Schluss-Szene '*_end' sein")
     known = set(re.findall(r"^TYPES\.(\w+) =", open(os.path.join(HERE, "scenes.js"), encoding="utf-8").read(), re.M))
     for sub in ("hooks", os.path.join("hooks", "kunden")):
         dd = os.path.join(HERE, sub)
