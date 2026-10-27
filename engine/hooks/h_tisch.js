@@ -85,6 +85,85 @@
   }
   function chip(g, x, y, s, k, col = GREEN) { if (k <= 0) return; font(g, 800, 30, "I"); const w = g.measureText(s).width + 60; g.save(); g.translate(x, y); const e = outBack(cl(k), 2.6); g.scale(e, e); shadow(g, 20, 8, "rgba(0,0,0,0.3)"); fillRR(g, -w / 2, -32, w, 64, 32, col); noShadow(g); txt(g, s, 0, 2, { w: 800, px: 30, fam: "I", c: "#fff" }); g.restore(); }
 
+  // ---------- Handy wie im Vorbild: Restaurant-Startseite, Speisekarte mit Bildern, Finger tippt und scrollt ----------
+  const PX = 270, PY = 410, PW = 540, PH = 1080, IX = PX + 14, IY = PY + 14, IW = PW - 28, IH = PH - 28;
+  const MONO = "M";
+  const ITEMS = [["PIZZA MARGHERITA", "Tomate, Fior di Latte,", "frisches Basilikum", "9,50 €", "pizza", "#ffe3cf"], ["SPAGHETTI CARBONARA", "Guanciale, Pecorino,", "Eigelb, Pfeffer", "11,90 €", "pasta", "#fff2c7"],
+    ["POMMES", "Knusprig, Meersalz,", "Aioli dazu", "4,50 €", "fries", "#e6efff"], ["COLA", "0,33 l, eiskalt", "mit Zitrone", "3,20 €", "cola", "#ffe0e0"], ["TIRAMISU", "Hausgemacht, Mascarpone,", "Espresso", "5,90 €", "tira", "#f1e6ff"]];
+  function food(g, kind, cx, cy, s) { g.save(); g.translate(cx, cy); g.scale(s, s);
+    if (kind === "pizza") { circle(g, 0, 0, 40, "#e9a84c"); circle(g, 0, 0, 33, "#d9472f"); [[-14, -10], [12, -14], [4, 10], [-12, 14], [18, 8]].forEach(([a, b]) => circle(g, a, b, 8, "#fff6e0")); [[-4, -18], [16, 0], [-18, 2]].forEach(([a, b]) => circle(g, a, b, 4, "#3e9b4f")); }
+    else if (kind === "pasta") { g.fillStyle = "#ffffff"; g.beginPath(); g.ellipse(0, 6, 42, 26, 0, 0, Math.PI); g.fill(); g.fillStyle = "#e8eef8"; g.beginPath(); g.ellipse(0, 6, 42, 10, 0, 0, 7); g.fill(); g.strokeStyle = "#f2c94c"; g.lineWidth = 5; g.lineCap = "round"; for (let i = 0; i < 6; i++) { g.beginPath(); g.arc(-18 + i * 7, 0, 10, Math.PI * 1.1, Math.PI * 1.9); g.stroke(); } circle(g, 8, -6, 4, "#b5452d"); circle(g, -10, -4, 3, "#b5452d"); }
+    else if (kind === "fries") { g.fillStyle = "#ffcf3f"; for (let i = 0; i < 7; i++) { g.save(); g.translate(-18 + i * 6, -18); g.rotate(-0.25 + i * 0.08); g.fillRect(-3, -22, 6, 34); g.restore(); } g.fillStyle = "#e5483b"; g.beginPath(); g.moveTo(-26, -10); g.lineTo(26, -10); g.lineTo(20, 34); g.lineTo(-20, 34); g.closePath(); g.fill(); txt(g, "LUNA", 0, 12, { w: 900, px: 12, c: "#fff", fam: "I" }); }
+    else if (kind === "cola") { g.fillStyle = "rgba(255,255,255,0.9)"; g.beginPath(); g.moveTo(-20, -30); g.lineTo(20, -30); g.lineTo(16, 34); g.lineTo(-16, 34); g.closePath(); g.fill(); g.fillStyle = "#5a2b17"; g.beginPath(); g.moveTo(-19, -18); g.lineTo(19, -18); g.lineTo(16, 32); g.lineTo(-16, 32); g.closePath(); g.fill(); fillRR(g, -10, -12, 10, 10, 2, "rgba(255,255,255,0.6)"); fillRR(g, 4, -6, 9, 9, 2, "rgba(255,255,255,0.5)"); g.strokeStyle = "#e5483b"; g.lineWidth = 4; g.beginPath(); g.moveTo(6, -18); g.lineTo(14, -44); g.stroke(); circle(g, -14, -28, 8, "#f4e04d"); }
+    else { fillRR(g, -34, -18, 68, 46, 6, "#f4e2c4"); g.fillStyle = "#6b3e26"; g.fillRect(-34, -4, 68, 8); g.fillRect(-34, 12, 68, 6); g.fillStyle = "#7a4a2e"; g.fillRect(-34, -22, 68, 6); }
+    g.restore(); }
+  function statusBar(g, x, y, w) { txt(g, "20:47", x + 60, y + 34, { w: 700, px: 24, c: INK, fam: "I" }); txt(g, "5G", x + w - 110, y + 34, { w: 700, px: 20, c: INK, fam: "I" }); fillRR(g, x + w - 82, y + 24, 44, 20, 6, INK); }
+  function urlBar(g, x, y, w, url) { fillRR(g, x + 20, y + 64, w - 40, 56, 28, "#ffffff"); shadow(g, 0, 0, "transparent"); g.strokeStyle = "#e3e6ef"; g.lineWidth = 2; rr(g, x + 20, y + 64, w - 40, 56, 28); g.stroke();
+    fillRR(g, x + 46, y + 88, 16, 14, 3, INK); g.strokeStyle = INK; g.lineWidth = 3; g.beginPath(); g.arc(x + 54, y + 88, 6, Math.PI, 0); g.stroke(); txt(g, url, x + 72, y + 92, { w: 600, px: 22, c: INK, al: "left", fam: "I" }); }
+  function chev(g, x, y) { g.strokeStyle = "#9aa0b4"; g.lineWidth = 3; g.beginPath(); g.moveTo(x - 5, y - 9); g.lineTo(x + 4, y); g.lineTo(x - 5, y + 9); g.stroke(); }
+  function homePage(g, x, y, w, h, u, M) {
+    const hx = x + 22, hy = y + 140, hw = w - 44, hh = 330; const hg = g.createLinearGradient(hx, hy, hx + hw, hy + hh); hg.addColorStop(0, "#1b2a5e"); hg.addColorStop(1, "#0e1532"); fillRR(g, hx, hy, hw, hh, 26, "#0e1532"); g.fillStyle = hg; rr(g, hx, hy, hw, hh, 26); g.fill();
+    g.save(); rr(g, hx, hy, hw, hh, 26); g.clip(); g.strokeStyle = "rgba(255,255,255,0.07)"; g.lineWidth = 1.5; for (let i = 0; i < 12; i++) { g.beginPath(); g.moveTo(hx + i * 44, hy); g.lineTo(hx + i * 44, hy + hh); g.stroke(); g.beginPath(); g.moveTo(hx, hy + i * 44); g.lineTo(hx + hw, hy + i * 44); g.stroke(); }
+    const gl = g.createRadialGradient(hx + hw - 120, hy + 110, 10, hx + hw - 120, hy + 110, 170); gl.addColorStop(0, "rgba(255,190,90,0.45)"); gl.addColorStop(1, "rgba(255,190,90,0)"); g.fillStyle = gl; g.fillRect(hx, hy, hw, hh); g.restore();
+    food(g, "pizza", hx + hw - 120, hy + 112 + 4 * Math.sin(u * 2), 2.0);
+    circle(g, hx + 62, hy + 228, 40, "#ffffff"); txt(g, "L", hx + 62, hy + 230, { w: 900, px: 40, c: BLUE, fam: "A" }); txt(g, "Pizzeria Luna", hx + 120, hy + 222, { w: 400, px: 50, c: "#ffffff", al: "left", fam: "A" });
+    g.save(); g.font = "italic 600 22px I"; g.fillStyle = "#9db4ff"; g.textBaseline = "middle"; g.fillText("Scannen. Essen. Wiederkommen.", hx + 122, hy + 266); g.restore();
+    g.strokeStyle = "rgba(255,255,255,0.35)"; g.lineWidth = 2; rr(g, hx + 30, hy + 288, 130, 32, 16); g.fillStyle = "rgba(255,255,255,0.1)"; g.fill(); g.stroke(); txt(g, "TISCH 5", hx + 95, hy + 305, { w: 700, px: 17, c: "#fff", fam: MONO, ls: 2 });
+    const rows = [["Speisekarte", "BESTELLEN AN IHREN TISCH", "#e7eeff", "menu"], ["Bewertung abgeben", "SAGEN SIE UNS, WIE ES WAR", "#fff4d6", "star"], ["Bonuskarte", "PUNKTE BEI JEDEM BESUCH", "#e2f7ea", "gift"], ["Spiele", "FÜR DIE WARTEZEIT", "#efe7ff", "game"]];
+    rows.forEach(([t, s, c, ic], i) => { const ry = y + 500 + i * 104; const pressed = i === 0 && Math.abs(u - M.tapMenu) < 0.12; fillRR(g, x + 22, ry, w - 44, 90, 20, pressed ? "#eef2ff" : "#ffffff"); g.strokeStyle = "#e8eaf2"; g.lineWidth = 2; rr(g, x + 22, ry, w - 44, 90, 20); g.stroke();
+      fillRR(g, x + 40, ry + 15, 60, 60, 16, c); const ix = x + 70, iy = ry + 45;
+      if (ic === "menu") { g.strokeStyle = BLUE; g.lineWidth = 3; rr(g, ix - 13, iy - 17, 26, 34, 5); g.stroke(); for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(ix - 7, iy - 7 + k * 7); g.lineTo(ix + 7, iy - 7 + k * 7); g.stroke(); } }
+      else if (ic === "star") { g.strokeStyle = "#e0a400"; g.lineWidth = 3; g.beginPath(); for (let k = 0; k < 10; k++) { const a = -Math.PI / 2 + k * Math.PI / 5, r = k % 2 ? 7 : 17; g.lineTo(ix + Math.cos(a) * r, iy + Math.sin(a) * r); } g.closePath(); g.stroke(); }
+      else if (ic === "gift") { g.strokeStyle = GREEN; g.lineWidth = 3; g.strokeRect(ix - 14, iy - 6, 28, 22); g.strokeRect(ix - 16, iy - 12, 32, 7); g.beginPath(); g.moveTo(ix, iy - 12); g.lineTo(ix, iy + 16); g.stroke(); }
+      else { g.strokeStyle = "#7b5cff"; g.lineWidth = 3; rr(g, ix - 18, iy - 10, 36, 22, 10); g.stroke(); g.beginPath(); g.moveTo(ix - 10, iy + 1); g.lineTo(ix - 4, iy + 1); g.moveTo(ix - 7, iy - 2); g.lineTo(ix - 7, iy + 4); g.stroke(); circle(g, ix + 8, iy - 1, 2.5, "#7b5cff"); circle(g, ix + 12, iy + 3, 2.5, "#7b5cff"); }
+      txt(g, t, x + 120, ry + 36, { w: 700, px: 26, c: INK, al: "left", fam: "I" }); txt(g, s, x + 120, ry + 64, { w: 700, px: 14, c: "#8a90a6", al: "left", fam: MONO, ls: 1 }); chev(g, x + w - 52, ry + 45); });
+    txt(g, "PIZZERIA LUNA · POWERED BY MIHAJLO SYSTEMS", x + w / 2, y + h - 34, { w: 700, px: 12, c: "#a0a6b8", fam: MONO, ls: 1 });
+  }
+  function menuPage(g, x, y, w, h, u, M) {
+    g.save(); rr(g, x, y + 128, w, h - 128, 0); g.clip(); const t0 = y + 130 - M.off;
+    txt(g, "Tisch 5", x + w / 2, t0 + 80, { w: 400, px: 66, c: INK, fam: "A" }); g.strokeStyle = INK; g.lineWidth = 2.5; rr(g, x + w / 2 - 110, t0 + 132, 220, 38, 19); g.stroke(); txt(g, "BESTELLUNG OFFEN", x + w / 2, t0 + 152, { w: 700, px: 15, c: INK, fam: MONO, ls: 2 });
+    txt(g, "Wählen Sie aus der Karte, es geht", x + w / 2, t0 + 210, { w: 500, px: 21, c: "#7a8098", fam: "I" }); txt(g, "direkt in die Küche.", x + w / 2, t0 + 238, { w: 500, px: 21, c: "#7a8098", fam: "I" });
+    fillRR(g, x + 22, t0 + 280, w - 44, 72, 16, "#eceef5"); txt(g, "Ihre Bestellung", x + 46, t0 + 317, { w: 700, px: 24, c: INK, al: "left", fam: "I" }); const pop = 1 + 0.15 * Math.max(...[M.tapP, M.tapC1, M.tapC2].map((t) => (u > t && u < t + 0.3 ? 1 - (u - t) / 0.3 : 0)));
+    g.save(); g.translate(x + w - 46, t0 + 317); g.scale(pop, pop); txt(g, M.total.toFixed(2).replace(".", ",") + " €", 0, 0, { w: 700, px: 24, c: M.total > 0 ? BLUE : INK, al: "right", fam: MONO }); g.restore();
+    txt(g, "Beliebt", x + 30, t0 + 420, { w: 400, px: 46, c: INK, al: "left", fam: "A" });
+    ITEMS.forEach(([n, d1, d2, pr, kind, bgc], r) => { const ry = t0 + 470 + r * 165; g.fillStyle = "#e6e8f0"; g.fillRect(x + 22, ry - 8, w - 44, 2); fillRR(g, x + 24, ry + 10, 104, 104, 18, bgc); food(g, kind, x + 76, ry + 62, 1.0);
+      txt(g, n, x + 146, ry + 28, { w: 700, px: 20, c: INK, al: "left", fam: MONO }); txt(g, pr, x + w - 28, ry + 28, { w: 700, px: 20, c: INK, al: "right", fam: MONO }); txt(g, d1, x + 146, ry + 58, { w: 400, px: 17, c: "#8a90a6", al: "left", fam: "I" }); txt(g, d2, x + 146, ry + 80, { w: 400, px: 17, c: "#8a90a6", al: "left", fam: "I" });
+      const cnt = r === 0 ? M.pizza : r === 3 ? M.cola : 0; fillRR(g, x + 146, ry + 100, 168, 44, 10, BLUE); txt(g, cnt ? `${cnt} IM KORB` : "HINZUFÜGEN +", x + 230, ry + 123, { w: 700, px: 15, c: "#fff", fam: MONO, ls: 1 });
+      g.strokeStyle = INK; g.lineWidth = 2.5; rr(g, x + 326, ry + 100, 126, 44, 10); g.stroke(); txt(g, "DETAILS", x + 389, ry + 123, { w: 700, px: 15, c: INK, fam: MONO, ls: 1 }); });
+    g.restore();
+    if (M.n > 0) { const bk = outBack(seg(u, M.tapP, M.tapP + 0.3), 2); g.save(); g.translate(x + w / 2, y + h - 70); g.scale(bk, bk); const sb = outBack(seg(u, M.tapS, M.tapS + 0.3), 2.5); fillRR(g, -(w - 48) / 2, -42, w - 48, 84, 42, M.sent ? GREEN : INK);
+      txt(g, M.sent ? "In der Küche ✓" : `Bestellung senden · ${M.total.toFixed(2).replace(".", ",")} €`, 0, 2, { w: 800, px: M.sent ? 30 * lerp(1.2, 1, sb) : 24, c: "#fff", fam: "I" }); g.restore(); }
+  }
+  function statusPage(g, x, y, w, h, u, T) {
+    txt(g, "Ihre Bestellung", x + 40, y + 190, { w: 400, px: 52, c: INK, al: "left", fam: "A" }); txt(g, "TISCH 5 · #1042", x + 42, y + 240, { w: 700, px: 18, c: "#7a8098", al: "left", fam: MONO, ls: 2 });
+    const st = [["Eingegangen", T.live - 0.2], ["In Zubereitung", T.live + 0.3], ["Kommt gleich", T.essen]]; st.forEach(([s, t], i) => { const on = u >= t, yy = y + 330 + i * 130; circle(g, x + 80, yy, 28, on ? GREEN : "#dfe2ec"); if (on) txt(g, "✓", x + 80, yy + 2, { w: 900, px: 26, c: "#fff" }); if (i < 2) fillRR(g, x + 76, yy + 30, 8, 70, 4, u >= st[i + 1][1] ? GREEN : "#dfe2ec"); txt(g, s, x + 130, yy, { w: on ? 800 : 500, px: 32, c: on ? INK : "#9aa0b4", al: "left", fam: "I" });
+      if (on && i === (u >= T.essen ? 2 : u >= T.live + 0.3 ? 1 : 0)) { const pr = 0.5 + 0.5 * Math.sin(u * 6); g.strokeStyle = `rgba(43,194,117,${pr})`; g.lineWidth = 4; g.beginPath(); g.arc(x + 80, yy, 36 + pr * 6, 0, 7); g.stroke(); } });
+    const big = outBack(seg(u, T.essen, T.essen + 0.3), 2.5); if (big > 0) { g.save(); g.translate(x + w / 2, y + 800); g.scale(big * 2.6, big * 2.6); food(g, "pizza", 0, 0, 1); g.restore(); }
+  }
+  function menuPlan(u, T) {
+    const W0 = T.speise, Wn = Math.max(2.4, T.kueche - 0.4 - T.speise), at = (f) => W0 + f * Wn;
+    const M = { tapMenu: T.speise - 0.3, s1: [at(0.12), at(0.32)], tapP: at(0.42), s2: [at(0.5), at(0.64)], tapC1: at(0.72), tapC2: at(0.8), tapS: at(0.92) };
+    M.page = out3(seg(u, T.speise - 0.15, T.speise + 0.2)); M.off = 220 * inOut(seg(u, M.s1[0], M.s1[1])) + 300 * inOut(seg(u, M.s2[0], M.s2[1]));
+    M.pizza = u >= M.tapP ? 1 : 0; M.cola = (u >= M.tapC1 ? 1 : 0) + (u >= M.tapC2 ? 1 : 0); M.n = M.pizza + M.cola; M.total = 9.5 * M.pizza + 3.2 * M.cola; M.sent = u >= M.tapS;
+    // Finger: Wegpunkte [Zeit, x, y, drückt]
+    const add = (r, off) => [IX + 230, IY + 130 - off + 470 + r * 165 + 122];
+    const P0 = [960, 1560], row = [IX + 260, IY + 545], pz = add(0, 220), cl1 = add(3, 520), send = [IX + IW / 2, IY + IH - 70];
+    M.path = [[T.app + 0.2, ...P0, 0], [M.tapMenu - 0.35, row[0] + 120, row[1] + 160, 0], [M.tapMenu, ...row, 1], [M.tapMenu + 0.25, row[0] + 60, row[1] + 120, 0],
+      [M.s1[0] - 0.1, 640, 1250, 0], [M.s1[0], 640, 1250, 1], [M.s1[1], 640, 1030, 1], [M.s1[1] + 0.08, 660, 1050, 0], [M.tapP, ...pz, 1], [M.tapP + 0.15, pz[0] + 40, pz[1] + 60, 0],
+      [M.s2[0] - 0.05, 640, 1300, 0], [M.s2[0], 640, 1300, 1], [M.s2[1], 640, 1000, 1], [M.s2[1] + 0.08, 660, 1030, 0], [M.tapC1, ...cl1, 1], [M.tapC1 + 0.1, cl1[0] + 20, cl1[1] + 30, 0], [M.tapC2, ...cl1, 1], [M.tapC2 + 0.12, cl1[0] + 40, cl1[1] + 60, 0],
+      [M.tapS, ...send, 1], [M.tapS + 0.2, send[0] + 80, send[1] + 120, 0], [M.tapS + 0.7, 980, 1700, 0]];
+    return M;
+  }
+  function fingerAt(M, u) { const P = M.path; if (u <= P[0][0]) return [P[0][1], P[0][2], 0]; for (let i = 1; i < P.length; i++) if (u <= P[i][0]) { const A = P[i - 1], B = P[i]; const k = (u - A[0]) / Math.max(0.01, B[0] - A[0]); const press = A[3] && B[3] ? 1 : B[3] ? cl((k - 0.7) / 0.3) : A[3] ? 1 - cl(k / 0.3) : 0; const e = A[3] && B[3] ? inOut(k) : out3(k); return [lerp(A[1], B[1], e), lerp(A[2], B[2], e), press]; } const L = P[P.length - 1]; return [L[1], L[2], 0]; }
+  function hand(g, x, y, press) { // Comic-Hand mit blauem Ärmel, Fingerspitze bei (x, y)
+    g.save(); g.translate(x, y); g.rotate(-0.32); const s = 1 - 0.06 * press; g.scale(s, s); const SK = "#f3c9a4", SKD = "#d9a07a";
+    g.fillStyle = "rgba(0,0,0,0.18)"; g.beginPath(); g.ellipse(20, 30, 70, 30, 0, 0, 7); g.fill();
+    g.fillStyle = "#2f5be8"; g.beginPath(); g.moveTo(-40, 210); g.lineTo(90, 190); g.lineTo(140, 420); g.lineTo(-10, 440); g.closePath(); g.fill(); g.fillStyle = "#2448c4"; g.beginPath(); g.moveTo(-40, 210); g.lineTo(90, 190); g.lineTo(96, 228); g.lineTo(-34, 248); g.closePath(); g.fill();
+    g.fillStyle = SK; g.strokeStyle = SKD; g.lineWidth = 4; rr(g, -48, 70, 130, 150, 50); g.fill(); g.stroke();
+    for (let i = 0; i < 3; i++) { rr(g, 6 + i * 26, 64, 30, 60, 15); g.fill(); g.stroke(); }
+    rr(g, -24, -6, 44, 130, 22); g.fill(); g.stroke(); g.strokeStyle = SKD; g.lineWidth = 3; g.beginPath(); g.moveTo(-14, 52); g.lineTo(10, 52); g.stroke(); fillRR(g, -14, 4, 24, 20, 8, "rgba(255,255,255,0.5)");
+    g.restore(); if (press > 0.5) { g.strokeStyle = `rgba(61,107,255,${(press - 0.5) * 1.4})`; g.lineWidth = 5; g.beginPath(); g.arc(x, y, 30, 0, 7); g.stroke(); } }
+
   TYPES.h_tisch = {
     zone: "top", pal: "ag_dark", bgv: 0, coverT: 1.0, capY: 300,
     prep(o, p) {
@@ -144,40 +223,16 @@
           if (u > T.karte) for (let i = 0; i < 3; i++) { const r = ((u - T.karte) * 1.5 + i / 3) % 1; g.strokeStyle = `rgba(255,207,107,${(1 - r) * ck})`; g.lineWidth = 6; g.beginPath(); g.arc(560, 1250, 40 + r * 160, 0, 7); g.stroke(); } }
         chip(g, 540, 330 + 70, flip < 0.5 ? "QR-Code scannen" : "oder Handy dranhalten", seg(u, T.qr - 0.1, T.qr + 0.2), BLUE);
       }
-      // 2) Handy: ohne App, Speisekarte, Bestellung, später Live-Status
+      // 2) Handy wie im Vorbild: Startseite, Finger tippt Speisekarte, scrollt, legt in den Korb, sendet. Später Live-Status.
       const p1 = seg(u, T.app - 0.25, T.app + 0.1) * (1 - seg(u, T.kueche - 0.3, T.kueche - 0.05));
       const p2 = seg(u, T.live - 0.2, T.live + 0.15) * (1 - seg(u, T.punkte - 0.35, T.punkte - 0.1));
-      if (p1 > 0 || p2 > 0) { veil(g, Math.max(p1, p2) * 0.8);
-        const taps = [T.best + 0.0, T.best + 0.35, T.best + 0.65]; const n = taps.filter((t) => u >= t).length; const sent = u >= T.best + 1.0;
-        phoneFrame(g, 270, 430, 540, 1040, Math.max(p1, p2), (x, y, w, h) => {
-          // Browserzeile
-          fillRR(g, x + 30, y + 70, w - 60, 54, 27, "#e9ebf3"); txt(g, "🔒 ihr-restaurant.de/tisch-5", x + w / 2, y + 98, { w: 600, px: 22, c: "#59607a", fam: "I" });
-          if (p2 > 0 && u >= T.live - 0.2) { // Live-Status
-            txt(g, "Ihre Bestellung", x + 40, y + 190, { w: 900, px: 40, c: INK, al: "left", fam: "D" }); txt(g, "Tisch 5 · #1042", x + 40, y + 240, { w: 600, px: 26, c: "#7a8098", al: "left", fam: "I" });
-            const st = [["Eingegangen", T.live - 0.2], ["In Zubereitung", T.live + 0.3], ["Kommt gleich", T.essen]]; st.forEach(([s, t], i) => { const on = u >= t, yy = y + 330 + i * 130; circle(g, x + 80, yy, 28, on ? GREEN : "#dfe2ec"); if (on) txt(g, "✓", x + 80, yy + 2, { w: 900, px: 26, c: "#fff" }); if (i < 2) { fillRR(g, x + 76, yy + 30, 8, 70, 4, u >= st[i + 1][1] ? GREEN : "#dfe2ec"); } txt(g, s, x + 130, yy, { w: on ? 800 : 500, px: 32, c: on ? INK : "#9aa0b4", al: "left", fam: "I" });
-              if (on && i === (u >= T.essen ? 2 : u >= T.live + 0.3 ? 1 : 0)) { const pr = 0.5 + 0.5 * Math.sin(u * 6); g.strokeStyle = `rgba(43,194,117,${pr})`; g.lineWidth = 4; g.beginPath(); g.arc(x + 80, yy, 36 + pr * 6, 0, 7); g.stroke(); } });
-            const big = outBack(seg(u, T.essen, T.essen + 0.3), 2.5); if (big > 0) { g.save(); g.translate(x + w / 2, y + 790); g.scale(big, big); txt(g, "🍕", 0, 0, { px: 150 }); g.restore(); }
-            return; }
-          // Ohne App
-          const ok1 = seg(u, T.app - 0.05, T.app + 0.2), ok2 = seg(u, T.konto - 0.05, T.konto + 0.2); const menuK = seg(u, T.speise - 0.2, T.speise + 0.25);
-          if (menuK < 1) { g.save(); g.globalAlpha = 1 - menuK; txt(g, "🍽️", x + w / 2, y + 380, { px: 120 }); txt(g, "Ihr Restaurant", x + w / 2, y + 500, { w: 900, px: 44, c: INK, fam: "D" }); txt(g, "Tisch 5", x + w / 2, y + 555, { w: 600, px: 28, c: "#7a8098", fam: "I" }); g.restore(); }
-          if (menuK > 0) { g.save(); g.globalAlpha = menuK; g.translate(0, (1 - menuK) * 60);
-            txt(g, "Speisekarte", x + 40, y + 180, { w: 900, px: 42, c: INK, al: "left", fam: "D" });
-            ["Pizza", "Pasta", "Getränke"].forEach((c, i) => { fillRR(g, x + 40 + i * 150, y + 220, 136, 52, 26, i === 0 ? INK : "#e9ebf3"); txt(g, c, x + 108 + i * 150, y + 247, { w: 700, px: 22, c: i === 0 ? "#fff" : INK, fam: "I" }); });
-            const items = [["🍕", "Pizza Margherita", "9,50 €"], ["🍝", "Spaghetti Carbonara", "11,90 €"], ["🥤", "Cola", "3,20 €"]];
-            const cnt = [n >= 1 ? 1 : 0, 0, n >= 3 ? 2 : n >= 2 ? 1 : 0];
-            items.forEach(([e, s, pr], i) => { const ry = y + 310 + i * 150; fillRR(g, x + 30, ry, w - 60, 130, 26, cnt[i] ? "#eef2ff" : "#ffffff"); fillRR(g, x + 46, ry + 15, 100, 100, 20, "#ffe9d0"); txt(g, e, x + 96, ry + 66, { px: 56 });
-              txt(g, s, x + 166, ry + 50, { w: 800, px: 26, c: INK, al: "left", fam: "I" }); txt(g, pr, x + 166, ry + 90, { w: 600, px: 24, c: "#7a8098", al: "left", fam: "I" });
-              const bx = x + w - 90, by = ry + 65; circle(g, bx, by, 30, cnt[i] ? BLUE : "#e9ebf3"); txt(g, cnt[i] ? String(cnt[i]) : "+", bx, by + 2, { w: 900, px: 28, c: cnt[i] ? "#fff" : INK }); });
-            if (n > 0) { const bk = outBack(seg(u, taps[0], taps[0] + 0.3), 2); g.save(); g.translate(x + w / 2, y + h - 110); g.scale(bk, bk); const total = (n >= 1 ? 9.5 : 0) + (n >= 3 ? 6.4 : n >= 2 ? 3.2 : 0); const sb = outBack(seg(u, T.best + 1.0, T.best + 1.3), 2.5);
-              fillRR(g, -(w - 60) / 2, -46, w - 60, 92, 46, sent ? GREEN : INK); txt(g, sent ? "Bestellt ✓" : `${n} Artikel · ${total.toFixed(2).replace(".", ",")} € · Bestellen`, 0, 2, { w: 800, px: sent ? 34 * lerp(1.2, 1, sb) : 26, c: "#fff", fam: "I" }); g.restore(); }
-            g.restore(); }
-          if (menuK < 1) { chip(g, x + w / 2, y + 680, "Keine App", ok1 * (1 - menuK)); chip(g, x + w / 2, y + 770, "Kein Konto", ok2 * (1 - menuK)); }
-        });
-        // Finger tippt
-        if (p1 > 0 && u > T.best - 0.4 && u < T.best + 1.3) { const pts = [[810 - 76, 430 + 14 + 310 + 65], [810 - 76, 430 + 14 + 310 + 300 + 65], [810 - 76, 430 + 14 + 310 + 300 + 65], [540, 430 + 1040 - 110 - 14]]; const tt = [taps[0], taps[1], taps[2], T.best + 1.0];
-          let fx = 900, fy = 1500, pr = 0; for (let i = 0; i < 4; i++) { const k = seg(u, tt[i] - 0.25, tt[i]); if (u >= tt[i] - 0.25) { fx = lerp(i ? pts[i - 1][0] : 900, pts[i][0], out3(k)); fy = lerp(i ? pts[i - 1][1] : 1500, pts[i][1], out3(k)); pr = Math.max(0, 1 - Math.abs(u - tt[i]) / 0.1); } tapRing(g, pts[i][0], pts[i][1], u - tt[i]); }
-          g.save(); g.globalAlpha = p1; finger(g, fx + 10, fy + 10, pr); g.restore(); }
+      if (p1 > 0 || p2 > 0) { veil(g, Math.max(p1, p2) * 0.8); const k = Math.max(p1, p2); const M = menuPlan(u, T);
+        phoneFrame(g, PX, PY, PW, PH, k, (x, y, w, h) => { statusBar(g, x, y, w);
+          if (p2 > 0 && u >= T.live - 0.2) { urlBar(g, x, y, w, "pizzeria-luna.de/bestellung"); statusPage(g, x, y, w, h, u, T); return; }
+          if (M.page < 1) { g.save(); g.translate(-M.page * w, 0); urlBar(g, x, y, w, "pizzeria-luna.de"); homePage(g, x, y, w, h, u, M); g.restore(); }
+          if (M.page > 0) { g.save(); g.translate((1 - M.page) * w, 0); urlBar(g, x, y, w, "pizzeria-luna.de/karte"); menuPage(g, x, y, w, h, u, M); g.restore(); } });
+        if (p1 > 0 && u < T.live - 0.3) { chip(g, 250, 760, "Keine App ✓", seg(u, T.app - 0.05, T.app + 0.2) * (1 - seg(u, T.speise - 0.2, T.speise)), GREEN); chip(g, 830, 860, "Kein Konto ✓", seg(u, T.konto - 0.05, T.konto + 0.2) * (1 - seg(u, T.speise - 0.2, T.speise)), GREEN);
+          const [fx, fy, pr] = fingerAt(M, u); g.save(); g.globalAlpha = p1; g.translate(0, (1 - out3(cl(p1))) * 900); hand(g, fx, fy, pr); g.restore(); }
       }
       // 3) Küchen-iPad: neues Ticket Tisch 5
       const ik = seg(u, T.kueche - 0.05, T.kueche + 0.35) * (1 - seg(u, T.live - 0.35, T.live - 0.1));
