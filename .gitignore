@@ -5,3 +5,6 @@ frames/
 __pycache__/
 *.pyc
 engine/hooks/kunden/
+
+# Agent-Arbeitsordner (lokal, nicht ins Repo)
+.claude/
