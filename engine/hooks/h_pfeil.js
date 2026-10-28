@@ -32,7 +32,7 @@
     // Mast und Pfeil
     if (!o.gone) { const k = o.arrow, dy = o.drop || 0;
       g.save(); g.translate(0, dy); g.fillStyle = "#8a5a3a"; g.fillRect(760, -700, 34, 1190 * k + 10); g.strokeRect(760, -700, 34, 1190 * k + 10); g.restore();
-      if (k > 0) { g.save(); g.translate(777, -700 + dy); g.rotate(2.25); // zeigt nach links unten zur Tür
+      if (k > 0) { g.save(); g.translate(777, -700 + dy); g.rotate(1.95); // zeigt nach unten zur Tür
         g.fillStyle = "#e5243b"; g.beginPath(); g.moveTo(-60, -70); g.lineTo(420, -70); g.lineTo(420, -150); g.lineTo(620, 0); g.lineTo(420, 150); g.lineTo(420, 70); g.lineTo(-60, 70); g.closePath(); g.fill(); g.stroke();
         g.save(); g.rotate(Math.PI); g.font = "900 96px D"; g.fillStyle = "#fff"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText("HIER!", -230, 4); g.restore();
         if (o.lights > 0) for (let i = 0; i < 16; i++) { const t = i / 15; const px = lerp(-50, 600, t), py = i % 2 ? -78 : 78; const on = (Math.floor(u * 6) + i) % 3 !== 0; circle(g, px, py, 14, on ? `rgba(255,224,120,${o.lights})` : `rgba(120,90,40,${o.lights})`); if (on) circle(g, px, py, 26, `rgba(255,224,120,${0.25 * o.lights})`); }
@@ -46,7 +46,7 @@
   }
 
   TYPES.h_pfeil = {
-    zone: "top", pal: "ag_dark", bgv: 0, coverT: 2.4, capY: 1560,
+    zone: "top", pal: "ag_dark", bgv: 0, coverT: 0.55, capY: 1560,
     prep(o, p) { const f = SK.finder(o); const T = {};
       T.zwoelf = f(/^zwölf|^12$/, 0, 1.0); T.dach = f(/^dach/, T.zwoelf, T.zwoelf + 1.0); T.findet = f(/^findet/, T.dach, T.dach + 1.2); T.nachb = f(/^nachbarn$/, T.findet, T.findet + 0.6);
       T.lachen = f(/^lachen/, T.nachb, T.nachb + 0.5); T.kunden = f(/^kunden/, T.lachen, T.lachen + 0.5); T.vorbei = f(/^vorbei/, T.kunden, T.kunden + 0.6); T.lichter = f(/^lichter/, T.vorbei, T.vorbei + 0.9);
@@ -56,15 +56,15 @@
       T.bB = T.nachb - 0.35; T.bC = T.lichter - 0.3; T.bD = T.eine - 0.12; T.bE = T.nachbin - 0.3; p._T = T; },
     draw(g, u, d, p) {
       const T = p._T; const ph = u < T.bB ? 0 : u < T.bC ? 1 : u < T.bD ? 2 : u < T.bE ? 3 : 4; const K = (t, z, x, y) => ({ t, z, x, y });
-      const KF = ph === 0 ? [K(0, 1.25, 640, 200), K(0.6, 1.2, 640, 250), K(T.zwoelf + 0.1, 0.62, 500, -60), K(T.findet - 0.2, 0.68, 500, 120), K(T.bB, 0.8, 520, 520)]
+      const KF = ph === 0 ? [K(0, 1.0, 620, 60), K(0.6, 1.05, 620, 120), K(T.zwoelf + 0.1, 0.62, 500, -60), K(T.findet - 0.2, 0.68, 500, 120), K(T.bB, 0.8, 520, 520)]
         : ph === 1 ? [K(T.bB, 0.8, 220, 700), K(T.lachen + 0.3, 0.95, 60, 640), K(T.kunden - 0.1, 0.85, 400, 860), K(T.bC, 0.85, 420, 880)]
         : ph === 2 ? [K(T.bC, 0.66, 560, 120), K(T.ballon + 0.2, 0.6, 600, -80), K(T.nichts - 0.1, 0.72, 520, 380), K(T.bD, 0.74, 520, 420)]
         : ph === 3 ? [K(T.bD, 0.72, 520, 480), K(T.autos, 0.85, 560, 760), K(T.bE, 0.9, 560, 780)]
         : [K(T.bE, 1.25, 180, 820), K(T.zwink - 0.2, 1.4, 470, 830), K(T.den, 2.3, 640, 700)];
-      const c = SK.cam(KF, u); const land = 0.18; const hit = u - land; const shake = hit > 0 && hit < 0.4 ? 1 - hit / 0.4 : 0;
-      const dive = ph === 4 ? inExpo(cl((u - T.den) / Math.max(0.3, d - T.den))) : 0; if (dive > 0) { c.z *= 1 + dive * 28; const k = inOut(cl((u - T.den) / 0.3)); c.x = lerp(c.x, 664, k); c.y = lerp(c.y, 662, k); }
+      const c = SK.cam(KF, u); const land = 0.14; const hit = u - land; const shake = hit > 0 && hit < 0.4 ? 1 - hit / 0.4 : 0;
+      const dive = ph === 4 ? inExpo(cl((u - T.den) / Math.max(0.3, d - T.den))) : 0; if (dive > 0) { c.z *= 1 + dive * 28; const k = inOut(cl((u - T.den) / 0.3)); c.x = lerp(c.x, 656, k); c.y = lerp(c.y, 797, k); }
       g.save(); SK.apply(g, c, Math.sin(u * 90) * 22 * shake, Math.cos(u * 77) * 16 * shake);
-      const arrow = ph === 0 ? out3(cl(u / land)) : 1, drop = ph === 0 ? (u < land ? -900 * (1 - u / land) : -Math.sin(Math.min(1, hit / 0.25) * Math.PI) * 30) : 0;
+      const arrow = ph === 0 ? out3(cl(u / land)) : 1, drop = ph === 0 ? (u < land ? -600 * (1 - u / land) : -Math.sin(Math.min(1, hit / 0.25) * Math.PI) * 30) : 0;
       const laugh = ph === 1 ? seg(u, T.lachen - 0.2, T.lachen + 0.1) : 0;
       const win = (q) => { if (ph !== 1 && ph !== 4) return; for (let i = 0; i < 2; i++) { q.save(); q.beginPath(); q.rect(-380, 470, 300, 240); q.clip();
           SK.person(q, -300 + i * 150, 900, 0.5, { hs: i ? "long" : "cap", hair: i ? "#c98d3a" : "#3d9a6b", shirt: i ? "#e85d75" : "#f2b134", eyes: laugh > 0.5 ? "happy" : "dot", mouth: laugh > 0.5 ? "grin" : "smile", bob: laugh > 0.5 ? Math.abs(Math.sin(u * 14 + i)) * -14 : 0, aR: laugh > 0.5 ? -1.0 : 1.2, eR: laugh > 0.5 ? -1.2 : 0 }); q.restore(); } };
@@ -99,7 +99,7 @@
       SK.flashAt(g, u, [T.bB, T.bC, T.bD, T.bE], 0.08, 0.55);
       SK.whiteOut(g, u, d);
     },
-    ev(d, p) { const T = p._T, E = [[0.0, "whoosh_down", 0.6, 0], [0.18, "domino_thud", 0.9, 0], [0.19, "boom", 0.55, 0], [0.22, "slap", 0.5, 0], [0.5, "domino_dust", 0.4, 0]];
+    ev(d, p) { const T = p._T, E = [[0.0, "whoosh_down", 0.6, 0], [0.14, "domino_thud", 0.9, 0], [0.15, "boom", 0.55, 0], [0.18, "slap", 0.5, 0], [0.5, "domino_dust", 0.4, 0]];
       for (let t = 0.7; t < T.zwoelf - 0.3; t += 0.3) E.push([t, "tr_clonk", 0.25, -0.2]); E.push([T.zwoelf - 0.15, "tr_swish", 0.35, 0], [T.zwoelf + 0.1, "pop", 0.4, 0.3], [T.findet - 0.1, "whoosh_down", 0.3, 0]);
       E.push([T.bB, "whoosh_side", 0.3, 0], [T.lachen - 0.1, "pop", 0.35, -0.3], [T.lachen + 0.15, "pop", 0.35, 0.2]); for (let i = 0; i < 4; i++) E.push([T.kunden - 0.4 + i * 0.35 + 0.35, "whoosh_side", 0.45, -0.5 + i * 0.3]);
       E.push([T.lichter - 0.05, "ls_click", 0.5, 0], [T.lichter + 0.05, "shimmer_hi", 0.3, 0]); for (let i = 0; i < 4; i++) E.push([T.ballon - 0.1 + i * 0.1, "balloon_squeak" + (1 + i % 3), 0.3, -0.4 + i * 0.25]);

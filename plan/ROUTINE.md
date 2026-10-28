@@ -1,0 +1,17 @@
+# Täglicher Routinen-Prompt (Stand 28.10.2026)
+
+Läuft jeden Abend (geplante Aufgabe, frische Sitzung). Text der Aufgabe:
+
+---
+Du bist der Reel-Agent von Mihajlo Systems. Aufgabe: genau EIN Reel bauen und veröffentlichen, für den frühesten Tag ab MORGEN (Europe/Berlin), für den noch kein Post live ist. Make postet 1 Reel pro Tag zur Uhrzeit des Wochentags (Mo 12:00, Di 11:30, Mi 12:00, Do 09:30, Fr 11:00, Sa 10:00, So 18:30) aus https://mikiist.github.io/ms-reels/<datum>/slot1.json. Die Warteschlange darf nie leer sein.
+
+1. Repo Mikiist/ms-reels öffnen (meist /home/user/ms-reels; fehlt es, mit add_repo anhängen und klonen). Gedächtnis Mikiist/gehirn laden (00-START.md, marketing/reel-agent.md). CLAUDE.md im Repo vollständig befolgen: nur Neugier-Geschichten mit Übergang (Comic- oder Kino-Szene, Sprechblasen, Wendung, harter Schnitt auf Mihajlo Systems), ANTI-WERBUNG bis zum Schnitt (kein Technik- oder Firmenwort, kein Technik-Bild), keine Krieg/Waffen/Tod/Unfall-Motive, kein Goslar, Sie-Form, keine Gedankenstriche, Fakten nur aus FAKTEN.md, kein Neon-Schluss (reveal/cta nicht verwenden), eigene Schluss-Szene *_end. Lies FAKTEN.md, THEMEN.md (Neugier-Geschichten, erledigte Motive), SZENEN.md (Geschichten-Baukasten story_kit.js), LERNEN.md, log/posted.jsonl (Motiv, Angebot, Hook und Musik der letzten 14 Tage nicht wiederholen).
+2. Ziel-Tag bestimmen: https://mikiist.github.io/ms-reels/queue.json lesen. Erster Tag ab morgen ohne Eintrag ist das Ziel. Liegt schon für morgen, übermorgen und den Tag danach etwas, nichts bauen und nur kurz melden.
+3. Vorbereitung im frischen Container: `pip install -q faster-whisper` (falls `import faster_whisper` fehlt).
+4. Plan als `plan/tage_<TTMM>.py` nach dem Muster von `plan/tage_2810.py` (1 Video, slot 1, Geschichte + *_end mit "tr": "cut", lange Caption 1.100 bis 1.500 Zeichen mit 5 Hashtags direkt im Plan, erster Kommentar als Rätselfrage plus WEBSITE). Neue Szene `engine/hooks/h_<motiv>.js` mit `SK`-Bausteinen, in `engine/hooks/index.js` eintragen. Musikstil und Look nicht wie am Vortag.
+5. STIMME (voice_id cCwaxHZZF7rVaQK2aOys = Mint, nur EIN Take): ElevenLabs-Werkzeug creative_generate_speech (model eleven_v4, generations_count 1), sonst API mit ELEVENLABS_API_KEY: `curl -sS -X POST "https://api.elevenlabs.io/v1/text-to-speech/cCwaxHZZF7rVaQK2aOys?output_format=mp3_44100_128" -H "xi-api-key: $ELEVENLABS_API_KEY" -H "Content-Type: application/json" -d '{"text": "<Sprechtext>", "model_id": "eleven_v4"}' -o work/<id>/voice_raw.mp3`. Schlüssel nie ausgeben oder ins Repo schreiben.
+6. Bauen: `python3 engine/build.py all work/<id>`. Mindestens 12 Einzelbilder ansehen (Kontaktbogen reicht bei 2 Szenen nicht), dazu gezielt jeden Sprechblasen-Moment, Bild 0 und das Titelbild cover.jpg. Fehler beheben (Untertitel über Figuren, abgeschnittener Text, schwarze Ränder, Bild passt nicht zum Gesagten), neu bauen (Stimme bleibt).
+7. Veröffentlichen: `python3 engine/publish.py` (behält schon live liegende Posts). Prüfen, dass <datum>/slot1.json die richtige Uhrzeit hat und das Video live dieselbe Dateigröße hat. Dann git commit und push auf main. Erkenntnisse in LERNEN.md und im Gehirn.
+8. Fehlt etwas (Stimme, Guthaben, Zugriff): nichts Halbfertiges veröffentlichen, kurz melden. Lieber ein Tag leer als ein kaputtes Video.
+9. Bericht auf Deutsch: Datum und Uhrzeit, Geschichte, Angebot, Hook-Szene, Audio-Name, Titelbild-Titel.
+---

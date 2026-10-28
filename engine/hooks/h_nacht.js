@@ -10,7 +10,7 @@
   const WIFE = { hs: "long", hair: "#b8452a", shirt: "#f4a6c0", skirt: "#f4a6c0", pants: "#f1c7a1", shoes: "#f4a6c0", skin: "#f3cfb0" };
   const NIGHT = ["#070b1c", "#18213f"];
 
-  function sky(g, u, o = {}) { const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, NIGHT[0]); gr.addColorStop(1, NIGHT[1]); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+  function sky(g, u, o = {}) { const gr = g.createLinearGradient(0, 0, 0, H); gr.addColorStop(0, NIGHT[0]); gr.addColorStop(1, NIGHT[1]); g.fillStyle = gr; g.fillRect(-1200, -1200, W + 2400, H + 2400);
     for (let i = 0; i < 60; i++) circle(g, rnd(i * 2.3) * W, rnd(i * 5.1) * 900, 1.5 + rnd(i) * 2, `rgba(255,255,255,${0.3 + 0.5 * (0.5 + 0.5 * Math.sin(u * 3 + i))})`);
     g.fillStyle = "#fff4cf"; g.beginPath(); g.arc(o.mx || 860, o.my || 300, 70, 0, 7); g.fill(); g.fillStyle = NIGHT[0]; g.beginPath(); g.arc((o.mx || 860) + 28, (o.my || 300) - 14, 62, 0, 7); g.fill(); }
   function towerClock(g, x, y, r, min) { // min = Minuten nach 23 Uhr (58 = 23:58)
@@ -90,7 +90,7 @@
           g.save(); g.translate(540, 1000); g.scale(z, z); g.translate(-540, -1000);
           shop(g, 60, 1240, 960, isP ? "Parfümerie" : "Blumenladen", isP ? "#5b3a6e" : "#2f6b3a", isP ? "parfum" : "blumen", 0, u);
           const rat = Math.sin(u * 60) * 6 * (1 - cl(su / 0.6)); SK.person(g, 760 + rat, 1300, 0.8, { ...MAN, aL: -0.3, eL: -0.4, aR: 1.4, mouth: "shout", brow: -0.8, eyes: "wide" });
-          g.restore(); const [bx, by] = [380, 520]; SK.bubble(g, [isP ? "Hallo?!" : "*Bitte!*"], bx, by, 640, 760, seg(u, isP ? T.parf : T.blumen, (isP ? T.parf : T.blumen) + 0.25), { shout: true, px: 60 });
+          g.restore(); const [bx, by] = [300, 700]; SK.bubble(g, [isP ? "Hallo?!" : "*Bitte!*"], bx, by, 640, 760, seg(u, isP ? T.parf : T.blumen, (isP ? T.parf : T.blumen) + 0.25), { shout: true, px: 60 });
         } else { // alle Rollläden knallen runter
           const su = u - (T.alles - 0.12); g.save(); const z = 1 - 0.04 * cl(su); g.translate(540, 960); g.scale(z * 0.5, z * 0.5); g.translate(-1080, -1050);
           sky(g, u); g.fillStyle = "#121624"; g.fillRect(-200, 1240, 2600, 900); const names = ["Bäckerei", "Juwelier", "Blumenladen", "Parfümerie"], cols = ["#7a4a2a", "#1f3a5a", "#2f6b3a", "#5b3a6e"];
@@ -101,7 +101,7 @@
       } else if (ph === 3) { // Bordstein, Blick zum Studio, Lächeln
         const look = seg(u, T.dann, T.studio + 0.2), back = seg(u, T.laech - 0.35, T.laech - 0.05);
         const camX = lerp(lerp(380, 820, inOut(look)), 380, inOut(back)), z = lerp(lerp(1.15, 1.25, look), 1.7, inOut(back));
-        g.save(); g.translate(540, 960); g.scale(z, z); g.translate(-camX, back > 0 ? -820 + 0 : -900);
+        g.save(); g.translate(540, 960); g.scale(z, z); g.translate(-camX, -lerp(900, 960, inOut(back)));
         sky(g, u, { mx: 300, my: 250 }); g.fillStyle = "#121624"; g.fillRect(-400, 1180, 2200, 900); g.fillStyle = "#1c2236"; g.fillRect(-400, 1180, 2200, 60);
         shop(g, 660, 1080, 520, "Studio Marie", "#8a2d4a", "studio", 0, u); lamp(g, 120, 1180, 560);
         const up = seg(u, T.dann - 0.1, T.dann + 0.2), sm = seg(u, T.laech - 0.1, T.laech + 0.15);

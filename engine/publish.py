@@ -2,7 +2,7 @@
 
   python3 engine/publish.py <datum JJJJ-MM-TT>
 
-Nimmt work/<datum>-<slot>/final.mp4 + post.json, baut die Seite (Ordner site/: queue.json, v/<id>.mp4, index.html)
+Nimmt work/<datum>-<slot>/final.mp4 + post.json (plus alle schon live liegenden Posts ab heute), baut die Seite (Ordner site/: queue.json, v/<id>.mp4, index.html)
 und schiebt sie als einzelnen Commit auf den Branch gh-pages (GitHub Pages, öffentlich). Make holt dort queue.json
 und postet zur Uhrzeit des Tages. Danach wird log/posted.jsonl auf main ergänzt.
 
@@ -45,6 +45,20 @@ def main():
         shutil.copy(os.path.join(p["dir"], "cover.jpg"), f"{site}/v/{p['id']}.jpg")
         q["posts"].append({"date": p["date"], "slot": p["slot"], "time": zeit(p["date"]), "id": p["id"], "video_url": f"{base}/v/{p['id']}.mp4", "cover_url": f"{base}/v/{p['id']}.jpg",
                            "caption": p["caption"], "thumb_offset": p["thumb_offset"], "topic": p.get("topic", ""), "audio_name": p.get("audio_name", ""), "first_comment": p.get("first_comment", "")})
+    # Schon live liegende Posts ab heute behalten (frischer Container hat nur sein eigenes Reel in work/; ohne das
+    # würde jeder Tageslauf die geplanten Reels der anderen Tage von gh-pages löschen). Lokale Reels ersetzen gleiche Tage.
+    kept = []
+    if subprocess.run(["git", "fetch", "-q", "origin", "gh-pages"], cwd=ROOT, capture_output=True).returncode == 0:
+        r = subprocess.run(["git", "show", "origin/gh-pages:queue.json"], cwd=ROOT, capture_output=True)
+        old = json.loads(r.stdout) if r.returncode == 0 else {"posts": []}
+        for x in old.get("posts", []):
+            if x["date"] < date or (x["date"], x["slot"]) in keys: continue
+            files = {e: subprocess.run(["git", "show", f"origin/gh-pages:v/{x['id']}.{e}"], cwd=ROOT, capture_output=True) for e in ("mp4", "jpg")}
+            if any(f.returncode != 0 or not f.stdout for f in files.values()): print("Live-Post ohne Datei, fällt weg:", x["id"]); continue
+            for e, f in files.items(): open(f"{site}/v/{x['id']}.{e}", "wb").write(f.stdout)
+            x["time"] = zeit(x["date"]); kept.append(x)
+    if kept: print("behalten (schon live):", [x["id"] for x in kept])
+    q["posts"] = sorted(q["posts"] + kept, key=lambda x: (x["date"], x["slot"]))
     json.dump(q, open(site + "/queue.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     for x in q["posts"]:  # je Tag und Slot eine Datei, Make liest <datum>/slot<N>.json
         os.makedirs(f"{site}/{x['date']}", exist_ok=True)
@@ -70,7 +84,7 @@ def main():
     if os.path.exists(lp): seen = {json.loads(l)["id"] for l in open(lp, encoding="utf-8") if l.strip()}
     with open(lp, "a", encoding="utf-8") as f:
         for p in q["posts"]:
-            if p["id"] in seen: continue
+            if p["id"] in seen or not os.path.exists(os.path.join(ROOT, "work", p["id"], "job.json")): continue
             job = json.load(open(os.path.join(ROOT, "work", p["id"], "job.json"), encoding="utf-8"))
             f.write(json.dumps({"date": p["date"], "slot": p["slot"], "id": p["id"], "topic": p["topic"], "hook": job["segments"][0]["say"], "hook_type": job["segments"][0]["scene"]["type"],
                                 "music": job.get("music", ""), "scenes": [s["scene"]["type"] for s in job["segments"]]}, ensure_ascii=False) + "\n")

@@ -123,7 +123,7 @@ const SK = (() => {
       const ul = out3(seg(u, T.web + 0.1, T.web + 0.7)); g.strokeStyle = o.accent; g.lineWidth = 3; g.beginPath(); g.moveTo(540 - 230 * ul, 1428); g.lineTo(540 + 230 * ul, 1428); g.stroke();
       const sk = seg(u, T.web + 0.5, T.web + 0.9); if (sk > 0) { g.save(); g.globalAlpha = sk * 0.8; g.font = "400 32px I"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillStyle = o.sub || o.c; g.fillText(o.line || "und ich zeige Ihnen, wie das bei Ihnen aussieht.", 540, 1500); g.restore(); } }
   }
-  function endTimes(o) { const f = finder(o); const sys = f(/^systems/, 0, 0.8); return { f, sys, komm: f(/^kommentieren/, sys, 2.8), web: f(/^website/, sys, 3.4) }; }
+  function endTimes(o) { const f = finder(o); const sys = f(/^systems/, 0, 0.8); const komm = f(/^kommentieren/, sys, 2.8); return { f, sys, komm, web: f(/^website/, komm, komm + 0.6) }; }
 
   return { OL, INK, norm, mix, finder, cam, apply, toScreen, bubble, pow, person, chair, umbrella, rain, qmarks, speedLines, whiteOut, flashAt, endTitle, endTimes };
 })();
