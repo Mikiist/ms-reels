@@ -131,7 +131,7 @@ def main():
         sc = dict(s["scene"]); sc["t0"] = round(t0, 3); scenes.append(sc)
     last = max(w["e"] for w in words)
     dur = max(last + 0.9, scenes[-1]["t0"] + 3.6, vdur + DELAY + 0.6)
-    spec = {"id": job["id"], "dur": round(dur, 2), "scenes": scenes, "words": words, "hook_text": job.get("hook_text", ""), "hook_style": job.get("hook_style"), "cover_title": job.get("cover_title", ""), "music": job.get("music", ""), "look": job.get("look", "clean")}
+    spec = {"id": job["id"], "dur": round(dur, 2), "scenes": scenes, "words": words, "hook_text": job.get("hook_text", ""), "hook_style": job.get("hook_style"), "hook_until": job.get("hook_until"), "cover_title": job.get("cover_title", ""), "music": job.get("music", ""), "look": job.get("look", "clean")}
     json.dump(spec, open(os.path.join(d, "spec.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     import hashlib
     h = hashlib.sha1(json.dumps(spec, sort_keys=True).encode()); 
@@ -143,6 +143,8 @@ def main():
     if os.path.exists(os.path.join(d, "video.mp4")) and os.path.exists(hp) and open(hp).read() == h.hexdigest():
         print("Video unverändert, Render übersprungen")
     else:
+        kd = os.path.join(HERE, "hooks", "kunden")  # private Kundenszenen fehlen im öffentlichen Repo: leere Datei, damit reel.html lädt
+        if not os.path.exists(os.path.join(kd, "index.js")): os.makedirs(kd, exist_ok=True); open(os.path.join(kd, "index.js"), "w").write("// leer (frischer Container)\n")
         r = subprocess.run(["node", os.path.join(HERE, "render.mjs"), d])
         if r.returncode != 0: raise SystemExit("Render-Fehler (siehe oben)")
         open(hp, "w").write(h.hexdigest())

@@ -2,7 +2,13 @@
 
 Jeden Tag drei Videos aus **drei verschiedenen Säulen**. Kein Thema öfter als einmal in 14 Tagen (siehe `log/posted.jsonl`). Eigene neue Themen sind erwünscht, solange sie zu den Fakten passen. Neue gute Themen unten ergänzen.
 
-## Tagesplan (Uhrzeiten Europe/Berlin, jeden Tag gleich, damit die Follower einen Rhythmus lernen)
+## Tagesplan seit 28.10.2026 (Mihajlo): 1 Reel pro Tag, nur Neugier-Geschichten
+| Mo | Di | Mi | Do | Fr | Sa | So |
+|---|---|---|---|---|---|---|
+| 12:00 | 11:30 | 12:00 | 09:30 | 11:00 | 10:00 | 18:30 |
+Warum: lieber ein starkes, sorgfältig geprüftes Reel als drei schnelle (Qualität, ElevenLabs-Credits), Uhrzeiten nach Wochentag statt fester Slots (Mittagspause unter der Woche, Sonntagabend).
+
+## Alter Tagesplan bis 27.10.2026 (nur noch zur Info)
 | Slot | Uhrzeit | Säule | Warum diese Zeit |
 |---|---|---|---|
 | 1 | 07:30 | Wissen: Tipp, Mythos, Fehler (wird gespeichert und geteilt) | Handwerker und Inhaber scrollen vor Arbeitsbeginn |
@@ -68,7 +74,7 @@ Mischung pro Video: 1 breiter Begriff (#webdesign, #website, #seo, #onlinemarket
 
 ## Neugier-Geschichten (ab 25.10.2026 das einzige Format)
 Muster: „[Jemand] macht [etwas Absurdes]. Weil [Alltagsproblem]. Doch als [Wendung], landete(n) [sie] auf…“ → MIHAJLO SYSTEMS.
-Erledigt: Panzer mit QR-Codes (24.10.), Transporter mit QR-Codes und Blitzer.
+Erledigt: Panzer mit QR-Codes (24.10.), Transporter mit QR-Codes und Blitzer, Gast will den Chef (26.10.), Wirt im Regen (27.10.), Schlange vor dem Friseur (28.10.), Geschenk um Mitternacht (29.10.), Pfeil auf dem Dach (30.10.).
 Ideen-Speicher (jede nur einmal):
 - Eine Frau schreibt ihre Telefonnummer auf 10.000 Bananen im Supermarkt.
 - Ein Mann steht jede Nacht mit einem Suchscheinwerfer auf dem Dach seines Ladens.

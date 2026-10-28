@@ -15,6 +15,8 @@ for w in "Und hier geht es weiter".split(): words.append({"w": w, "t": round(t, 
 spec = {"id": "hooktest-" + typ, "dur": round(hd + 2.2, 2), "scenes": [{"type": typ, "params": params, "t0": 0}, {"type": "statement", "params": {}, "t0": hd}],
         "words": words, "hook_text": hook_text, "cover_title": "Titel *Test*", "music": ""}
 json.dump(spec, open(d + "/spec.json", "w"), ensure_ascii=False)
+kd = os.path.join(HERE, "hooks", "kunden")  # private Kundenszenen fehlen im öffentlichen Repo: leere Datei, damit reel.html lädt
+if not os.path.exists(os.path.join(kd, "index.js")): os.makedirs(kd, exist_ok=True); open(os.path.join(kd, "index.js"), "w").write("// leer (frischer Container)\n")
 r = subprocess.run(["node", HERE + "/render.mjs", d]);
 if r.returncode not in (0, 2): sys.exit("Render-Fehler")
 subprocess.run([sys.executable, HERE + "/audio.py", d], check=True)
