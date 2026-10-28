@@ -6,14 +6,13 @@ Nimmt work/<datum>-<slot>/final.mp4 + post.json (plus alle schon live liegenden 
 und schiebt sie als einzelnen Commit auf den Branch gh-pages (GitHub Pages, öffentlich). Make holt dort queue.json
 und postet zur Uhrzeit des Tages. Danach wird log/posted.jsonl auf main ergänzt.
 
-Seit 28.10.2026 (Mihajlo): 1 Reel pro Tag, immer slot 1, Uhrzeit nach Wochentag (ZEITEN). Make hat je Uhrzeit ein
-Szenario mit Wochentag-Plan, alle holen <heute>/slot1.json. Ändert sich eine Uhrzeit, auch das Make-Szenario ändern.
+Seit 29.10.2026 (Mihajlo): 3 Reels pro Tag, jeden Tag, Slots 1, 2, 3 zu 07:30, 13:30, 19:30 (SLOTS). Make hat je Slot
+ein tägliches Szenario, das <heute>/slot<N>.json liest. Ändert sich eine Uhrzeit, auch das Make-Szenario ändern.
 """
 import sys, os, json, shutil, subprocess, html, datetime
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# Uhrzeit (Europe/Berlin) nach Wochentag, 0 = Montag. Muss zu den Make-Szenarien passen (README.md).
-ZEITEN = {0: "12:00", 1: "11:30", 2: "12:00", 3: "09:30", 4: "11:00", 5: "10:00", 6: "18:30"}
-def zeit(date): return ZEITEN[datetime.date.fromisoformat(date).weekday()]
+# Uhrzeit (Europe/Berlin) je Slot. Muss zu den Make-Szenarien passen (README.md).
+SLOTS = {1: "07:30", 2: "13:30", 3: "19:30"}
 
 def git(*a, cwd=ROOT):
     r = subprocess.run(["git", *a], cwd=cwd, capture_output=True, text=True)
@@ -34,7 +33,6 @@ def main():
     if not posts: raise SystemExit("Keine fertigen Reels ab " + date)
     keys = [(p["date"], p["slot"]) for p in posts]
     if len(set(keys)) != len(keys): raise SystemExit("Slot doppelt vergeben: " + str(keys))
-    if any(p["slot"] != 1 for p in posts): raise SystemExit("Seit 28.10.2026 nur 1 Reel pro Tag (slot 1): " + str(keys))
     owner_repo = git("remote", "get-url", "origin").rstrip("/").removesuffix(".git").split("github.com/")[-1].split("/")
     owner, repo = owner_repo[-2], owner_repo[-1]
     base = f"https://{owner.lower()}.github.io/{repo}"
@@ -43,7 +41,7 @@ def main():
     for p in sorted(posts, key=lambda x: (x["date"], x["slot"])):
         shutil.copy(os.path.join(p["dir"], "final.mp4"), f"{site}/v/{p['id']}.mp4")
         shutil.copy(os.path.join(p["dir"], "cover.jpg"), f"{site}/v/{p['id']}.jpg")
-        q["posts"].append({"date": p["date"], "slot": p["slot"], "time": zeit(p["date"]), "id": p["id"], "video_url": f"{base}/v/{p['id']}.mp4", "cover_url": f"{base}/v/{p['id']}.jpg",
+        q["posts"].append({"date": p["date"], "slot": p["slot"], "time": SLOTS.get(p["slot"], ""), "id": p["id"], "video_url": f"{base}/v/{p['id']}.mp4", "cover_url": f"{base}/v/{p['id']}.jpg",
                            "caption": p["caption"], "thumb_offset": p["thumb_offset"], "topic": p.get("topic", ""), "audio_name": p.get("audio_name", ""), "first_comment": p.get("first_comment", "")})
     # Schon live liegende Posts ab heute behalten (frischer Container hat nur sein eigenes Reel in work/; ohne das
     # würde jeder Tageslauf die geplanten Reels der anderen Tage von gh-pages löschen). Lokale Reels ersetzen gleiche Tage.
@@ -56,7 +54,7 @@ def main():
             files = {e: subprocess.run(["git", "show", f"origin/gh-pages:v/{x['id']}.{e}"], cwd=ROOT, capture_output=True) for e in ("mp4", "jpg")}
             if any(f.returncode != 0 or not f.stdout for f in files.values()): print("Live-Post ohne Datei, fällt weg:", x["id"]); continue
             for e, f in files.items(): open(f"{site}/v/{x['id']}.{e}", "wb").write(f.stdout)
-            x["time"] = zeit(x["date"]); kept.append(x)
+            kept.append(x)
     if kept: print("behalten (schon live):", [x["id"] for x in kept])
     q["posts"] = sorted(q["posts"] + kept, key=lambda x: (x["date"], x["slot"]))
     json.dump(q, open(site + "/queue.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
