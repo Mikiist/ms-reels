@@ -20,3 +20,10 @@
 - Kontaktbogen (check.py) zeigt bei 2 Szenen nur 6 Bilder. Für die Pflicht von 12+ Bildern eigene Einzelbilder ziehen (18 gleichmäßig verteilt plus gezielt die Sprechblasen-Momente).
 - Blitz auf Bild 0 macht das erste Bild blass. Der Einstieg muss satt sein, Blitz erst kurz danach und schwach.
 - Kino-Look zeigt den Text-Hook oben, solange Szene 1 läuft, bei Geschichten also 20 s. Neues Feld `hook_until` (Sekunden) im Job begrenzt das.
+
+## 30.10.2026: Feedback Mihajlo zur ersten Geschichten-Woche
+- Gut: Mitternacht (klare Brücke: alles zu → Gutscheinshop). Okay: Salon, Pfeil, Suchscheinwerfer.
+- Schlecht: Bäcker mit Luftballons („maximal Slop“, Look neon billig, Ballon platzt → Landingpage passt nicht), Hund mit Schild („dumm“, Brücke zum Chatbot schwach). Bananen (Obstmann → Bestellsystem) aus demselben Grund vor dem Posten ersetzt.
+- Zahlen (Instagram, 30.10. morgens): 43.380 Aufrufe in 30 Tagen, 43 Follower, Bäcker trotzdem 870 Aufrufe, 6 Likes, 2 geteilt.
+- Panzer- und andere „makabre“ Comic-Motive sind wieder erlaubt (Panzer-Reel hatte 6.210 Aufrufe, die meisten).
+- Meta Verified (Business) ab 30.10. 7 Tage im Test.
