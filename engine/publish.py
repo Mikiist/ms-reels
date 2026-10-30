@@ -49,8 +49,9 @@ def main():
     if subprocess.run(["git", "fetch", "-q", "origin", "gh-pages"], cwd=ROOT, capture_output=True).returncode == 0:
         r = subprocess.run(["git", "show", "origin/gh-pages:queue.json"], cwd=ROOT, capture_output=True)
         old = json.loads(r.stdout) if r.returncode == 0 else {"posts": []}
+        drop = set(filter(None, os.environ.get("DROP", "").split(",")))  # DROP=id1,id2 nimmt live liegende Posts heraus
         for x in old.get("posts", []):
-            if x["date"] < date or (x["date"], x["slot"]) in keys: continue
+            if x["date"] < date or (x["date"], x["slot"]) in keys or x["id"] in drop: continue
             files = {e: subprocess.run(["git", "show", f"origin/gh-pages:v/{x['id']}.{e}"], cwd=ROOT, capture_output=True) for e in ("mp4", "jpg")}
             if any(f.returncode != 0 or not f.stdout for f in files.values()): print("Live-Post ohne Datei, fällt weg:", x["id"]); continue
             for e, f in files.items(): open(f"{site}/v/{x['id']}.{e}", "wb").write(f.stdout)
