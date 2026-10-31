@@ -268,7 +268,7 @@ def check(v):
 # Neue Verteilung ab 02.11. (31.10. fiel aus, Halloween-Folgen und Warteschleife/Marathon liefen am 31.10./01.11.):
 # alte Id -> (neue Id, Musik). Nicht aufgeführte Folgen sind gestrichen (Tür, Zeppelin, Hüte) oder schon gelaufen.
 REMAP = {"2026-11-01-1": ("2026-11-02-1", "trap"), "2026-11-01-2": ("2026-11-02-2", "phonk"), "2026-11-02-3": ("2026-11-02-3", "drive"),
-         "2026-11-02-1": ("2026-11-03-1", "house"), "2026-11-02-2": ("2026-11-03-2", "trap"), "2026-11-01-3": ("2026-11-03-3", "cinematic"),
+         "2026-11-02-1": ("2026-11-03-1", "house"), "2026-11-02-2": ("2026-11-03-2", "trap"), "2026-11-04-1": ("2026-11-03-3", "cinematic"),  # Agent-Döner gestrichen (Brücke schwach: Laden gegenüber sichtbar), dafür Elektriker mit fünf Hüten
          "2026-11-03-1": ("2026-11-04-1", "drive"), "2026-11-03-2": ("2026-11-04-2", "house"), "2026-11-04-3": ("2026-11-04-3", "phonk"),
          "2026-11-05-1": ("2026-11-05-1", "trap"), "2026-11-05-2": ("2026-11-05-2", "cinematic"), "2026-11-05-3": ("2026-11-05-3", "drive"),
          "2026-11-06-1": ("2026-11-06-1", "house"), "2026-11-06-2": ("2026-11-06-2", "trap"), "2026-11-06-3": ("2026-11-06-3", "phonk")}
