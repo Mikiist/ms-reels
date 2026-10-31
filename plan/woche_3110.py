@@ -265,6 +265,20 @@ def check(v):
     if not 40 <= w <= 85: errs.append(f"{w} Wörter")
     return n, w, errs
 
+# Neue Verteilung ab 02.11. (31.10. fiel aus, Halloween-Folgen und Warteschleife/Marathon liefen am 31.10./01.11.):
+# alte Id -> (neue Id, Musik). Nicht aufgeführte Folgen sind gestrichen (Tür, Zeppelin, Hüte) oder schon gelaufen.
+REMAP = {"2026-11-01-1": ("2026-11-02-1", "trap"), "2026-11-01-2": ("2026-11-02-2", "phonk"), "2026-11-02-3": ("2026-11-02-3", "drive"),
+         "2026-11-02-1": ("2026-11-03-1", "house"), "2026-11-02-2": ("2026-11-03-2", "trap"), "2026-11-01-3": ("2026-11-03-3", "cinematic"),
+         "2026-11-03-1": ("2026-11-04-1", "drive"), "2026-11-03-2": ("2026-11-04-2", "house"), "2026-11-04-3": ("2026-11-04-3", "phonk"),
+         "2026-11-05-1": ("2026-11-05-1", "trap"), "2026-11-05-2": ("2026-11-05-2", "cinematic"), "2026-11-05-3": ("2026-11-05-3", "drive"),
+         "2026-11-06-1": ("2026-11-06-1", "house"), "2026-11-06-2": ("2026-11-06-2", "trap"), "2026-11-06-3": ("2026-11-06-3", "phonk")}
+if "--alt" not in sys.argv:
+    W2 = []
+    for v in V:
+        if v["id"] in REMAP:
+            nid, mus = REMAP[v["id"]]; v = dict(v, id=nid, date=nid[:10], slot=int(nid[-1]), music=mus); W2.append(v)
+    V[:] = sorted(W2, key=lambda x: x["id"])
+
 if __name__ == "__main__":
     only = set(sys.argv[1:]); bad = 0
     for v in V:
