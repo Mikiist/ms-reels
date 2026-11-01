@@ -62,6 +62,10 @@ const PAL = {
   // Look objekt (ruhiges Studio wie das Seifenblasen-Video)
   ag_dark:  { bg: ["#0b0d11", "#12161d"], fg: "#ffffff", sub: "#9aa3b2", acc: "#c6f432", acc2: "#ff4d5e", dark: true },
   o_cream:  { bg: ["#f5f0e9", "#e9e2d7"], fg: "#18181b", sub: "#8b8379", acc: "#b8862b", acc2: "#2f6fde", dark: false },
+  // Look motion (ab 04.11.2026): tiefe, weiche Verläufe mit treibenden Lichtflecken
+  m_dark:   { bg: ["#060914", "#0d1430"], fg: "#ffffff", sub: "#a5b4d4", acc: "#60a5fa", acc2: "#a78bfa", acc3: "#22d3ee", dark: true },
+  m_deep:   { bg: ["#0a0618", "#1a0f3a"], fg: "#ffffff", sub: "#c4b5fd", acc: "#818cf8", acc2: "#f472b6", acc3: "#38bdf8", dark: true },
+  m_light:  { bg: ["#eef2fb", "#dfe7f7"], fg: "#0b1220", sub: "#475569", acc: "#2563eb", acc2: "#7c3aed", acc3: "#06b6d4", dark: false },
 };
 
 // ---------- Looks: jedes Video bekommt einen eigenen Stil (Schrift, Hintergrund, Untertitel, Effekte, Schluss) ----------
@@ -75,6 +79,7 @@ const LOOKS = {
   terminal:  { cap: "M", capW: 700, cd: "D", bg: "term", pals: ["t_green", "t_amber"], cs: "mono", grain: 0.06, ovl: "scan", cta: "ui", punch: 0.03 },
   story:     { cap: "I", capW: 800, cd: "D", bg: "agency", pals: ["ag_dark"], cs: "tag", upper: true, grain: 0.03, cta: "giant", punch: 0.02, hideHook: true, calm: true, capYHook: 1210 },
   objekt:    { cap: "I", capW: 500, cd: "D", bg: "studio", pals: ["o_cream"], cs: "subtle", grain: 0.03, cta: "card", punch: 0, hideHook: true, calm: true, capY: 1720 },
+  motion:    { cap: "D", capW: 800, cd: "D", bg: "mesh", pals: ["m_dark", "m_deep", "m_light"], cs: "soft", grain: 0.03, cta: "ui", punch: 0.012, calm: true },
   cinema:    { cap: "B", capW: 400, cd: "B", bg: "cine", pals: ["c_teal", "c_warm", "c_night"], cs: "cine", upper: true, grain: 0.13, ovl: "letterbox", cta: "giant", punch: 0.025 },
 };
 const LOOK_KEY = LOOKS[SPEC.look] ? SPEC.look : "clean";
@@ -200,6 +205,13 @@ function background(g, P, u, sc) {
 // Hintergründe der Looks
 function phraseIdx(sc, u) { const t = sc.t0 + u; let k = 0; for (const ph of sc.phrases || []) if (t >= ph.start) k++; return k; }
 const BGS = {
+  mesh(g, P, u, sc) { // weicher Verlauf, drei große Lichtflecken treiben langsam (Look motion)
+    const gr = g.createLinearGradient(0, 0, W * 0.3, H); gr.addColorStop(0, P.bg[0]); gr.addColorStop(1, P.bg[1]); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+    const cols = [P.acc, P.acc2, P.acc3 || P.acc]; const a = P.dark ? 0.32 : 0.22;
+    for (let i = 0; i < 3; i++) { const t = u * 0.18 + i * 2.1 + sc.i; const bx = 540 + Math.sin(t * 1.1 + i) * 380, by = 960 + Math.cos(t * 0.9 + i * 1.7) * 620, r = 620 + 120 * Math.sin(t + i);
+      const rg = g.createRadialGradient(bx, by, 0, bx, by, r); rg.addColorStop(0, hexA(cols[i], a)); rg.addColorStop(1, hexA(cols[i], 0)); g.fillStyle = rg; g.fillRect(0, 0, W, H); }
+    const vg = g.createRadialGradient(540, 960, 500, 540, 960, 1300); vg.addColorStop(0, "rgba(0,0,0,0)"); vg.addColorStop(1, P.dark ? "rgba(0,0,0,0.45)" : "rgba(40,60,120,0.10)"); g.fillStyle = vg; g.fillRect(0, 0, W, H);
+  },
   agency(g, P, u, sc) { // dunkle Agentur-Fläche mit weichem Lichtfleck in Akzentfarbe
     g.fillStyle = P.bg[0]; g.fillRect(0, 0, W, H);
     const lg = g.createRadialGradient(540, sc.gc, 0, 540, sc.gc, 760); lg.addColorStop(0, hexA(P.acc, 0.10)); lg.addColorStop(1, hexA(P.acc, 0)); g.fillStyle = lg; g.fillRect(0, 0, W, H);

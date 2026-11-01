@@ -52,7 +52,7 @@ def check_text(job):
     if len(tags) > 5: bad.append(f"{len(tags)} Hashtags (Instagram erlaubt 5)")
     if len(job.get("caption", "")) > 2100: bad.append("Caption zu lang")
     types = [s["scene"]["type"] for s in job["segments"]]
-    if not kunde and types[-1] != "cta" and not types[-1].endswith("_end"): bad.append("Letzte Szene muss 'cta' oder eine eigene Schluss-Szene '*_end' sein")
+    if not kunde and types[-1] != "cta" and not types[-1].endswith("_end") and not types[-1].startswith("m_end"): bad.append("Letzte Szene muss 'cta' oder eine eigene Schluss-Szene '*_end' sein")
     known = set(re.findall(r"^TYPES\.(\w+) =", open(os.path.join(HERE, "scenes.js"), encoding="utf-8").read(), re.M))
     for sub in ("hooks", os.path.join("hooks", "kunden")):
         dd = os.path.join(HERE, sub)
@@ -70,11 +70,11 @@ def check_text(job):
         if n < 3 and s["scene"]["type"] != "reveal": bad.append(f"Segment {i + 1} hat nur {n} Wörter (mindestens 3, sonst ist die Szene zu kurz)")
     return bad
 
-def process_voice(d):
+def process_voice(d, tempo=1.05):
     raw = os.path.join(d, "voice_raw.mp3"); out = os.path.join(d, "voice.wav")
     if not os.path.exists(raw): raise SystemExit("voice_raw.mp3 fehlt")
-    af = ("silenceremove=start_periods=1:start_threshold=-45dB:stop_periods=-1:stop_duration=0.32:stop_threshold=-45dB:stop_silence=0.2,"
-          "atempo=1.05,highpass=f=70,equalizer=f=200:t=q:w=1:g=1.5,equalizer=f=3500:t=q:w=1:g=2.5,acompressor=threshold=-20dB:ratio=3:attack=5:release=80")
+    af = (f"silenceremove=start_periods=1:start_threshold=-45dB:stop_periods=-1:stop_duration=0.32:stop_threshold=-45dB:stop_silence=0.2,"
+          f"atempo={tempo},highpass=f=70,equalizer=f=200:t=q:w=1:g=1.5,equalizer=f=3500:t=q:w=1:g=2.5,acompressor=threshold=-20dB:ratio=3:attack=5:release=80")
     sh(["ffmpeg", "-y", "-v", "error", "-i", raw, "-af", af, "-ar", "44100", "-ac", "1", out])
     return out
 
@@ -118,7 +118,7 @@ def main():
     if bad: raise SystemExit("PROBLEME:\n- " + "\n- ".join(bad))
     global DELAY
     DELAY = voice_delay(job)
-    wav = process_voice(d)
+    wav = process_voice(d, float(job.get("tempo", 1.05)))  # job "tempo": schneller sprechen (Mihajlo 01.11.2026: Stimme soll schnell reden)
     sw = script_words(job); ww, vdur = whisper(wav, voice_text(job))
     T, q = align(sw, ww)
     print(f"Ausrichtung: {q:.0%} der Wörter direkt erkannt, Stimme {vdur:.1f} s")

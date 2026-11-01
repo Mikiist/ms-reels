@@ -27,3 +27,8 @@
 - Zahlen (Instagram, 30.10. morgens): 43.380 Aufrufe in 30 Tagen, 43 Follower, Bäcker trotzdem 870 Aufrufe, 6 Likes, 2 geteilt.
 - Panzer- und andere „makabre“ Comic-Motive sind wieder erlaubt (Panzer-Reel hatte 6.210 Aufrufe, die meisten).
 - Meta Verified (Business) ab 30.10. 7 Tage im Test.
+
+## 01.11.2026: Comic-Geschichten beendet
+- Mihajlo: Geschichten sind „maximal Slop“, Aufrufe „peinlich“, die gleiche Schluss-Animation jedes Mal fällt auf. Ab 04.11. Motion Design (Premium, 3D-Handy, Terminal, Glas-Karten), Ads-Stimme schnell, alles Sichtbare wird gesprochen, wechselnde Schlüsse.
+- Zahlen aus dem Raster (30.10.): alte Erklär-Reels Woche 1 nur 149 bis 511 Aufrufe, Geschichten 870 bis 1.463, Panzer 6.210, Seifenblase rund 5.000 (beworben). Ein Muster im alten Engine-Stil (kleine Grafiken, viel Leerraum) sah aus wie Woche 1, darum erst die Engine aufwerten.
+- Mint klingt auch mit Tempo 1,15 plus atempo 1,18 noch langsam (60 Wörter in 30 s), weil die Trailer-Stimme Pausen macht.

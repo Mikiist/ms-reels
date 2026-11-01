@@ -10,7 +10,7 @@ function setup() {
   scenes.forEach((s, i) => {
     const T = TYPES[s.type] || TYPES.statement; const p = s.params || {};
     let pal = s.pal || T.pal;
-    if (LOOK.pals && !String(s.type).startsWith("h_")) { const L = LOOK.pals; pal = L[(i + SEED) % L.length]; if (pal === lastPal) pal = L[(i + SEED + 1) % L.length]; }
+    if (LOOK.pals && !String(s.type).startsWith("h_") && !String(s.type).startsWith("m_")) { const L = LOOK.pals; pal = L[(i + SEED) % L.length]; if (pal === lastPal) pal = L[(i + SEED + 1) % L.length]; }
     else if (!LOOK.pals && s.type === "cta" && !s.pal) { const C = ["violet", "crimson", "navy", "black", "sunset", "gold"]; pal = C[SEED % C.length]; }
     if (pal === lastPal && !LOOK.pals) { const keys = Object.keys(PAL).filter((k) => k !== lastPal && PAL[k].dark === PAL[pal].dark); pal = keys[Math.floor(R(i * 3) * keys.length)]; }
     lastPal = pal; let tr = s.tr; if (!tr) { tr = TRANS[trI % TRANS.length]; trI += 1 + Math.floor(R(i * 9) * 2); if (tr === lastTr) tr = TRANS[(trI++) % TRANS.length]; } lastTr = tr;
@@ -190,7 +190,7 @@ function INFO() { setup(); const s0 = SC[0]; return { cover_t: s0.t0 + (s0.T.cov
 window.render = render; window.EVENTS = EVENTS; window.INFO = INFO;
 
 // ---------- Untertitel-Stile der Looks ----------
-const CAPSIZE = { tag: 0.36, subtle: 0.4, box: 1.3, serif: 1.18, cine: 1.15, mono: 0.8, sticker: 1.0, glow: 0.92, plain: 1 };
+const CAPSIZE = { soft: 0.82, tag: 0.36, subtle: 0.4, box: 1.3, serif: 1.18, cine: 1.15, mono: 0.8, sticker: 1.0, glow: 0.92, plain: 1 };
 function headFont(el) { // Schrift für Hook-Text und Titelbild passend zum Look
   if (LOOK_KEY === "clean") return; el.style.fontFamily = LOOK.cap; el.style.fontWeight = String(LOOK.capW);
   if (LOOK.upper) { el.style.textTransform = "uppercase"; el.style.letterSpacing = LOOK.cs === "cine" ? "0.03em" : "0"; }
@@ -201,6 +201,8 @@ function capStyle(div, spans, P, sc) {
   if (LOOK.upper) div.style.textTransform = "uppercase";
   const accs = spans.filter((s) => s.acc);
   if (cs === "plain") { div.style.letterSpacing = "-0.03em"; return; }
+  if (cs === "soft") { div.style.letterSpacing = "-0.025em"; div.style.lineHeight = "1.06"; div.style.textShadow = P.dark ? "0 8px 40px rgba(0,0,0,0.45)" : "none";
+    spans.forEach((s) => { s.el.style.color = s.acc ? P.acc : P.fg; s.el.style.background = "none"; s.el.style.padding = "0"; s.el.style.margin = "0 0.1em"; s.mode = "rise"; }); return; }
   if (cs === "tag") { div.style.letterSpacing = "0.02em"; div.style.lineHeight = "1.5"; div.style.textShadow = "none";
     spans.forEach((s, i) => { s.el.style.background = "#000000"; s.el.style.color = s.acc ? P.acc || "#c6f432" : "#ffffff"; s.el.style.margin = "0"; s.el.style.padding = "0.16em " + (i === spans.length - 1 ? "0.42em" : "0.22em") + " 0.12em " + (i === 0 ? "0.42em" : "0.1em");
       s.el.style.borderRadius = i === 0 && i === spans.length - 1 ? "0.25em" : i === 0 ? "0.25em 0 0 0.25em" : i === spans.length - 1 ? "0 0.25em 0.25em 0" : "0"; s.mode = "cut"; }); return; }

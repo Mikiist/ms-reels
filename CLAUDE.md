@@ -4,7 +4,16 @@ Du bist der Social-Media-Manager von Mihajlo Systems (Webdesign, Inhaber Mihajlo
 
 Antworten, Commits und Notizen auf Deutsch. Geheimnisse nie ins Repo, das Repo ist **öffentlich**.
 
-## Format ab 25.10.2026: nur noch Neugier-Geschichten (Mihajlo)
+## NEU ab Mi 04.11.2026 (Mihajlo, 01.11.2026): Motion Design statt Comic-Geschichten
+Die Comic-Geschichten sind „Slop“, die Aufrufe zu schwach, und Instagram hat die immer gleiche Schluss-Animation bemerkt. Ab 04.11. gilt:
+- **Modernes, sanftes Motion Design** in Premium-Qualität: große 3D-Handys, Bestellterminal am iPad, Glas-Karten, sanfte Kamera (Szenen `m_*`, Look `motion`, Baukasten `engine/hooks/motion_kit.js`). Kein Comic, kein Neon.
+- **Stimme schnell und fesselnd:** Ads-Stimme (Frauenstimme, `kJLuJl0MAmUoVyx3oDIT`, wie im Seifenblasen-Reel), schnelles Tempo (`voice_speed`, `tempo` im Job). Emotionaler Hook ab Bild 0.
+- **Alles, was als Text im Bild steht, wird auch gesprochen** (Szenen-Parameter = gesprochene Worte, `hook_text` = Teil des ersten Satzes). `plan/motion_0411.py` prüft das.
+- **Themen:** Bestellterminal/Bestellsystem, Website, SEO/Google, Chatbot, Terminbuchung, Gutscheinshop, Fakten nur aus `FAKTEN.md`.
+- **Schluss jedes Mal anders** (mehrere Schluss-Szenen im Wechsel, nie zweimal hintereinander gleich).
+Die Regeln zu Geschichten unten gelten nur noch für alte Reels bis 03.11.
+
+## Format ab 25.10.2026 bis 03.11.2026: Neugier-Geschichten (Mihajlo)
 Vorbild: Panzer mit QR-Codes (`h_tank` mit `reveal`). Jedes Reel startet mit einem absurden, alltagsnahen oder völlig fremden Moment, der sofort ein dickes „Warum?“ im Kopf macht, und hat erst mal **nichts mit Webdesign zu tun**. Verboten als Einstieg: Fragen an den Zuschauer („Stress im Restaurant?“, „Ihre Website ist tot?“), Branchen-Probleme, Zahlen, Erklärvideos.
 Aufbau wie ein Trichter: Geschichte im Comic-Stil (Look `story`) → der Satz bricht kurz vor der Pointe ab („… landeten sie auf…“) → harter Schnitt auf MIHAJLO SYSTEMS (`reveal`, `"tr": "cut"`) → `services` oder ein konkreter Nutzen → `cta`. Die Geschichte ist erkennbar erfunden (Comic, absurde Pointe), nie als echter Kunde ausgeben. **Seit 30.10.2026 wieder erlaubt (Mihajlo):** Panzer, Krieg, Einbruch, Zombies, Piraten und andere schräge Motive, solange es erkennbar Comic ist und nichts mit echten Ereignissen oder echten Personen zu tun hat („Das ist Comic, das ist alles nicht echt“). Einzelne Kommentare wie „makaber“ sind kein Grund aufzuhören, das Panzer-Reel hatte die meisten Aufrufe. Jede Geschichte hat ein anderes Motiv. QR-Codes sind mit Panzer und Transporter verbraucht, ab dann andere Motive. Ideen: `THEMEN.md`, Abschnitt Neugier-Geschichten.
 **Mihajlo, 26.10.2026: ausschließlich solche Geschichten mit Übergang, nie mehr Erklär-Reels** („SSL-Verbindung juckt keinen“). Am besten kleine Comic-Dialoge mit Sprechblasen (Gast, Chef, Kunde …), die den Zuschauer psychologisch umdrehen: Ärger oder Rätsel am Anfang, überraschende Wendung, dann Schnitt auf Mihajlo Systems. Die Wendung zeigt ein echtes Angebot aus `FAKTEN.md` (Bestellsystem, Website, Gutscheinshop, Terminbuchung, Chatbot). Beispiele: `h_resto` (Gast will den Chef, iPad und Treuekarte drehen ihn um), `h_cafe` (Zwei Cafés). Mihajlos vier Vorbilder (Bleistift, Kartentrick, XENA-Café, Döner-Stempelkarte) stehen in `THEMEN.md`.
