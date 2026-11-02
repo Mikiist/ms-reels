@@ -46,6 +46,51 @@ video("2026-11-04-1", "Motion: Lieferportal kassiert mit, eigenes Bestelltermina
       ["#gastronomie", "#restaurant", "#hannover", "#bestellsystem", "#digitalisierung"],
       "Wie viel Provision zahlen Sie im Monat? 🧾")
 
+# ---------- Mi 04.11. 13:30: Gefunden werden (Google und Google Maps) ----------
+video("2026-11-04-2", "Motion: Kunden suchen Sie, Website und Google Maps", "motion", "house",
+      "Finden sie *Sie*?", "Finden sie *Sie*?", "Jeden Tag suchen Kunden nach Ihnen", [
+      ("Jeden Tag suchen *Kunden* nach Ihnen. Die Frage ist nur: Finden sie Sie?",
+       {"type": "h_vault", "params": {"label": "Kunden", "sub": "Finden sie Sie?"}}),
+      ("Elektriker Hannover. Elektro Meyer. Elektro Krause. Und Ihr Betrieb, mit *Website* und Karte.",
+       {"type": "m_phone", "params": {"screen": "search", "query": "Elektriker Hannover", "rise": False,
+        "items": [["Elektro Meyer", ""], ["Elektro Krause", ""], ["Ihr Betrieb", "Mit Website und Karte"]]}}),
+      ("Mit Öffnungszeiten, Fotos und einem Knopf zum *Anrufen*.",
+       {"type": "m_cards", "params": {"items": ["Öffnungszeiten", "Fotos", "Knopf zum Anrufen"]}}),
+      ("So werden Sie gefunden. Bei Google und *Google Maps*.",
+       {"type": "m_word", "params": {"text": "Gefunden", "sub": "Bei Google und Google Maps"}}),
+      ("Mihajlo Systems. Business-Paket, 179 Euro im Monat. Kommentieren Sie *WEBSITE*.",
+       {"type": "m_end_card", "params": {"keyword": "WEBSITE", "line": "Business-Paket, 179 € im Monat"}, "tr": "cut"}),
+      ],
+      ["Jeden Tag suchen Kunden nach Ihnen. Die Frage ist nur: Finden sie Sie auch? 🔎",
+       "Wer heute einen Elektriker, Maler oder Friseur braucht, sucht bei Google und auf Google Maps. Dort entscheidet sich in Sekunden, wen er anruft: den Betrieb mit Website, Öffnungszeiten, Fotos und einem Knopf zum Anrufen, oder den, über den er nichts findet.",
+       "Eine Website, die Google versteht, und ein gepflegter Eintrag bei Google Maps sorgen dafür, dass Kunden Sie finden, auch abends und am Wochenende, wenn Sie selbst keine Zeit haben.",
+       "Im Business-Paket stecken bis zu 5 Seiten, KI-Chatbot Basis, SEO und Google Maps: 1.990 € einmalig oder 179 € im Monat (12 Monate Mindestlaufzeit)."],
+      "Kennen Sie einen Handwerker, den man bei Google nicht findet? Schicken Sie ihm das Video. 📩",
+      ["#seo", "#handwerk", "#hannover", "#googlemaps", "#website"],
+      "Suchen Sie mal Ihre Branche plus Stadt bei Google. Wo stehen Sie? 🔎")
+
+# ---------- Mi 04.11. 19:30: KI-Chatbot (Rückruf-Zettel) ----------
+video("2026-11-04-3", "Motion: Wir rufen Sie morgen zurück, KI-Chatbot", "motion", "cinematic",
+      "Wir rufen Sie *morgen* zurück", "Dieser Satz *kostet* Kunden", "Wir rufen Sie morgen zurück", [
+      ("Wir rufen Sie morgen zurück. Dieser Satz kostet Sie *Kunden*.",
+       {"type": "h_trash", "params": {"label": "Wir rufen Sie morgen zurück"}}),
+      ("Ein Kunde fragt spät abends: Haben Sie morgen offen? Die Antwort kommt sofort: Ja, ab neun Uhr.",
+       {"type": "m_phone", "params": {"screen": "chat", "items": [["kunde", "Haben Sie morgen offen?"], ["bot", "Ja, ab 9 Uhr."]], "side": -1}}),
+      ("Ihr KI-Chatbot antwortet rund um die *Uhr*.",
+       {"type": "m_word", "params": {"text": "Rund um die Uhr", "pre": "Ihr KI-Chatbot antwortet"}}),
+      ("Auch nachts. Auch am Wochenende. Einmalig ab 200 *Euro*.",
+       {"type": "m_cards", "params": {"items": ["Auch nachts", "Auch am Wochenende", "Einmalig ab 200 €"]}}),
+      ("Mihajlo Systems. Kommentieren Sie *WEBSITE*.",
+       {"type": "m_end_word", "params": {"keyword": "WEBSITE"}, "tr": "cut"}),
+      ],
+      ["Wir rufen Sie morgen zurück. Genau dieser Satz kostet viele Betriebe Kunden. 📞",
+       "Viele Fragen kommen abends und nachts: Haben Sie morgen offen? Was kostet das? Haben Sie Samstag Zeit? Wer bis morgen auf eine Antwort warten muss, fragt längst woanders. Ein KI-Chatbot auf Ihrer Website antwortet sofort, auch wenn Sie schlafen.",
+       "Der Chatbot beantwortet die immer gleichen Fragen zu Öffnungszeiten, Leistungen und Ablauf. Sie bekommen morgens die Anfragen, die wirklich zählen, und verlieren keinen Kunden mehr an die Nacht.",
+       "Den KI-Chatbot gibt es einzeln für 200, 350 oder 500 € einmalig. Im Business-Paket ist die Basis schon dabei."],
+      "Kennen Sie jemanden, der abends nie ans Telefon kommt? Schicken Sie ihm das Video. 📩",
+      ["#kichatbot", "#selbstständig", "#braunschweig", "#kleinunternehmen", "#website"],
+      "Wie viele Anfragen kommen bei Ihnen nach Feierabend? 🌙")
+
 def check(v):
     c = v["caption"]; n = len(c); errs = []
     if not 1100 <= n <= 1500: errs.append(f"Caption {n}")
@@ -58,10 +103,11 @@ def check(v):
     if norm(v["hook_text"].replace("*", "")) not in norm(say): errs.append("hook_text wird nicht gesprochen")
     for s in v["segments"]:  # sichtbare Texte aus den Parametern müssen gesprochen werden
         p = s["scene"]["params"]; texts = []
-        for k in ("title", "total", "tagline", "button", "stamp", "big", "label", "headline", "query", "result"):
+        for k in ("title", "total", "tagline", "button", "stamp", "big", "label", "headline", "query", "result", "text", "sub", "pre", "line"):
             if isinstance(p.get(k), str): texts.append(p[k])
         for k in ("items", "left", "right", "labels"):
             for it in p.get(k, []) or []:
+                if isinstance(it, list) and p.get("screen") == "chat": it = it[1:]  # Rolle kunde/bot ist kein sichtbarer Text
                 texts += it if isinstance(it, list) else [it]
         for t in texts:
             if re.sub(r"\D", "", t) and not re.sub(r"[^a-zäöüß]", "", t.lower()): continue  # reine Zahl/Uhrzeit: gesprochen als Wort

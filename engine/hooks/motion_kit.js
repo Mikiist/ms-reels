@@ -73,10 +73,10 @@ TYPES.m_phone = {
       let y0 = S.y + (p.title ? 200 : 140);
       if (p.screen === "search") { const n = Math.floor((p.query || "").length * seg(u, T.query, T.query + 0.8)); MK.rrp(G, S.x + 30, y0, S.w - 60, 92, 46); G.fillStyle = card; G.fill();
         MK.t(G, (p.query || "").slice(0, n) + (u < T.query + 0.9 && Math.floor(u * 3) % 2 ? "|" : ""), S.x + 80, y0 + 47, { px: 38, w: 600, c: ink }); y0 += 140; }
-      const items = p.items || []; const last = items.length - 1; const rise = p.screen === "search" ? inOut(seg(u, T.items[last] + 0.3, T.items[last] + 1.0)) : 0;
+      const items = p.items || []; const last = items.length - 1; const rise = p.screen === "search" && p.rise !== false ? inOut(seg(u, T.items[last] + 0.3, T.items[last] + 1.0)) : 0;
       items.forEach((it, i) => { const k = outBack(seg(u, T.items[i] - 0.15, T.items[i] + 0.3), 1.4); if (k <= 0) return; const [a, b] = Array.isArray(it) ? it : [it, ""];
         let slot = p.screen === "orders" ? i : i; if (p.screen === "search") slot = i === last ? lerp(last, 0, rise) : (i + (rise > 0 ? rise : 0));
-        const y = y0 + slot * 196 + (1 - k) * 80; G.save(); G.globalAlpha = cl(k * 1.4); const hi = p.screen === "search" && i === last && rise > 0;
+        const y = y0 + slot * 196 + (1 - k) * 80; G.save(); G.globalAlpha = cl(k * 1.4); const hi = p.screen === "search" && i === last && (rise > 0 || (p.rise === false && u > T.items[last]));
         MK.rrp(G, S.x + 24, y, S.w - 48, 176, 38); G.fillStyle = hi ? "rgba(37,99,235,0.22)" : card; G.fill(); if (hi) { G.strokeStyle = MK.ACC; G.lineWidth = 4; G.stroke(); }
         MK.icon(G, p.screen === "orders" ? "bag" : (hi ? "pin" : "star"), S.x + 96, y + 88, 46, p.screen === "orders" ? MK.OK : (hi ? MK.ACC : "#64748b"));
         MK.t(G, a, S.x + 166, b ? y + 66 : y + 88, { px: MK.fit(G, a, S.w - 210, 50, 800, "D"), w: 800, f: "D", c: ink }); if (b) MK.t(G, b, S.x + 166, y + 122, { px: MK.fit(G, b, S.w - 210, 36, 600), w: 600, c: sub }); G.restore(); });
@@ -142,9 +142,11 @@ TYPES.m_cards = {
 // params: text (gesprochen), sub (optional, gesprochen), color
 TYPES.m_word = {
   zone: "bottom", pal: "m_dark", bgv: 0, capY: 1500, nocap: true,
-  prep(o, p) { p._T = { t: MK.when(o, p.text || "", 0, 0.2), s: p.sub ? MK.when(o, p.sub, 0, 1.2) : null }; },
+  prep(o, p) { p._T = { t: MK.when(o, p.text || "", 0, 0.2), s: p.sub ? MK.when(o, p.sub, 0, 1.2) : null, pre: p.pre ? MK.when(o, p.pre, 0, 0.1) : null }; },
   draw(g, u, d, p, sc, P) {
-    background(g, P, u, sc); const T = p._T, k = seg(u, T.t - 0.15, T.t + 0.5), e = outExpo(k), word = String(p.text || "").toUpperCase();
+    background(g, P, u, sc); const T = p._T;
+    if (p.pre && T.pre != null) { const pk = out3(seg(u, T.pre - 0.1, T.pre + 0.35)); g.save(); g.globalAlpha = pk; g.translate(0, (1 - pk) * 30); txt(g, p.pre, 540, 560, { w: 800, px: fitPx(g, p.pre, 900, 72, 800, "I"), fam: "I", c: "rgba(255,255,255,0.92)" }); g.restore(); }
+    const k = seg(u, T.t - 0.15, T.t + 0.5), e = outExpo(k), word = String(p.text || "").toUpperCase();
     const px = fitPx(g, word, 940, 260, 900, "D"); g.save(); g.translate(540, 820); g.scale(lerp(1.6, 1, e), lerp(1.6, 1, e)); g.globalAlpha = cl(k * 2);
     for (let z = 14; z >= 1; z--) { g.save(); g.translate(z * 2.2, z * 3); txt_(g, word, px, `rgba(15,23,42,${0.06 + z * 0.01})`); g.restore(); }
     const gr = g.createLinearGradient(0, -px / 2, 0, px / 2); gr.addColorStop(0, "#ffffff"); gr.addColorStop(1, p.color || "#93c5fd"); g.filter = k < 1 ? `blur(${(1 - e) * 16}px)` : "none"; txt_(g, word, px, gr); g.restore();
@@ -190,9 +192,10 @@ TYPES.m_end_card = {
 // m_end_word: Riesen-Stichwort mit Tiefe auf Verlauf, Pfeil nach unten. params: keyword
 TYPES.m_end_word = {
   zone: "top", pal: "m_deep", bgv: 0, nocap: true, drop: true,
-  prep(o, p) { p._T = { kw: MK.when(o, p.keyword || "WEBSITE", 0, 1.0), k: MK.when(o, "Kommentieren", 0, 0.3) }; },
+  prep(o, p) { p._T = { kw: MK.when(o, p.keyword || "WEBSITE", 0, 1.0), k: MK.when(o, "Kommentieren", 0, 0.3), sys: MK.when(o, "Mihajlo", 0, 0.05) }; },
   draw(g, u, d, p, sc, P) {
     background(g, P, u, sc); const T = p._T, kw = (p.keyword || "WEBSITE").toUpperCase(); const ka = out3(seg(u, T.k - 0.1, T.k + 0.4));
+    const sa = out3(seg(u, T.sys - 0.15, T.sys + 0.3)); if (sa > 0) { g.save(); g.globalAlpha = sa; g.translate(0, (1 - sa) * 24); const lg = logoImg(); if (lg && lg.complete) g.drawImage(lg, 480, 330, 120, 120); txt(g, "Mihajlo Systems", 540, 520, { w: 900, px: 76, fam: "D", c: "#ffffff" }); g.restore(); }
     g.save(); g.globalAlpha = ka; txt(g, "Kommentieren Sie", 540, 640, { w: 600, px: 64, fam: "I", c: "rgba(255,255,255,0.9)" }); g.restore();
     const k = seg(u, T.kw - 0.1, T.kw + 0.5), e = outExpo(k); const px = fitPx(g, kw, 960, 230, 900, "D"); g.save(); g.translate(540, 900); g.rotate(-0.03); g.scale(lerp(2, 1, e), lerp(2, 1, e)); g.globalAlpha = cl(k * 2);
     for (let z = 16; z >= 1; z--) { g.font = `900 ${px}px D`; g.textAlign = "center"; g.textBaseline = "middle"; g.fillStyle = `rgba(30,58,138,${0.25})`; g.fillText(kw, z * 2, z * 3); }
