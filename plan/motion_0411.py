@@ -91,6 +91,64 @@ video("2026-11-04-3", "Motion: Wir rufen Sie morgen zurück, KI-Chatbot", "motio
       ["#kichatbot", "#selbstständig", "#braunschweig", "#kleinunternehmen", "#website"],
       "Wie viele Anfragen kommen bei Ihnen nach Feierabend? 🌙")
 
+# ---------- Do 05.11. 07:30: Terminbuchung ----------
+video("2026-11-05-1", "Motion: Verpasster Anruf, Online-Terminbuchung", "motion", "phonk",
+      "Verpasster *Anruf*", "Verpasster Anruf", "Ihr Handy klingelt umsonst", [
+      ("Ein möglicher Kunde ruft an. Sie haben die Hände voll. Verpasster *Anruf*.",
+       {"type": "h_ring", "params": {"caller": "Möglicher Kunde", "missed": 3}}),
+      ("Mit Online-Terminbuchung bucht er selbst. Termine: Dienstag um 10 Uhr, Mittwoch um 14 *Uhr*.",
+       {"type": "m_phone", "params": {"screen": "orders", "title": "Termine", "items": [["Dienstag", "10 Uhr"], ["Mittwoch", "14 Uhr"]]}}),
+      ("Auch *nachts* und am Wochenende.",
+       {"type": "m_word", "params": {"text": "Auch nachts"}}),
+      ("Mihajlo Systems. Kostenloses Erstgespräch. Kommentieren Sie *WEBSITE*.",
+       {"type": "m_end_card", "params": {"keyword": "WEBSITE", "line": "Kostenloses Erstgespräch"}, "tr": "cut"}),
+      ],
+      ["Ein Kunde ruft an und Sie haben gerade die Hände voll. Verpasster Anruf. Ruft er noch einmal an? 📞",
+       "Ob Friseur, Praxis oder Handwerk: Viele Anrufe kommen genau dann, wenn Sie arbeiten. Mit einer Online-Terminbuchung auf Ihrer Website sucht sich der Kunde selbst einen freien Termin aus, auch abends und am Wochenende. Sie sehen morgens nur noch, wer wann kommt.",
+       "Das spart Ihnen Telefonate zwischendurch, und kein Kunde landet mehr in der Mailbox. Gerade bei Google sucht man oft spät abends nach einem Termin, und wer dann direkt buchen kann, bleibt.",
+       "Die Terminbuchung baue ich direkt in Ihre Website ein, passend zu Ihren Zeiten und Leistungen. Was es für Ihren Betrieb kostet, klären wir im kostenlosen Erstgespräch."],
+      "Kennen Sie jemanden, der beim Arbeiten nie ans Telefon kommt? Schicken Sie ihm das Video. 📩",
+      ["#terminbuchung", "#friseur", "#hannover", "#selbstständig", "#website"],
+      "Wie viele Anrufe verpassen Sie an einem normalen Tag? ☎️")
+
+# ---------- Do 05.11. 13:30: Gutscheinshop ----------
+video("2026-11-05-2", "Motion: Laden zu, Gutscheinshop online geöffnet", "motion", "trap",
+      "Der Laden ist *online geöffnet*", "Um Mitternacht geöffnet", "Geschlossen und trotzdem offen", [
+      ("Zweiundzwanzig Uhr siebenundvierzig. Geschlossen. Das Geschenk fehlt noch. Doch der Laden ist *online geöffnet*.",
+       {"type": "h_closed", "params": {"sign": "GESCHLOSSEN", "sign_back": "ONLINE GEÖFFNET", "clock": "22:47"}}),
+      ("Gutschein aussuchen. Online bezahlen. *Verschenken*.",
+       {"type": "m_cards", "params": {"items": ["Gutschein aussuchen", "Online bezahlen", "Verschenken"]}}),
+      ("Ihr *Gutscheinshop* verkauft rund um die Uhr, auch an Feiertagen.",
+       {"type": "m_word", "params": {"text": "Gutscheinshop", "pre": "Ihr", "sub": "Verkauft rund um die Uhr"}}),
+      ("Der Gutscheinshop von Mihajlo Systems. Kommentieren Sie *WEBSITE*.",
+       {"type": "m_end_comment", "params": {"keyword": "WEBSITE"}, "tr": "cut"}),
+      ],
+      ["Ihr Laden hat geschlossen, und genau jetzt sucht jemand noch ein Geschenk. Was passiert? 🎁",
+       "Viele Geschenke werden spät abends gekauft, wenn alle Läden zu sind. Mit einem Online-Gutscheinshop auf Ihrer Website kauft der Kunde Ihren Gutschein trotzdem: aussuchen, online bezahlen, verschenken. Ob Restaurant, Friseur, Kosmetik oder Café.",
+       "Der Gutschein bringt den Beschenkten später zu Ihnen in den Laden. Sie verkaufen also auch dann, wenn das Licht aus ist, und neue Kunden lernen Sie über ein Geschenk kennen.",
+       "Den Gutscheinshop richte ich direkt auf Ihrer Website ein, passend zu Ihrem Betrieb. Was das für Sie kostet, klären wir im kostenlosen Erstgespräch."],
+      "Kennen Sie einen Laden, der abends Geschenke verkaufen könnte? Schicken Sie ihm das Video. 📩",
+      ["#gutscheinshop", "#einzelhandel", "#braunschweig", "#kleinunternehmen", "#website"],
+      "Haben Sie schon einmal einen Gutschein um Mitternacht gekauft? 🌙")
+
+# ---------- Do 05.11. 19:30: Festpreis ----------
+video("2026-11-05-3", "Motion: Website-Preis als Glücksspiel, Landingpage Festpreis", "motion", "drive",
+      "Was kostet eine *Website*?", "Kein Glücksspiel", "Der Website-Jackpot", [
+      ("Was kostet eine *Website*? Bei vielen ist das ein Glücksspiel. Hier gibt es den Jackpot: *Festpreis*.",
+       {"type": "h_slot", "params": {"symbols": ["euro", "euro", "euro"], "jackpot": "Festpreis"}}),
+      ("Eine Landingpage für Ihren Betrieb. 990 Euro. Der Preis steht vorher *fest*, ohne Überraschung.",
+       {"type": "m_cards", "params": {"items": ["Landingpage", "990 €", "Preis steht vorher fest"]}}),
+      ("Mihajlo Systems. Kommentieren Sie *WEBSITE*.",
+       {"type": "m_end_word", "params": {"keyword": "WEBSITE"}, "tr": "cut"}),
+      ],
+      ["Was kostet eigentlich eine Website? Bei vielen Angeboten weiß man das erst am Ende. 🎰",
+       "Stundensätze, Zusatzkosten, Nachträge: Für viele Selbstständige fühlt sich ein Website-Angebot wie ein Glücksspiel an. Bei mir steht der Preis vorher fest. Eine Landingpage, also eine starke einzelne Seite für Ihren Betrieb, kostet 990 € als Festpreis.",
+       "Ein fester Preis heißt: Sie können planen, und es kommen keine Überraschungen. Wer lieber monatlich zahlt, mietet die Landingpage ab 99 € im Monat, 12 Monate Mindestlaufzeit, danach monatlich kündbar.",
+       "Landingpage 990 € Festpreis oder ab 99 € im Monat. Über 12 Monate sparen Sie mit dem Festpreis 198 €."],
+      "Kennen Sie jemanden, der eine Website braucht und Angst vor dem Preis hat? Schicken Sie ihm das Video. 📩",
+      ["#landingpage", "#webdesign", "#berlin", "#selbstständig", "#website"],
+      "Festpreis oder lieber monatlich? Was ist Ihnen lieber? 💶")
+
 def check(v):
     c = v["caption"]; n = len(c); errs = []
     if not 1100 <= n <= 1500: errs.append(f"Caption {n}")
