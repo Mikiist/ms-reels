@@ -1,0 +1,486 @@
+{
+ "id": "2026-11-04-1",
+ "dur": 29.8,
+ "audio": "2026-11-04-1/audio.m4a",
+ "words": [
+  {
+   "w": "Sie",
+   "t": 0.5,
+   "e": 0.66,
+   "scene": 0,
+   "acc": false
+  },
+  {
+   "w": "kochen.",
+   "t": 0.66,
+   "e": 1.1,
+   "scene": 0,
+   "acc": false
+  },
+  {
+   "w": "Das",
+   "t": 1.34,
+   "e": 1.56,
+   "scene": 0,
+   "acc": false
+  },
+  {
+   "w": "Lieferportal",
+   "t": 1.56,
+   "e": 2.34,
+   "scene": 0,
+   "acc": false
+  },
+  {
+   "w": "kassiert",
+   "t": 2.34,
+   "e": 2.72,
+   "scene": 0,
+   "acc": true
+  },
+  {
+   "w": "mit.",
+   "t": 2.72,
+   "e": 2.96,
+   "scene": 0,
+   "acc": false
+  },
+  {
+   "w": "Provision.",
+   "t": 3.34,
+   "e": 3.88,
+   "scene": 0,
+   "acc": false
+  },
+  {
+   "w": "Provision.",
+   "t": 4.3,
+   "e": 4.88,
+   "scene": 0,
+   "acc": false
+  },
+  {
+   "w": "Provision.",
+   "t": 5.32,
+   "e": 5.92,
+   "scene": 0,
+   "acc": false
+  },
+  {
+   "w": "Summe:",
+   "t": 6.44,
+   "e": 6.92,
+   "scene": 0,
+   "acc": false
+  },
+  {
+   "w": "zu",
+   "t": 6.92,
+   "e": 7.36,
+   "scene": 0,
+   "acc": true
+  },
+  {
+   "w": "viel.",
+   "t": 7.36,
+   "e": 7.72,
+   "scene": 0,
+   "acc": true
+  },
+  {
+   "w": "Schluss",
+   "t": 8.04,
+   "e": 8.36,
+   "scene": 1,
+   "acc": false
+  },
+  {
+   "w": "damit.",
+   "t": 8.36,
+   "e": 8.7,
+   "scene": 1,
+   "acc": false
+  },
+  {
+   "w": "Ab",
+   "t": 9.06,
+   "e": 9.16,
+   "scene": 1,
+   "acc": false
+  },
+  {
+   "w": "jetzt",
+   "t": 9.16,
+   "e": 9.44,
+   "scene": 1,
+   "acc": false
+  },
+  {
+   "w": "bestellen",
+   "t": 9.44,
+   "e": 9.84,
+   "scene": 1,
+   "acc": false
+  },
+  {
+   "w": "Ihre",
+   "t": 9.84,
+   "e": 10.06,
+   "scene": 1,
+   "acc": false
+  },
+  {
+   "w": "Gäste",
+   "t": 10.06,
+   "e": 10.38,
+   "scene": 1,
+   "acc": false
+  },
+  {
+   "w": "direkt",
+   "t": 10.38,
+   "e": 10.78,
+   "scene": 1,
+   "acc": true
+  },
+  {
+   "w": "bei",
+   "t": 10.78,
+   "e": 11.1,
+   "scene": 1,
+   "acc": false
+  },
+  {
+   "w": "Ihnen.",
+   "t": 11.1,
+   "e": 11.3,
+   "scene": 1,
+   "acc": false
+  },
+  {
+   "w": "Ihre",
+   "t": 11.68,
+   "e": 11.84,
+   "scene": 2,
+   "acc": false
+  },
+  {
+   "w": "Bestellungen",
+   "t": 11.84,
+   "e": 12.38,
+   "scene": 2,
+   "acc": false
+  },
+  {
+   "w": "kommen",
+   "t": 12.38,
+   "e": 12.62,
+   "scene": 2,
+   "acc": false
+  },
+  {
+   "w": "rein.",
+   "t": 12.62,
+   "e": 12.96,
+   "scene": 2,
+   "acc": false
+  },
+  {
+   "w": "Tisch",
+   "t": 13.38,
+   "e": 13.48,
+   "scene": 2,
+   "acc": false
+  },
+  {
+   "w": "vier.",
+   "t": 13.48,
+   "e": 13.82,
+   "scene": 2,
+   "acc": false
+  },
+  {
+   "w": "Tisch",
+   "t": 14.22,
+   "e": 14.4,
+   "scene": 2,
+   "acc": false
+  },
+  {
+   "w": "sieben.",
+   "t": 14.4,
+   "e": 14.76,
+   "scene": 2,
+   "acc": false
+  },
+  {
+   "w": "Abholung",
+   "t": 15.12,
+   "e": 15.62,
+   "scene": 2,
+   "acc": false
+  },
+  {
+   "w": "um",
+   "t": 15.62,
+   "e": 15.8,
+   "scene": 2,
+   "acc": false
+  },
+  {
+   "w": "achtzehn",
+   "t": 15.8,
+   "e": 16.66,
+   "scene": 2,
+   "acc": false
+  },
+  {
+   "w": "Uhr",
+   "t": 16.66,
+   "e": 17.14,
+   "scene": 2,
+   "acc": false
+  },
+  {
+   "w": "dreißig.",
+   "t": 17.14,
+   "e": 17.34,
+   "scene": 2,
+   "acc": true
+  },
+  {
+   "w": "Alles",
+   "t": 17.14,
+   "e": 17.44,
+   "scene": 3,
+   "acc": false
+  },
+  {
+   "w": "landet",
+   "t": 17.44,
+   "e": 17.84,
+   "scene": 3,
+   "acc": false
+  },
+  {
+   "w": "auf",
+   "t": 17.84,
+   "e": 18.0,
+   "scene": 3,
+   "acc": false
+  },
+  {
+   "w": "Ihrem",
+   "t": 18.0,
+   "e": 18.26,
+   "scene": 3,
+   "acc": false
+  },
+  {
+   "w": "Terminal.",
+   "t": 18.26,
+   "e": 18.74,
+   "scene": 3,
+   "acc": true
+  },
+  {
+   "w": "Mit",
+   "t": 19.02,
+   "e": 19.16,
+   "scene": 3,
+   "acc": false
+  },
+  {
+   "w": "Tischnummer,",
+   "t": 19.16,
+   "e": 19.66,
+   "scene": 3,
+   "acc": false
+  },
+  {
+   "w": "auch",
+   "t": 19.96,
+   "e": 20.12,
+   "scene": 3,
+   "acc": false
+  },
+  {
+   "w": "die",
+   "t": 20.12,
+   "e": 20.34,
+   "scene": 3,
+   "acc": false
+  },
+  {
+   "w": "Abholung.",
+   "t": 20.34,
+   "e": 20.9,
+   "scene": 3,
+   "acc": false
+  },
+  {
+   "w": "Punkte",
+   "t": 21.16,
+   "e": 21.36,
+   "scene": 4,
+   "acc": false
+  },
+  {
+   "w": "in",
+   "t": 21.36,
+   "e": 21.66,
+   "scene": 4,
+   "acc": false
+  },
+  {
+   "w": "der",
+   "t": 21.66,
+   "e": 21.78,
+   "scene": 4,
+   "acc": false
+  },
+  {
+   "w": "Wallet.",
+   "t": 21.78,
+   "e": 22.22,
+   "scene": 4,
+   "acc": false
+  },
+  {
+   "w": "Eigene",
+   "t": 22.48,
+   "e": 22.78,
+   "scene": 4,
+   "acc": false
+  },
+  {
+   "w": "Website.",
+   "t": 22.78,
+   "e": 23.32,
+   "scene": 4,
+   "acc": false
+  },
+  {
+   "w": "Keine",
+   "t": 23.68,
+   "e": 23.94,
+   "scene": 4,
+   "acc": false
+  },
+  {
+   "w": "Provision.",
+   "t": 23.94,
+   "e": 24.52,
+   "scene": 4,
+   "acc": true
+  },
+  {
+   "w": "Das",
+   "t": 24.92,
+   "e": 25.1,
+   "scene": 5,
+   "acc": false
+  },
+  {
+   "w": "Bestellsystem",
+   "t": 25.1,
+   "e": 25.82,
+   "scene": 5,
+   "acc": false
+  },
+  {
+   "w": "von",
+   "t": 25.82,
+   "e": 26.14,
+   "scene": 5,
+   "acc": false
+  },
+  {
+   "w": "Mihajlo",
+   "t": 26.14,
+   "e": 26.62,
+   "scene": 5,
+   "acc": false
+  },
+  {
+   "w": "Systems.",
+   "t": 26.62,
+   "e": 26.94,
+   "scene": 5,
+   "acc": false
+  },
+  {
+   "w": "Kommentieren",
+   "t": 27.44,
+   "e": 28.0,
+   "scene": 5,
+   "acc": false
+  },
+  {
+   "w": "Sie",
+   "t": 28.0,
+   "e": 28.22,
+   "scene": 5,
+   "acc": false
+  },
+  {
+   "w": "WEBSITE.",
+   "t": 28.22,
+   "e": 28.9,
+   "scene": 5,
+   "acc": true
+  }
+ ],
+ "scenes": [
+  {
+   "t0": 0.0,
+   "bg": "clips/bon_drucker.jpg",
+   "kind": "plain"
+  },
+  {
+   "t0": 7.82,
+   "bg": "clips/gast_handy.jpg",
+   "kind": "big",
+   "big": "Schluss damit"
+  },
+  {
+   "t0": 11.46,
+   "bg": "clips/gast_handy.jpg",
+   "kind": "cards",
+   "items": [
+    "Tisch 4",
+    "Tisch 7",
+    "Abholung 18:30"
+   ],
+   "title": "Bestellungen"
+  },
+  {
+   "t0": 16.92,
+   "bg": "clips/kueche_tablet.jpg",
+   "kind": "cards",
+   "items": [
+    "Tisch 4",
+    "Tisch 7",
+    "Abholung 18:30"
+   ],
+   "title": "Terminal"
+  },
+  {
+   "t0": 20.94,
+   "bg": "clips/inhaber.jpg",
+   "kind": "cards",
+   "items": [
+    "Punkte in der Wallet",
+    "Eigene Website",
+    "Keine Provision"
+   ],
+   "title": null
+  },
+  {
+   "t0": 24.7,
+   "bg": "clips/inhaber.jpg",
+   "kind": "end"
+  }
+ ],
+ "keyword": "WEBSITE"
+}
