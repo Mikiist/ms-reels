@@ -149,6 +149,68 @@ video("2026-11-05-3", "Motion: Website-Preis als Glücksspiel, Landingpage Festp
       ["#landingpage", "#webdesign", "#berlin", "#selbstständig", "#website"],
       "Festpreis oder lieber monatlich? Was ist Ihnen lieber? 💶")
 
+# ---------- Do 12.11. 07:30: Website gegen die Konkurrenz (Stimme ab hier über Higgsfield) ----------
+video("2026-11-12-1", "Motion: Konkurrenz zieht Kunden ab, Business-Paket", "motion", "house",
+      "Die Konkurrenz zieht Ihre *Kunden* ab", "Der Kunden-Magnet", "Wer zieht Ihre Kunden ab?", [
+      ("Ihr Betrieb. Die Konkurrenz. Und die Konkurrenz zieht Ihre *Kunden* ab.",
+       {"type": "h_magnet", "params": {"left": "Ihr Betrieb", "right": "Konkurrenz", "n": 8}}),
+      ("Was ist der Magnet? Eine bessere *Website*.",
+       {"type": "m_word", "params": {"text": "Der Magnet", "pre": "Was ist", "sub": "Eine bessere Website"}}),
+      ("Bis 5 Seiten. KI-Chatbot. Bei Google Maps *sichtbar*.",
+       {"type": "m_cards", "params": {"items": ["Bis 5 Seiten", "KI-Chatbot", "Google Maps"]}}),
+      ("Das Business-Paket von Mihajlo Systems. 1.990 Euro Festpreis. Kommentieren Sie *WEBSITE*.",
+       {"type": "m_end_card", "params": {"keyword": "WEBSITE", "line": "Business-Paket, 1.990 € Festpreis"}, "tr": "cut"}),
+      ],
+      ["Zwei Betriebe, gleiche Arbeit, gleicher Ort. Warum landen die Kunden beim anderen? 🧲",
+       "Meist liegt es an der Website. Wer bei Google nach einem Handwerker, Friseur oder einer Praxis sucht, vergleicht in Sekunden. Die Seite, die schneller lädt, klarer zeigt, was es gibt, und Fragen sofort beantwortet, bekommt den Anruf. Der andere Betrieb merkt davon nichts.",
+       "Eine gute Website wirkt wie ein Magnet: Sie zeigt Leistungen, Fotos und Öffnungszeiten, ist bei Google Maps sichtbar und beantwortet mit dem KI-Chatbot die ersten Fragen, auch abends.",
+       "Das Business-Paket: bis 5 Seiten, KI-Chatbot Basis, SEO und Google Maps für 1.990 € Festpreis oder 179 € im Monat, 12 Monate Mindestlaufzeit, danach monatlich kündbar."],
+      "Kennen Sie einen Betrieb, der mehr Kunden verdient hätte? Schicken Sie ihm das Video. 📩",
+      ["#webdesign", "#handwerk", "#hannover", "#kleinunternehmen", "#website"],
+      "Haben Sie Ihre Website schon einmal mit der Konkurrenz verglichen? 👀", tempo=1.25)
+
+# ---------- Do 12.11. 13:30: Bestellen am Tisch ----------
+video("2026-11-12-2", "Motion: Gast wartet, Bestellen am Tisch per QR und NFC", "motion", "trap",
+      "Der Gast *wartet*", "Der Gast wartet", "Bis der Gast geht", [
+      ("Der Gast wartet. Der Kellner rennt. Die Bestellung ist falsch. Der Gast *geht*.",
+       {"type": "h_domino", "params": {"labels": ["Gast wartet", "Kellner rennt", "Bestellung falsch", "Gast geht"]}}),
+      ("Die Lösung: am Tisch *bestellen*. Direkt am eigenen Handy.",
+       {"type": "m_word", "params": {"text": "Am Tisch bestellen", "pre": "Die Lösung", "sub": "Direkt am eigenen Handy"}}),
+      ("Tisch 4. Tisch 7. Alles landet am Terminal, sofort in der *Küche*.",
+       {"type": "m_ipad", "params": {"title": "Terminal", "items": [["Tisch 4", ""], ["Tisch 7", ""]], "stamp": "Sofort in der Küche"}}),
+      ("QR-Code am Tisch. NFC-Sticker. Keine *Provision*.",
+       {"type": "m_cards", "params": {"items": ["QR-Code am Tisch", "NFC-Sticker", "Keine Provision"]}}),
+      ("Das Bestellsystem von Mihajlo Systems. Kommentieren Sie *WEBSITE*.",
+       {"type": "m_end_comment", "params": {"keyword": "WEBSITE"}, "tr": "cut"}),
+      ],
+      ["Der Gast wartet, der Kellner rennt, die Bestellung ist falsch. Und am Ende geht der Gast. 🍽️",
+       "An vollen Abenden passiert genau das in vielen Restaurants. Mit einem Bestellsystem am Tisch bestellen Ihre Gäste direkt am eigenen Handy: QR-Code scannen oder das Handy an den NFC-Sticker halten, auswählen, abschicken. Das Bestellterminal am iPad zeigt sofort, welcher Tisch was bestellt hat.",
+       "Ihr Team läuft weniger und hat mehr Zeit für die Gäste. Bestellungen kommen so an, wie der Gast sie getippt hat, und niemand wartet auf die Karte.",
+       "Das Bestellsystem gehört zu Ihrem Restaurant, ohne Provision an ein Portal. Dazu gibt es auf Wunsch Bonuspunkte in Apple Wallet und Google Wallet. Was es für Ihren Betrieb kostet, klären wir im kostenlosen Erstgespräch."],
+      "Kennen Sie ein Restaurant, in dem man zu lange wartet? Schicken Sie ihm das Video. 📩",
+      ["#bestellsystem", "#gastronomie", "#berlin", "#restaurant", "#website"],
+      "Würden Sie im Restaurant am Handy bestellen? 📱", tempo=1.25)
+
+# ---------- Do 12.11. 19:30: Hosting und Wartung in der Miete ----------
+video("2026-11-12-3", "Motion: Puls der Website, Hosting und Wartung in der Miete", "motion", "cinematic",
+      "Der Puls Ihrer *Website*", "Kein Signal", "Der Puls Ihrer Website", [
+      ("Das ist der Puls Ihrer *Website*. Er wird schwächer. Und dann: kein Signal.",
+       {"type": "h_ekg", "params": {"label": "PULS IHRER WEBSITE", "flat_text": "KEIN SIGNAL"}}),
+      ("In der Miete ist alles dabei: Hosting, Wartung, *Updates*.",
+       {"type": "m_cards", "params": {"items": ["Hosting", "Wartung", "Updates"]}}),
+      ("Ihre Landingpage bleibt online, ab 99 Euro im *Monat*.",
+       {"type": "m_word", "params": {"text": "Ab 99 Euro", "pre": "Ihre Landingpage", "sub": "Im Monat"}}),
+      ("Mihajlo Systems. Kommentieren Sie *WEBSITE*.",
+       {"type": "m_end_word", "params": {"keyword": "WEBSITE"}, "tr": "cut"}),
+      ],
+      ["Wann hat sich zuletzt jemand um Ihre Website gekümmert? 💓",
+       "Viele Websites werden einmal gebaut und dann vergessen. Updates fehlen, das Zertifikat läuft ab, die Seite lädt langsam oder fällt ganz aus. Ihre Kunden sehen das sofort, Sie oft erst nach Wochen. Für Google und für Ihre Kunden zählt eine Website, die zuverlässig erreichbar ist.",
+       "Bei der Miete kümmere ich mich darum: Hosting, SSL, Wartung und Updates sind inklusive. Sie haben einen Ansprechpartner und müssen sich um die Technik nicht kümmern.",
+       "Die Landingpage gibt es ab 99 € im Monat, 12 Monate Mindestlaufzeit, danach monatlich kündbar. Oder als Festpreis für 990 €."],
+      "Kennen Sie jemanden mit einer vergessenen Website? Schicken Sie ihm das Video. 📩",
+      ["#website", "#webdesign", "#braunschweig", "#selbstständig", "#landingpage"],
+      "Wissen Sie, ob Ihre Website gerade erreichbar ist? 🔍", tempo=1.25)
+
 def check(v):
     c = v["caption"]; n = len(c); errs = []
     if not 1100 <= n <= 1500: errs.append(f"Caption {n}")
