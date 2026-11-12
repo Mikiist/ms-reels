@@ -211,6 +211,126 @@ video("2026-11-12-3", "Motion: Puls der Website, Hosting und Wartung in der Miet
       ["#website", "#webdesign", "#braunschweig", "#selbstständig", "#landingpage"],
       "Wissen Sie, ob Ihre Website gerade erreichbar ist? 🔍", tempo=1.25)
 
+# ---------- Fr 13.11. 07:30: Google, nicht gefunden ----------
+video("2026-11-13-1", "Motion: Radar findet alle außer Ihnen, SEO und Google Maps", "motion", "phonk",
+      "Nur Sie: *nicht gefunden*", "Nicht gefunden", "Der Radar findet Sie nicht", [
+      ("Der Radar findet Elektro Meyer. Elektro Krause. Elektro Schulz. Nur Sie: *nicht gefunden*.",
+       {"type": "h_sonar", "params": {"found": ["Elektro Meyer", "Elektro Krause", "Elektro Schulz"], "you": "SIE", "miss_text": "NICHT GEFUNDEN"}}),
+      ("Ihre Kunden suchen bei Google. Und dort zählt: gefunden *werden*.",
+       {"type": "m_word", "params": {"text": "Gefunden werden", "pre": "Und dort zählt"}}),
+      ("SEO. Google Maps. Eine schnelle *Website*.",
+       {"type": "m_cards", "params": {"items": ["SEO", "Google Maps", "Schnelle Website"]}}),
+      ("Alles im Business-Paket von Mihajlo Systems. Kommentieren Sie *WEBSITE*.",
+       {"type": "m_end_comment", "params": {"keyword": "WEBSITE"}, "tr": "cut"}),
+      ],
+      ["Ihre Konkurrenz taucht bei Google auf. Und Sie? 📡",
+       "Wer einen Elektriker, Friseur oder eine Praxis sucht, tippt bei Google ein und ruft einen der ersten Treffer an. Wer dort nicht auftaucht, existiert für diese Kunden nicht. Das hat selten mit der Qualität der Arbeit zu tun, fast immer mit der Website und dem Google-Profil.",
+       "SEO heißt: Ihre Seite sagt Google klar, was Sie anbieten und wo. Dazu ein gepflegter Eintrag bei Google Maps und eine Website, die schnell lädt. So finden Kunden aus Ihrer Stadt Sie, wenn sie suchen.",
+       "Das Business-Paket: bis 5 Seiten, KI-Chatbot Basis, SEO und Google Maps für 1.990 € Festpreis oder 179 € im Monat, 12 Monate Mindestlaufzeit, danach monatlich kündbar."],
+      "Kennen Sie einen Betrieb, den man bei Google nicht findet? Schicken Sie ihm das Video. 📩",
+      ["#seo", "#googlemaps", "#hannover", "#handwerk", "#website"],
+      "Haben Sie sich selbst schon mal bei Google gesucht? 🔎", tempo=1.25)
+
+# ---------- Fr 13.11. 13:30: Verlorene Anfragen, Chatbot ----------
+video("2026-11-13-2", "Motion: Verlorene Anfragen am Abend, KI-Chatbot", "motion", "drive",
+      "Keiner antwortet. Verlorene *Anfragen*", "Verlorene Anfragen", "Jeden Abend verlorene Anfragen", [
+      ("Jeden Abend kommen Fragen. Keiner antwortet. Verlorene *Anfragen*.",
+       {"type": "h_cash", "params": {"label": "Verlorene Anfragen"}}),
+      ("Ein Kunde fragt: Haben Sie Samstag geöffnet? Der Chatbot antwortet sofort: Ja, von 9 bis 14 *Uhr*.",
+       {"type": "m_phone", "params": {"screen": "chat", "items": [["kunde", "Haben Sie Samstag geöffnet?"], ["bot", "Ja, von 9 bis 14 Uhr."]], "side": -1}}),
+      ("Rund um die Uhr. Auf Ihrer Website. Ab 200 Euro *einmalig*.",
+       {"type": "m_cards", "params": {"items": ["Rund um die Uhr", "Auf Ihrer Website", "Ab 200 € einmalig"]}}),
+      ("Der KI-Chatbot von Mihajlo Systems. Kommentieren Sie *WEBSITE*.",
+       {"type": "m_end_card", "params": {"keyword": "WEBSITE", "line": "KI-Chatbot"}, "tr": "cut"}),
+      ],
+      ["Abends kommen die meisten Fragen. Und niemand antwortet. 💸",
+       "Öffnungszeiten, Preise, freie Termine: Viele Kunden schreiben dann, wenn Ihr Betrieb längst zu hat. Bekommen sie keine Antwort, fragen sie beim nächsten Anbieter. Jede dieser Fragen war ein möglicher Auftrag, und meist merkt man es nicht einmal, weil die Nachricht nie beantwortet wurde.",
+       "Ein KI-Chatbot auf Ihrer Website beantwortet die immer gleichen Fragen sofort, auch nachts und am Wochenende. Sie bekommen morgens die Anfragen, die wirklich zählen.",
+       "Den KI-Chatbot gibt es einzeln für 200, 350 oder 500 € einmalig. Im Business-Paket ist die Basis schon dabei."],
+      "Kennen Sie jemanden, der abends keine Zeit für Nachrichten hat? Schicken Sie ihm das Video. 📩",
+      ["#kichatbot", "#kleinunternehmen", "#braunschweig", "#selbstständig", "#website"],
+      "Wie viele Nachrichten bekommen Sie nach Feierabend? 🌙", tempo=1.25)
+
+# ---------- Fr 13.11. 19:30: Website-Test durchgefallen ----------
+video("2026-11-13-3", "Motion: Website im Test durchgefallen, neue Landingpage", "motion", "house",
+      "Ihre Website im *Test*", "Durchgefallen", "Ihre Website im Test", [
+      ("Ihre Website im Test. Lädt langsam. Nicht fürs Handy. Kein Anruf-Knopf. *Durchgefallen*.",
+       {"type": "h_scanner", "params": {"url": "ihre-firma.de", "items": ["Lädt langsam", "Nicht fürs Handy", "Kein Anruf-Knopf"], "verdict": "DURCHGEFALLEN"}}),
+      ("Neu gebaut von Grund auf: schnell, fürs Handy gebaut, mit Knopf zum *Anrufen*.",
+       {"type": "m_cards", "params": {"items": ["Schnell", "Fürs Handy gebaut", "Knopf zum Anrufen"]}}),
+      ("Eine Landingpage. 990 Euro *Festpreis*.",
+       {"type": "m_word", "params": {"text": "990 Euro", "pre": "Eine Landingpage", "sub": "Festpreis"}}),
+      ("Mihajlo Systems. Kommentieren Sie *WEBSITE*.",
+       {"type": "m_end_word", "params": {"keyword": "WEBSITE"}, "tr": "cut"}),
+      ],
+      ["Würde Ihre Website diesen Test bestehen? 🔬",
+       "Die meisten Kunden öffnen Ihre Website am Handy. Lädt sie langsam, ist die Schrift zu klein oder fehlt der Knopf zum Anrufen, sind sie nach wenigen Sekunden weg. Bei Google zählt das ebenfalls: Schnelle, mobile Seiten haben es leichter.",
+       "Eine neue Landingpage ist eine starke einzelne Seite für Ihren Betrieb: schnell, fürs Handy gebaut, mit allem, was ein Kunde für den ersten Anruf braucht. Leistungen, Fotos, Öffnungszeiten und Kontakt stehen dort, wo man sie sucht.",
+       "Landingpage 990 € Festpreis oder ab 99 € im Monat, 12 Monate Mindestlaufzeit, danach monatlich kündbar."],
+      "Kennen Sie eine Website, die diesen Test nicht besteht? Schicken Sie das Video weiter. 📩",
+      ["#landingpage", "#webdesign", "#berlin", "#selbstständig", "#website"],
+      "Haben Sie Ihre Website schon mal am Handy getestet? 📱", tempo=1.25)
+
+# ---------- Sa 14.11. 07:30: Licht an, neue Website ----------
+video("2026-11-14-1", "Motion: Licht an, neue Website, ein Ansprechpartner", "motion", "cinematic",
+      "Licht an. Ihre *neue* Website", "Licht an", "Licht an für Ihre Website", [
+      ("Licht an. Ihre neue *Website*. Modern, klar, mit einem Knopf: Jetzt anfragen.",
+       {"type": "h_lightswitch", "params": {"label": "IHRE WEBSITE", "button": "Jetzt anfragen"}}),
+      ("Bei mir: ein Ansprechpartner. Fester Preis. Kostenloses *Erstgespräch*.",
+       {"type": "m_cards", "params": {"items": ["Ein Ansprechpartner", "Fester Preis", "Kostenloses Erstgespräch"]}}),
+      ("Bei Google: 4,8 Sterne aus 19 *Bewertungen*.",
+       {"type": "m_word", "params": {"text": "4,8 Sterne", "pre": "Bei Google", "sub": "Aus 19 Bewertungen"}}),
+      ("Ihre neue Website von Mihajlo Systems. Kommentieren Sie *WEBSITE*.",
+       {"type": "m_end_comment", "params": {"keyword": "WEBSITE"}, "tr": "cut"}),
+      ],
+      ["Was, wenn Ihre Website morgen ganz neu aussieht? 💡",
+       "Viele Betriebe schieben die neue Website seit Jahren vor sich her. Zu teuer, zu kompliziert, zu viele Ansprechpartner. Dabei ist die Website oft das Erste, was ein Kunde von Ihnen sieht, meist bei Google und am Handy.",
+       "Bei mir haben Sie einen Ansprechpartner vom ersten Gespräch bis zur fertigen Seite, und der Preis steht vorher fest. Bei Google habe ich 4,8 Sterne aus 19 Bewertungen (Stand September 2026).",
+       "Landingpage ab 990 € Festpreis, Business-Paket mit SEO, Google Maps und KI-Chatbot für 1.990 €. Das Erstgespräch ist kostenlos und unverbindlich."],
+      "Kennen Sie jemanden, der schon lange eine neue Website will? Schicken Sie ihm das Video. 📩",
+      ["#webdesign", "#neuewebsite", "#hannover", "#selbstständig", "#website"],
+      "Wie lange schieben Sie Ihre neue Website schon vor sich her? ⏳", tempo=1.25)
+
+# ---------- Sa 14.11. 13:30: Nur Deutsch, mehrsprachige Website ----------
+video("2026-11-14-2", "Motion: Kunden sprechen viele Sprachen, Professional-Paket mehrsprachig", "motion", "trap",
+      "Und Ihre Website? *Nur Deutsch*", "Nur Deutsch?", "Ihre Website spricht nur Deutsch", [
+      ("Ihre Kunden sprechen viele Sprachen. Hello. Merhaba. Cześć. Ciao. Bonjour. Und Ihre Website? *Nur Deutsch*.",
+       {"type": "h_babel", "params": {"words": ["Hello", "Merhaba", "Cześć", "Ciao", "Bonjour"], "final": "Nur Deutsch?", "stamp": "NUR DE"}}),
+      ("Das Professional-Paket: mehrsprachig, mit Blog, 10 Seiten und *mehr*.",
+       {"type": "m_cards", "params": {"items": ["Mehrsprachig", "Blog", "10 Seiten und mehr"]}}),
+      ("Als Festpreis: 2.990 *Euro*.",
+       {"type": "m_word", "params": {"text": "2.990 Euro", "pre": "Festpreis"}}),
+      ("Professional-Paket von Mihajlo Systems. Kommentieren Sie *WEBSITE*.",
+       {"type": "m_end_card", "params": {"keyword": "WEBSITE", "line": "Professional-Paket"}, "tr": "cut"}),
+      ],
+      ["Ihre Kunden sprechen viele Sprachen. Ihre Website nur eine? 🌍",
+       "In Hannover, Braunschweig oder Berlin sprechen viele Kunden zu Hause eine andere Sprache als Deutsch. Wer seine Leistungen auch auf Englisch, Türkisch oder Polnisch zeigt, wird verstanden und angerufen, wo andere weggeklickt werden. Das gilt für Handwerker genauso wie für Praxen, Restaurants und Kosmetikstudios.",
+       "Das Professional-Paket ist für Betriebe gedacht, die mehr wollen: 10 und mehr Seiten, Blog, mehrere Sprachen, Chatbot Pro und volle SEO.",
+       "Professional 2.990 € Festpreis oder 279 € im Monat, 12 Monate Mindestlaufzeit, danach monatlich kündbar."],
+      "Kennen Sie einen Betrieb mit Kunden aus vielen Ländern? Schicken Sie ihm das Video. 📩",
+      ["#mehrsprachig", "#webdesign", "#berlin", "#unternehmen", "#website"],
+      "In welcher Sprache sollte Ihre Website noch sprechen? 💬", tempo=1.25)
+
+# ---------- Sa 14.11. 19:30: Termin, Fehler, Online-Terminbuchung ----------
+video("2026-11-14-3", "Motion: Fehler beim Termin, Kunde bucht woanders, Online-Terminbuchung", "motion", "drive",
+      "Der Kunde bucht *woanders*", "Kunde bucht woanders", "Der Kunde bucht woanders", [
+      ("Formular lädt nicht. Kein freier Termin sichtbar. Rückruf in 3 Tagen. Der Kunde bucht *woanders*.",
+       {"type": "h_error", "params": {"items": ["Formular lädt nicht", "Kein freier Termin sichtbar", "Rückruf in 3 Tagen"], "final": "Kunde bucht woanders", "url": "ihre-firma.de"}}),
+      ("Mit Online-Terminbuchung: freie Termine sehen, selbst buchen, auch *nachts*.",
+       {"type": "m_cards", "params": {"items": ["Freie Termine sehen", "Selbst buchen", "Auch nachts"]}}),
+      ("Ihre Kunden buchen ohne einen einzigen *Anruf*.",
+       {"type": "m_word", "params": {"text": "Ohne Anruf", "pre": "Ihre Kunden buchen"}}),
+      ("Mihajlo Systems. Kommentieren Sie *WEBSITE*.",
+       {"type": "m_end_word", "params": {"keyword": "WEBSITE"}, "tr": "cut"}),
+      ],
+      ["Ein Kunde will einen Termin. Und bucht am Ende woanders. 📅",
+       "Das Formular lädt nicht, freie Termine sieht man nirgends, und der Rückruf kommt erst in drei Tagen. So verlieren Friseure, Praxen und Handwerker jeden Tag Kunden, ohne es zu merken. Denn wer heute einen Termin sucht, will ihn sofort und am liebsten ohne Anruf.",
+       "Mit einer Online-Terminbuchung auf Ihrer Website sieht der Kunde sofort, wann Sie Zeit haben, und bucht selbst. Auch abends und am Wochenende, ohne dass Sie ans Telefon müssen.",
+       "Die Terminbuchung baue ich direkt in Ihre Website ein, passend zu Ihren Zeiten und Leistungen. Was es für Ihren Betrieb kostet, klären wir im kostenlosen Erstgespräch."],
+      "Kennen Sie jemanden, bei dem man schwer einen Termin bekommt? Schicken Sie ihm das Video. 📩",
+      ["#terminbuchung", "#friseur", "#braunschweig", "#praxis", "#website"],
+      "Wie bucht man bei Ihnen einen Termin? ☎️", tempo=1.25)
+
 def check(v):
     c = v["caption"]; n = len(c); errs = []
     if not 1100 <= n <= 1500: errs.append(f"Caption {n}")
