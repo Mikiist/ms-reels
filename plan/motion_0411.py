@@ -217,7 +217,7 @@ video("2026-11-13-1", "Motion: Radar findet alle außer Ihnen, SEO und Google Ma
       ("Der Radar findet Elektro Meyer. Elektro Krause. Elektro Schulz. Nur Sie: *nicht gefunden*.",
        {"type": "h_sonar", "params": {"found": ["Elektro Meyer", "Elektro Krause", "Elektro Schulz"], "you": "SIE", "miss_text": "NICHT GEFUNDEN"}}),
       ("Ihre Kunden suchen bei Google. Und dort zählt: gefunden *werden*.",
-       {"type": "m_word", "params": {"text": "Gefunden werden", "pre": "Und dort zählt"}}),
+       {"type": "m_word", "params": {"text": "Gefunden werden", "pre": "Ihre Kunden suchen bei Google"}}),
       ("SEO. Google Maps. Eine schnelle *Website*.",
        {"type": "m_cards", "params": {"items": ["SEO", "Google Maps", "Schnelle Website"]}}),
       ("Alles im Business-Paket von Mihajlo Systems. Kommentieren Sie *WEBSITE*.",
