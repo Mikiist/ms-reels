@@ -32,3 +32,8 @@
 - Mihajlo: Geschichten sind „maximal Slop“, Aufrufe „peinlich“, die gleiche Schluss-Animation jedes Mal fällt auf. Ab 04.11. Motion Design (Premium, 3D-Handy, Terminal, Glas-Karten), Ads-Stimme schnell, alles Sichtbare wird gesprochen, wechselnde Schlüsse.
 - Zahlen aus dem Raster (30.10.): alte Erklär-Reels Woche 1 nur 149 bis 511 Aufrufe, Geschichten 870 bis 1.463, Panzer 6.210, Seifenblase rund 5.000 (beworben). Ein Muster im alten Engine-Stil (kleine Grafiken, viel Leerraum) sah aus wie Woche 1, darum erst die Engine aufwerten.
 - Mint klingt auch mit Tempo 1,15 plus atempo 1,18 noch langsam (60 Wörter in 30 s), weil die Trailer-Stimme Pausen macht.
+
+## 13.11.2026: Mihajlo stoppt die Reels
+- Urteil: „absolut schlecht“, „KI-Slop“. Higgsfield-Stimme („Ainsley“) klingt nicht wie die ElevenLabs-Ads-Stimme und ist zu langsam. Alles wirkt gleich, keine schönen Übergänge, die neue Remotion-Vorlage wurde gar nicht benutzt.
+- Folge: täglicher Lauf deaktiviert, Sa 14.11. aus der Warteschlange genommen (liegt in `work/_gestoppt/`).
+- Beim Neustart: nur mit der echten Ads-Stimme, schnelles Tempo, Remotion mit echten Clips und richtigen Übergängen, jedes Reel sichtbar anders. Erst ein Muster zeigen und Mihajlos Okay holen, dann erst Serie.
